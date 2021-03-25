@@ -95,10 +95,11 @@ def train(args, trainloader):
             threshold = i
         a += 1
     logging.info('threshold is = %f' % threshold)
+    wandb.summary
     return threshold
 
 
-def test(args, test_dataloader, test_len):
+def test(args, testloader, test_len):
     autoencoder.eval()
     anmoaly = []
     for idx, inp in enumerate(testloader):
