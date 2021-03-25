@@ -53,23 +53,36 @@ def load_data(args):
     logging.info(path_benin_traffic)
     logging.info(path_ack_traffic)
 
-    db_benigh = np.array(pd.read_csv(path_benin_traffic))
-    db_attack = np.array(pd.read_csv(path_ack_traffic))
-    trainset = torch.Tensor(db_benigh)
-    testset = torch.Tensor(db_attack[0:round(len(db_attack) * 0.1)])
+    db_benigh = pd.read_csv(path_benin_traffic)
+    db_attack = pd.read_csv(path_ack_traffic)
+    # trainset = torch.Tensor(db_benigh)
+    # testset = torch.Tensor(db_attack[0:round(len(db_attack) * 0.2)])
+    # trainset = (trainset - trainset.mean()) / (trainset.std())
+    # testset = (testset - testset.mean()) / (testset.std())
+    # trainloader = torch.utils.data.DataLoader(trainset, batch_size=args.batch_size, shuffle=False, num_workers=0)
+    # testloader = torch.utils.data.DataLoader(testset, batch_size=1, shuffle=False, num_workers=0)
+    # return trainloader, testloader, len(trainset), len(testset)
+    trainset = db_benigh[0:round(len(db_benigh) * 0.8)]
+    test_benigh = db_benigh[round(len(db_benigh) * 0.9):len(db_benigh)]
+    test_attack = db_attack[round(len(db_attack) * 0.1):round(len(db_attack) * 0.2)]
+    testset = pd.concat([test_benigh, test_attack])
     trainset = (trainset - trainset.mean()) / (trainset.std())
     testset = (testset - testset.mean()) / (testset.std())
+    trainset = np.array(trainset)
+    testset = np.array(testset)
+    testset = torch.Tensor(testset)
+    trainset = torch.Tensor(trainset)
+    testratio = 1 - abs((round(len(db_benigh) * 0.9) - len(db_benigh)) / len(testset))
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=args.batch_size, shuffle=False, num_workers=0)
     testloader = torch.utils.data.DataLoader(testset, batch_size=1, shuffle=False, num_workers=0)
-    return trainloader, testloader, len(trainset), len(testset)
+    return trainloader, testloader, len(trainset), len(testset), testratio
 
 
 def train(args, trainloader):
     autoencoder.train()
-    optimizer = torch.optim.Adam(autoencoder.parameters(), lr=0.001)
+    optimizer = torch.optim.Adam(autoencoder.parameters(), lr=args.lr)
     loss_func = nn.MSELoss()
-    running_loss = 0.0
-    for epoch in range(50):
+    for epoch in range(args.epochs):
 
         # mini- batch loop
         epoch_loss = 0.0
@@ -82,39 +95,36 @@ def train(args, trainloader):
             optimizer.step()
         logging.info("epoch = %d, epoch_loss = %f" % (epoch, epoch_loss))
         wandb.log({"loss": epoch_loss, "epoch": epoch})
-        running_loss += epoch_loss
+    logging.info("batch size = %d" % args.batch_size)
 
-    threshold = 0
-    a = 0
+    i = []
+    autoencoder.eval()
     for idx, inp in enumerate(trainloader):
-        i = max(sum(abs(autoencoder(inp) - inp)))
-        logging.info("inp is: " + str(inp))
-        logging.info("output is: " + str(autoencoder(inp)))
-        logging.info("number is: " + str(idx))
-        if i > threshold:
-            threshold = i
-        a += 1
-    logging.info('threshold is = %f' % threshold)
+        i.append(torch.sum(abs(autoencoder(inp) - inp)))
+    i = torch.tensor(i)
+    threshold = (torch.mean(i) + 1 * torch.std(i)) / args.batch_size
+
     wandb.log({"threshold": threshold})
     return threshold
 
 
-def test(args, testloader, test_len):
+def test(args, testloader, test_len, testratio):
     autoencoder.eval()
     anmoaly = []
     for idx, inp in enumerate(testloader):
         decode = autoencoder(inp)
         diff = torch.sum(abs(inp - decode))
-        if diff > 0.3516:
+        if diff > threshold:
             anmoaly.append(idx)
-    an_ratio = len(anmoaly) / test_len
-    print('The accuracy is ', an_ratio)
-
+    an_ratio = (len(anmoaly)/test_len)
+    precision = 1 - (abs(an_ratio-testratio)/testratio)
+    print('The accuracy is ', precision)
     len(trainloader.dataset)
 
     torch.save(autoencoder.state_dict(), "vae_v1.pth")
     print("Saved PyTorch Model State to model.pth")
-
+    wandb.log({"Precision": precision})
+    return precision
 
 if __name__ == "__main__":
     # logging.basicConfig(level=logging.INFO,
@@ -131,7 +141,7 @@ if __name__ == "__main__":
     wandb.init(project='fediot', entity='automl', config=args)
 
     # load data
-    trainloader, testloader, train_len, test_len = load_data(args)
+    trainloader, testloader, train_len, test_len, test_ratio = load_data(args)
 
     # create model
     autoencoder = AutoEncoder()
@@ -142,4 +152,4 @@ if __name__ == "__main__":
     logging.info("threshold = %f" % threshold)
 
     # start test
-    test(args, testloader, test_len)
+    precision = test(args, testloader, test_len, test_ratio)
