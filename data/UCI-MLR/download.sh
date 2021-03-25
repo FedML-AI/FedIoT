@@ -1,0 +1,2 @@
+wget --no-check-certificate --no-proxy https://fediot.s3-us-west-1.amazonaws.com/uci_mlr/benign_traffic.csv
+wget --no-check-certificate --no-proxy https://fediot.s3-us-west-1.amazonaws.com/uci_mlr/ack.csv

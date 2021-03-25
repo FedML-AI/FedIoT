@@ -1,0 +1,157 @@
+Wed, 24 Mar 2021 19:37:32 main_uci.py[line:53] INFO ./../data/UCI-MLR/benign_traffic.csv
+Wed, 24 Mar 2021 19:37:32 main_uci.py[line:54] INFO ./../data/UCI-MLR/ack.csv
+Wed, 24 Mar 2021 19:37:34 main_uci.py[line:139] INFO AutoEncoder(
+  (enc): Sequential(
+    (0): Linear(in_features=115, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.1, inplace=False)
+    (3): Linear(in_features=64, out_features=32, bias=True)
+    (4): ReLU()
+    (5): Dropout(p=0.1, inplace=False)
+    (6): Linear(in_features=32, out_features=16, bias=True)
+    (7): ReLU()
+  )
+  (dec): Sequential(
+    (0): Linear(in_features=16, out_features=32, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.1, inplace=False)
+    (3): Linear(in_features=32, out_features=64, bias=True)
+    (4): ReLU()
+    (5): Dropout(p=0.1, inplace=False)
+    (6): Linear(in_features=64, out_features=115, bias=True)
+    (7): ReLU()
+  )
+)
+Wed, 24 Mar 2021 19:37:37 main_uci.py[line:83] INFO epoch = 0, epoch_loss = 39.630149
+Wed, 24 Mar 2021 19:37:42 main_uci.py[line:83] INFO epoch = 1, epoch_loss = 19.873896
+Wed, 24 Mar 2021 19:37:45 main_uci.py[line:83] INFO epoch = 2, epoch_loss = 17.301005
+Wed, 24 Mar 2021 19:37:50 main_uci.py[line:83] INFO epoch = 3, epoch_loss = 15.609328
+Wed, 24 Mar 2021 19:37:54 main_uci.py[line:83] INFO epoch = 4, epoch_loss = 7.564364
+Wed, 24 Mar 2021 19:37:59 main_uci.py[line:83] INFO epoch = 5, epoch_loss = 10.618732
+Wed, 24 Mar 2021 19:38:04 main_uci.py[line:83] INFO epoch = 6, epoch_loss = 10.350043
+Wed, 24 Mar 2021 19:38:09 main_uci.py[line:83] INFO epoch = 7, epoch_loss = 12.084866
+Wed, 24 Mar 2021 19:38:13 main_uci.py[line:83] INFO epoch = 8, epoch_loss = 4.912228
+Wed, 24 Mar 2021 19:38:18 main_uci.py[line:83] INFO epoch = 9, epoch_loss = 15.009136
+Wed, 24 Mar 2021 19:38:23 main_uci.py[line:83] INFO epoch = 10, epoch_loss = 4.918652
+Wed, 24 Mar 2021 19:38:28 main_uci.py[line:83] INFO epoch = 11, epoch_loss = 17.213207
+Wed, 24 Mar 2021 19:38:33 main_uci.py[line:83] INFO epoch = 12, epoch_loss = 8.678339
+Wed, 24 Mar 2021 19:38:37 main_uci.py[line:83] INFO epoch = 13, epoch_loss = 6.948713
+Wed, 24 Mar 2021 19:38:41 main_uci.py[line:83] INFO epoch = 14, epoch_loss = 7.175704
+Wed, 24 Mar 2021 19:38:45 main_uci.py[line:83] INFO epoch = 15, epoch_loss = 8.918827
+Wed, 24 Mar 2021 19:38:49 main_uci.py[line:83] INFO epoch = 16, epoch_loss = 7.278733
+Wed, 24 Mar 2021 19:38:53 main_uci.py[line:83] INFO epoch = 17, epoch_loss = 8.068990
+Wed, 24 Mar 2021 19:38:57 main_uci.py[line:83] INFO epoch = 18, epoch_loss = 12.412303
+Wed, 24 Mar 2021 19:39:01 main_uci.py[line:83] INFO epoch = 19, epoch_loss = 5.637366
+Wed, 24 Mar 2021 19:39:05 main_uci.py[line:83] INFO epoch = 20, epoch_loss = 10.766726
+Wed, 24 Mar 2021 19:39:09 main_uci.py[line:83] INFO epoch = 21, epoch_loss = 9.319150
+Wed, 24 Mar 2021 19:39:13 main_uci.py[line:83] INFO epoch = 22, epoch_loss = 6.577643
+Wed, 24 Mar 2021 19:39:17 main_uci.py[line:83] INFO epoch = 23, epoch_loss = 5.777686
+Wed, 24 Mar 2021 19:39:21 main_uci.py[line:83] INFO epoch = 24, epoch_loss = 8.932494
+Wed, 24 Mar 2021 19:39:25 main_uci.py[line:83] INFO epoch = 25, epoch_loss = 8.856281
+Wed, 24 Mar 2021 19:39:30 main_uci.py[line:83] INFO epoch = 26, epoch_loss = 5.251598
+Wed, 24 Mar 2021 19:39:34 main_uci.py[line:83] INFO epoch = 27, epoch_loss = 6.119675
+Wed, 24 Mar 2021 19:39:38 main_uci.py[line:83] INFO epoch = 28, epoch_loss = 9.613270
+Wed, 24 Mar 2021 19:39:43 main_uci.py[line:83] INFO epoch = 29, epoch_loss = 6.918850
+Wed, 24 Mar 2021 19:39:47 main_uci.py[line:83] INFO epoch = 30, epoch_loss = 6.677398
+Wed, 24 Mar 2021 19:39:51 main_uci.py[line:83] INFO epoch = 31, epoch_loss = 6.628104
+Wed, 24 Mar 2021 19:39:55 main_uci.py[line:83] INFO epoch = 32, epoch_loss = 6.554367
+Wed, 24 Mar 2021 19:40:00 main_uci.py[line:83] INFO epoch = 33, epoch_loss = 7.067079
+Wed, 24 Mar 2021 19:40:04 main_uci.py[line:83] INFO epoch = 34, epoch_loss = 3.149047
+Wed, 24 Mar 2021 19:40:08 main_uci.py[line:83] INFO epoch = 35, epoch_loss = 7.474033
+Wed, 24 Mar 2021 19:40:12 main_uci.py[line:83] INFO epoch = 36, epoch_loss = 6.539330
+Wed, 24 Mar 2021 19:40:16 main_uci.py[line:83] INFO epoch = 37, epoch_loss = 6.792946
+Wed, 24 Mar 2021 19:40:21 main_uci.py[line:83] INFO epoch = 38, epoch_loss = 5.986204
+Wed, 24 Mar 2021 19:40:25 main_uci.py[line:83] INFO epoch = 39, epoch_loss = 6.303511
+Wed, 24 Mar 2021 19:40:29 main_uci.py[line:83] INFO epoch = 40, epoch_loss = 4.820868
+Wed, 24 Mar 2021 19:40:33 main_uci.py[line:83] INFO epoch = 41, epoch_loss = 7.683339
+Wed, 24 Mar 2021 19:40:37 main_uci.py[line:83] INFO epoch = 42, epoch_loss = 2.671471
+Wed, 24 Mar 2021 19:40:42 main_uci.py[line:83] INFO epoch = 43, epoch_loss = 7.845462
+Wed, 24 Mar 2021 19:40:46 main_uci.py[line:83] INFO epoch = 44, epoch_loss = 7.144071
+Wed, 24 Mar 2021 19:40:51 main_uci.py[line:83] INFO epoch = 45, epoch_loss = 6.048467
+Wed, 24 Mar 2021 19:40:55 main_uci.py[line:83] INFO epoch = 46, epoch_loss = 5.272178
+Wed, 24 Mar 2021 19:41:00 main_uci.py[line:83] INFO epoch = 47, epoch_loss = 7.565840
+Wed, 24 Mar 2021 19:41:04 main_uci.py[line:83] INFO epoch = 48, epoch_loss = 4.562233
+Wed, 24 Mar 2021 19:41:09 main_uci.py[line:83] INFO epoch = 49, epoch_loss = 6.969562
+Wed, 24 Mar 2021 19:41:09 main_uci.py[line:91] INFO inp is: tensor([[-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        ...,
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110]])
+Wed, 24 Mar 2021 19:41:09 main_uci.py[line:92] INFO output is: tensor([[0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        ...,
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.]], grad_fn=<ReluBackward0>)
+Wed, 24 Mar 2021 19:41:09 main_uci.py[line:93] INFO number is: 0
+Wed, 24 Mar 2021 19:41:09 main_uci.py[line:91] INFO inp is: tensor([[-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        ...,
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110]])
+Wed, 24 Mar 2021 19:41:09 main_uci.py[line:92] INFO output is: tensor([[0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        ...,
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.]], grad_fn=<ReluBackward0>)
+Wed, 24 Mar 2021 19:41:09 main_uci.py[line:93] INFO number is: 1
+Wed, 24 Mar 2021 19:41:09 main_uci.py[line:91] INFO inp is: tensor([[-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        ...,
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110]])
+Wed, 24 Mar 2021 19:41:09 main_uci.py[line:92] INFO output is: tensor([[0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        ...,
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.]], grad_fn=<ReluBackward0>)
+Wed, 24 Mar 2021 19:41:09 main_uci.py[line:93] INFO number is: 2
+Wed, 24 Mar 2021 19:41:09 main_uci.py[line:91] INFO inp is: tensor([[-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        ...,
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110]])
+Wed, 24 Mar 2021 19:41:09 main_uci.py[line:92] INFO output is: tensor([[0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        ...,
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.]], grad_fn=<ReluBackward0>)
+Wed, 24 Mar 2021 19:41:09 main_uci.py[line:93] INFO number is: 3
+Wed, 24 Mar 2021 19:41:09 main_uci.py[line:91] INFO inp is: tensor([[-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        ...,
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110],
+        [-0.0110, -0.0110, -0.0110,  ..., -0.0110, -0.0110, -0.0110]])
+Wed, 24 Mar 2021 19:41:09 main_uci.py[line:92] INFO output is: tensor([[0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        ...,
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.]], grad_fn=<ReluBackward0>)
+Wed, 24 Mar 2021 19:41:09 main_uci.py[line:93] INFO number is: 4
+Wed, 24 Mar 2021 19:41:09 main_uci.py[line:99] INFO threshold is = 956.074402
+Wed, 24 Mar 2021 19:41:09 main_uci.py[line:143] INFO threshold = 956.074402
+Traceback (most recent call last):
+  File "main_uci.py", line 146, in <module>
+    test(args, testloader, test_len)
+  File "main_uci.py", line 112, in test
+    print('The accuracy is ', an_ratio / test_dataloader)
+TypeError: unsupported operand type(s) for /: 'float' and 'DataLoader'

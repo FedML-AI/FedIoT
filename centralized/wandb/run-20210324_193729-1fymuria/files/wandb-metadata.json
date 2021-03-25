@@ -1,0 +1,22 @@
+{
+    "os": "Darwin-19.6.0-x86_64-i386-64bit",
+    "python": "3.7.4",
+    "heartbeatAt": "2021-03-25T02:37:32.113346",
+    "startedAt": "2021-03-25T02:37:29.914505",
+    "docker": null,
+    "cpu_count": 16,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "codePath": "centralized/main_uci.py",
+    "program": "main_uci.py",
+    "git": {
+        "remote": "https://github.com/FedML-AI/FedML-IoT-V.git",
+        "commit": "c14f91b0a980d4cf9c6018f3ed85dfdf12e9e0d1"
+    },
+    "email": "chaoyanghe.com@gmail.com",
+    "root": "/Users/chaoyanghe/sourcecode/FedML-IoT-V",
+    "host": "Chaoyangs-MBP.attlocal.net",
+    "username": "chaoyanghe",
+    "executable": "/Users/chaoyanghe/opt/anaconda3/envs/fedml/bin/python"
+}
