@@ -94,8 +94,6 @@ def train(args, trainloader):
         if i > threshold:
             threshold = i
         a += 1
-        if idx > 3:
-            break
     logging.info('threshold is = %f' % threshold)
     return threshold
 
