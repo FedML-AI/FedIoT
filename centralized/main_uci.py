@@ -95,7 +95,7 @@ def train(args, trainloader):
             threshold = i
         a += 1
     logging.info('threshold is = %f' % threshold)
-    wandb.summary
+    wandb.log({"threshold": threshold)
     return threshold
 
 
