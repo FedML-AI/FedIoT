@@ -102,6 +102,9 @@ def train(args, trainloader):
     for idx, inp in enumerate(trainloader):
         i.append(torch.sum(abs(autoencoder(inp) - inp)))
     i = torch.tensor(i)
+    test = np.array(i)
+    plt.hist(test, bins='auto', density=True)
+    plt.show()
     threshold = (torch.mean(i) + 1 * torch.std(i)) / args.batch_size
 
     wandb.log({"threshold": threshold})
