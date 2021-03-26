@@ -8,6 +8,7 @@ import pandas as pd
 import torch
 import torch.nn as nn
 import wandb
+from matplotlib import pyplot as plt
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../")))
 
@@ -103,7 +104,9 @@ def train(args, trainloader):
         i.append(torch.sum(abs(autoencoder(inp) - inp)))
     i = torch.tensor(i)
     threshold = (torch.mean(i) + 1 * torch.std(i)) / args.batch_size
-
+    test = np.array(i)
+    plt.hist(test, bins='auto', density=True)
+    plt.show()
     wandb.log({"threshold": threshold})
     return threshold
 
