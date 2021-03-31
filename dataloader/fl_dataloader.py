@@ -6,8 +6,9 @@ import sys
 import numpy as np
 import pandas as pd
 import torch
-import torch.nn as nn
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../")))
+
 
 def add_args(parser):
     """
@@ -23,6 +24,12 @@ def add_args(parser):
 
     parser.add_argument('--data_dir', type=str, default='./../data/UCI-MLR',
                         help='data directory')
+
+    parser.add_argument('--client_num_in_total', type=int, default=1000, metavar='NN',
+                        help='number of workers in a distributed cluster')
+
+    parser.add_argument('--client_num_per_round', type=int, default=4, metavar='NN',
+                        help='number of workers')
 
     parser.add_argument('--batch_size', type=int, default=32, metavar='N',
                         help='input batch size for training (default: 64)')
@@ -41,38 +48,60 @@ def add_args(parser):
     args = parser.parse_args()
     return args
 
-#read the data from the csv
-def load_data(args,file_name):
+
+# read the data from the csv
+# ratio between trainset and testset is 90% to 10%
+def load_data(args, file_name):
     path_data = args.data_dir + "/" + file_name
     logging.info(path_data)
     db = pd.read_csv(path_data)
     db = (db - db.mean()) / (db.std())
     db = np.array(db)
-    return db
+    trainset = db[0:round(len(db) * 0.9)]
+    testset = db[round(len(db) * 0.9):len(db)]
+    len_train = len(trainset)
+    len_test = len(testset)
+    return len_train, len_test, trainset, testset
 
-def homo_partition_data(process_id, dataset, client_number):
-    if process_id == 0: #for centralized training
+
+def homo_partition_data(args, process_id, dataset):
+    if process_id == 0:  # for centralized training
         return dataset
     else:
         total_num = len(dataset)
         idxs = list(range(total_num))
-        batch_idxs = np.array_split(idxs,client_number)
-        net_dataidx_map = {i: batch_idxs[i] for i in range(client_number)}
-        return net_dataidx_map
+        batch_idxs = np.array_split(idxs, args.client_num_in_total)
+        net_dataidx_map = {i: batch_idxs[i] for i in range(args.client_num_in_total)}
+        train_data_local_num_dict = {i: len(batch_idxs[i]) for i in range(args.client_num_in_total)}
+        return net_dataidx_map, train_data_local_num_dict
 
-def local_dataloader(process_id, net_dataidx_map, dataset, client_number):
 
-    if process_id == 0:
-        return dataset
-    else:
-        data_local = {}
-        for client_idx in range(client_number):
-            dataidxs = net_dataidx_map[client_idx]
-            local_data_num = len(dataidxs)
-            logging.info("client_idx = %d, local_sample_number = %d" % (client_idx, local_data_num))
-            data_local[client_idx] = dataset[net_dataidx_map[client_idx]]
+def local_dataloader(args, file_name, process_id):
+    train_data_local_dict = dict()
+    test_data_local_dict = dict()
+    train_data_num, test_data_num, train_data_global, test_data_global = load_data(args, file_name)
+    dataidx_map_train, train_data_local_num_dict = homo_partition_data(args, process_id, train_data_global)
+    dataidx_map_test, test_data_local_num_dict = homo_partition_data(args, process_id, test_data_global)
 
-        return data_local
+    # for local train data
+    for client_idx in range(args.client_num_in_total):
+        data_local_train = train_data_global[dataidx_map_train[client_idx]]
+        train_data_local_dict[client_idx] = torch.utils.data.DataLoader(data_local_train, batch_size=args.batch_size,
+                                                                        shuffle=False,
+                                                                        num_workers=0)
+        logging.info("client_idx = %d, local_train_sample_number = %d" % (client_idx, train_data_local_num_dict[client_idx]))
+
+    # for local test data
+    for client_idx in range(args.client_num_in_total):
+        data_local_test = test_data_global[dataidx_map_test[client_idx]]
+        test_data_local_dict[client_idx] = torch.utils.data.DataLoader(data_local_test, batch_size=args.batch_size,
+                                                                        shuffle=False,
+                                                                        num_workers=0)
+        logging.info("client_idx = %d, local_test_sample_number = %d" % (client_idx, test_data_local_num_dict[client_idx]))
+
+    return train_data_num, test_data_num, train_data_global, test_data_global, \
+           train_data_local_num_dict, train_data_local_dict, test_data_local_dict
+
 
 if __name__ == "__main__":
     # logging.basicConfig(level=logging.INFO,
@@ -85,18 +114,7 @@ if __name__ == "__main__":
     args = add_args(parser)
     logging.info(args)
 
-    # load data
-    dataset = load_data(args,'benign_traffic.csv')
-
-    #data partition
-
-    local_data_map = homo_partition_data(1, dataset, 20)
-
-    #local data dict
-
-    local_data_dict = local_dataloader(1, local_data_map, dataset, 20)
-
-    logging.info(local_data_dict[0])
-    logging.info(len(local_data_dict[0]))
-
-
+    dataset = local_dataloader(args, 'ack.csv', 1)
+    [train_data_num, test_data_num, train_data_global, test_data_global,
+     train_data_local_num_dict, train_data_local_dict, test_data_local_dict] = dataset
+    logging.info(train_data_local_num_dict)

@@ -81,6 +81,7 @@ def load_data(args):
 
 def train(args, trainloader):
     autoencoder.train()
+    autoencoder = autoencoder.double()
     optimizer = torch.optim.Adam(autoencoder.parameters(), lr=args.lr)
     loss_func = nn.MSELoss()
     for epoch in range(args.epochs):
