@@ -2,18 +2,23 @@ import argparse
 import os
 import socket
 import sys
+import logging
+import numpy as np
 
 import psutil
 import setproctitle
 import torch.nn
 import wandb
+import random
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../")))
+sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "")))
 
 
 from centralized.auto_encoder import AutoEncoder
+from dataloader.fl_dataloader import local_dataloader
 
-from dataloader.fl_dataloader import *
+from FedML.fedml_api.distributed.utils.gpu_mapping import mapping_processes_to_gpu_device_from_yaml_file
 
 from FedML.fedml_api.distributed.fedavg.FedAvgAPI import FedML_init, FedML_FedAvg_distributed
 
@@ -76,7 +81,7 @@ def add_args(parser):
     parser.add_argument('--gpu_num_per_server', type=int, default=4,
                         help='gpu_num_per_server')
 
-    parser.add_argument('--gpu_mapping_file', type=str, default="gpu_mapping.yaml",
+    parser.add_argument('--gpu_mapping_file', type=str, default=None,
                         help='the gpu utilization file for servers and clients. If there is no \
                         gpu_util_file, gpu will not be used.')
 
@@ -92,7 +97,7 @@ def add_args(parser):
     return args
 
 def load_data(args, file_name):
-    logging.info("load_data. dataset_name = %s" % dataset_name)
+    logging.info("load_data. dataset_name = %s" % file_name)
     train_data_num, test_data_num, train_data_global, test_data_global, \
     train_data_local_num_dict, train_data_local_dict, test_data_local_dict = local_dataloader(args, file_name, 1)
     dataset = [train_data_num, test_data_num, train_data_global, test_data_global,
@@ -102,8 +107,7 @@ def load_data(args, file_name):
 def create_model(args, model_name, output_dim):
     logging.info("create_model. model_name = %s, output_dim = %s" % (model_name, output_dim))
     if model_name == 'autoencoder':
-        AutoEncoder = AutoEncoder.double()
-        model = AutoEncoder
+        model = AutoEncoder()
     return model
 
 if __name__ == "__main__":
