@@ -14,7 +14,7 @@ from matplotlib import pyplot as plt
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../")))
 
 from centralized.auto_encoder import AutoEncoder
-
+from centralized.Variational_Autoencoder import VAE
 
 
 def add_args(parser):
@@ -82,18 +82,33 @@ def load_data(args):
 
 
 
+def loss_function_vae(recon_x, x, mu, logvar):
+    """
+    recon_x: generating images
+    x: origin images
+    mu: latent mean
+    logvar: latent log variance
+    """
+    reconstruction_function = nn.BCELoss(size_average=False)  # mse loss
+    BCE = reconstruction_function(recon_x, x)
+    # loss = 0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
+    KLD_element = mu.pow(2).add_(logvar.exp()).mul_(-1).add_(1).add_(logvar)
+    KLD = torch.sum(KLD_element).mul_(-0.5)
+    # KL divergence
+    return BCE + KLD
+
 def train(args, trainloader):
-    autoencoder.train()
-    optimizer = torch.optim.Adam(autoencoder.parameters(), lr=args.lr)
-    loss_func = nn.MSELoss()
+    VAE.train()
+    optimizer = torch.optim.Adam(VAE.parameters(), lr=args.lr)
+
     for epoch in range(args.epochs):
 
         # mini- batch loop
         epoch_loss = 0.0
         for idx, inp in enumerate(trainloader):
             optimizer.zero_grad()
-            decode = autoencoder(inp)
-            loss = loss_func(decode, inp)
+            decode, mu, logvar = VAE(inp)
+            loss = loss_function_vae(decode, inp, mu, logvar)
             epoch_loss += loss.item() / args.batch_size
             loss.backward()
             optimizer.step()
@@ -102,14 +117,15 @@ def train(args, trainloader):
     logging.info("batch size = %d" % args.batch_size)
 
     i = []
-    autoencoder.eval()
+    VAE.eval()
     for idx, inp in enumerate(trainloader):
-        i.append(torch.sum(abs(autoencoder(inp) - inp)))
+        decode, mu, logvar = VAE(inp)
+        i.append(torch.sum(abs(decode - inp)))
     i = torch.tensor(i)
     test = np.array(i)
     plt.hist(test, bins='auto', density=True)
     plt.show()
-    threshold = (torch.mean(i) + 1 * torch.std(i)) / args.batch_size
+    threshold = (torch.mean(i) + 0.8 * torch.std(i)) / args.batch_size
     test = np.array(i)
     plt.hist(test, bins='auto', density=True)
     plt.show()
@@ -118,10 +134,10 @@ def train(args, trainloader):
 
 
 def test(args, testloader, test_len, testratio):
-    autoencoder.eval()
+    VAE.eval()
     anmoaly = []
     for idx, inp in enumerate(testloader):
-        decode = autoencoder(inp)
+        decode, mu, logvar = VAE(inp)
         diff = torch.sum(abs(inp - decode))
         if diff > threshold:
             anmoaly.append(idx)
@@ -130,8 +146,6 @@ def test(args, testloader, test_len, testratio):
     print('The accuracy is ', precision)
     len(trainloader.dataset)
 
-    torch.save(autoencoder.state_dict(), "vae_v1.pth")
-    print("Saved PyTorch Model State to model.pth")
     wandb.log({"Precision": precision})
     return precision
 
@@ -153,8 +167,8 @@ if __name__ == "__main__":
     trainloader, testloader, train_len, test_len, test_ratio = load_data(args)
 
     # create model
-    autoencoder = AutoEncoder()
-    logging.info(autoencoder)
+    VAE = VAE()
+    logging.info(VAE)
 
     # start training
     threshold = train(args, trainloader)
