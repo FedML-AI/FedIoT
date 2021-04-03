@@ -1,5 +1,5 @@
 .idea
 *.csv
 
-centralized/wandb
-centralized/wandb*
+experiments/centralized/wandb
+experiments/centralized/wandb*
