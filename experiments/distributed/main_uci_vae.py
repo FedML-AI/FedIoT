@@ -100,10 +100,11 @@ def add_args(parser):
     return args
 
 
-def load_data(args, file_name):
-    logging.info("load_data. dataset_name = %s" % file_name)
+def load_data(args, train_file_name, test_file_name):
+    logging.info("load_train_data. dataset_name = %s" % train_file_name)
+    logging.info("load_test_data. dataset_name = %s" % test_file_name)
     train_data_num, test_data_num, train_data_global, test_data_global, \
-    train_data_local_num_dict, train_data_local_dict, test_data_local_dict = local_dataloader(args, file_name, 1)
+    train_data_local_num_dict, train_data_local_dict, test_data_local_dict = local_dataloader(args, train_file_name, test_file_name, 1)
     dataset = [train_data_num, test_data_num, train_data_global, test_data_global,
                train_data_local_num_dict, train_data_local_dict, test_data_local_dict]
     return dataset
@@ -164,7 +165,7 @@ if __name__ == "__main__":
                                                             args.gpu_mapping_key)
 
     # load data
-    dataset = load_data(args, 'benign_traffic.csv')
+    dataset = load_data(args, 'benign_traffic.csv', 'ack.csv')
     [train_data_num, test_data_num, train_data_global, test_data_global,
      train_data_local_num_dict, train_data_local_dict, test_data_local_dict] = dataset
 
