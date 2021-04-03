@@ -11,9 +11,6 @@ import setproctitle
 import torch.nn
 import wandb
 
-from model.vae import VAE
-from training.vae_trainer import VAETrainer
-
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../../")))
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "")))
 
@@ -22,6 +19,9 @@ from data_preprocessing.fl_dataloader import local_dataloader
 from FedML.fedml_api.distributed.utils.gpu_mapping import mapping_processes_to_gpu_device_from_yaml_file
 
 from FedML.fedml_api.distributed.fedavg.FedAvgAPI import FedML_init, FedML_FedAvg_distributed
+
+from model.vae import VAE
+from training.vae_trainer import VAETrainer
 
 
 def add_args(parser):
@@ -36,7 +36,7 @@ def add_args(parser):
     parser.add_argument('--dataset', type=str, default='UCI-MIR', metavar='N',
                         help='dataset used for training')
 
-    parser.add_argument('--data_dir', type=str, default='./../data/UCI-MLR',
+    parser.add_argument('--data_dir', type=str, default='./../../data/UCI-MLR',
                         help='data directory')
 
     # parser.add_argument('--partition_method', type=str, default='hetero', metavar='N',
@@ -142,7 +142,9 @@ if __name__ == "__main__":
 
     # initialize the wandb machine learning experimental tracking platform (https://www.wandb.com/).
     if process_id == 0:
-        wandb.init(project='fediot', entity='automl', config=args)
+        wandb.init(project='fediot', entity='automl',
+                   name=str(args.model) + "r" + str(args.dataset) + "-lr" + str(args.lr),
+                   config=args)
 
     # Set the random seed. The np.random seed determines the dataset partition.
     # The torch_manual_seed determines the initial weight.
@@ -153,6 +155,7 @@ if __name__ == "__main__":
     torch.cuda.manual_seed_all(0)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
+    torch.set_default_tensor_type(torch.DoubleTensor)
 
     # # Please check "GPU_MAPPING.md" to see how to define the topology
     logging.info("process_id = %d, size = %d" % (process_id, worker_number))

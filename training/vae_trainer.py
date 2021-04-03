@@ -35,7 +35,6 @@ class VAETrainer(ModelTrainer):
         optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
 
         for epoch in range(args.epochs):
-
             # mini- batch loop
             epoch_loss = 0.0
             for idx, inp in enumerate(train_data):
@@ -43,10 +42,11 @@ class VAETrainer(ModelTrainer):
                 optimizer.zero_grad()
                 decode, mu, logvar = model(inp)
                 loss = self.loss_function_vae(decode, inp, mu, logvar)
+                logging.info(loss)
                 epoch_loss += loss.item() / args.batch_size
                 loss.backward()
                 optimizer.step()
-            logging.info("epoch = %d, epoch_loss = %f" % (epoch, epoch_loss))
+                logging.info("epoch = %d, epoch_loss = %f" % (epoch, epoch_loss))
         logging.info("batch size = %d" % args.batch_size)
 
     def test(self, test_data, device, args):
