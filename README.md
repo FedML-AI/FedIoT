@@ -16,6 +16,7 @@ conda activate fediot
 # conda install pytorch==1.6.0 torchvision==0.7.0 cudatoolkit=10.1 -c pytorch -n fediot
 pip install torch==1.6.0+cu101 torchvision==0.7.0+cu101 -f https://download.pytorch.org/whl/torch_stable.html
 pip install -r requirements.txt 
+git submodule add https://github.com/FedML-AI/FedML
 cd FedML; git submodule init; git submodule update; cd ../;
 ```
 
@@ -81,7 +82,7 @@ Some tasks can share the same trainer.
 
 
 ## Citation
-Please cite our FedNLP and FedML paper if it helps your research.
+Please cite our FedIoT and FedML paper if it helps your research.
 You can describe us in your paper like this: "We develop our experiments based on FedNLP [1] and FedML [2]".
 
  
