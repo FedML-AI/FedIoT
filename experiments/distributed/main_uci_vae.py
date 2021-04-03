@@ -11,6 +11,7 @@ import setproctitle
 import torch.nn
 import wandb
 
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../../")))
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "")))
 
@@ -20,8 +21,8 @@ from FedML.fedml_api.distributed.utils.gpu_mapping import mapping_processes_to_g
 
 from FedML.fedml_api.distributed.fedavg.FedAvgAPI import FedML_init, FedML_FedAvg_distributed
 
-from model.vae import VAE
-from training.vae_trainer import VAETrainer
+from model.ae import AutoEncoder
+from training.ae_trainer import AETrainer
 
 
 def add_args(parser):
@@ -71,7 +72,7 @@ def add_args(parser):
     parser.add_argument('--comm_round', type=int, default=10,
                         help='how many round of communications we shoud use')
 
-    parser.add_argument('--is_mobile', type=int, default=1,
+    parser.add_argument('--is_mobile', type=int, default=0,
                         help='whether the program is running on the FedML-Mobile server side')
 
     parser.add_argument('--frequency_of_the_test', type=int, default=1,
@@ -109,7 +110,7 @@ def load_data(args, file_name):
 
 
 def create_model(device):
-    model = VAE(device)
+    model = AutoEncoder()
     logging.info(model)
     return model
 
@@ -159,7 +160,7 @@ if __name__ == "__main__":
 
     # # Please check "GPU_MAPPING.md" to see how to define the topology
     logging.info("process_id = %d, size = %d" % (process_id, worker_number))
-    device = mapping_processes_to_gpu_device_from_yaml_file(process_id, worker_number, args.gpu_mapping_file,
+    device = mapping_processes_to_gpu_device_from_yaml_file(process_id, worker_number, None,
                                                             args.gpu_mapping_key)
 
     # load data
@@ -171,10 +172,9 @@ if __name__ == "__main__":
     # Note if the model is DNN (e.g., ResNet), the training will be very slow.
     # In this case, please use our FedML distributed version (./fedml_experiments/distributed_fedavg)
     model = create_model(device)
-    model.to(device)
 
     # create my own trainer
-    trainer = VAETrainer(model)
+    trainer = AETrainer(model)
 
     # start "federated averaging (FedAvg)"
     FedML_FedAvg_distributed(process_id, worker_number, device, comm,
