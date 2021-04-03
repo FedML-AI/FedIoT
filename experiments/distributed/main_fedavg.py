@@ -9,11 +9,14 @@ import numpy as np
 import psutil
 import setproctitle
 import torch.nn
+import wandb
+
+from model.vae import VAE
+from training.vae_trainer import VAETrainer
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../../")))
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "")))
 
-from model.auto_encoder import AutoEncoder
 from data_preprocessing.fl_dataloader import local_dataloader
 
 from FedML.fedml_api.distributed.utils.gpu_mapping import mapping_processes_to_gpu_device_from_yaml_file
@@ -105,25 +108,19 @@ def load_data(args, file_name):
     return dataset
 
 
-def create_model(args, model_name, output_dim):
-    logging.info("create_model. model_name = %s, output_dim = %s" % (model_name, output_dim))
-    if model_name == 'autoencoder':
-        model = AutoEncoder()
+def create_model(device):
+    model = VAE(device)
+    logging.info(model)
     return model
 
 
 if __name__ == "__main__":
-    # quick fix for issue in MacOS environment: https://github.com/openai/spinningup/issues/16
-    if sys.platform == 'darwin':
-        os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
-
     # initialize distributed computing (MPI)
     comm, process_id, worker_number = FedML_init()
 
     # parse python script input parameters
     parser = argparse.ArgumentParser()
     args = add_args(parser)
-    logging.info(args)
 
     # customize the process name
     str_process_name = "FedAvg (distributed):" + str(process_id)
@@ -136,10 +133,16 @@ if __name__ == "__main__":
                             process_id) + ' - %(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
                         datefmt='%a, %d %b %Y %H:%M:%S')
     hostname = socket.gethostname()
+
+    logging.info(args)
     logging.info("#############process ID = " + str(process_id) +
                  ", host name = " + hostname + "########" +
                  ", process ID = " + str(os.getpid()) +
                  ", process Name = " + str(psutil.Process(os.getpid())))
+
+    # initialize the wandb machine learning experimental tracking platform (https://www.wandb.com/).
+    if process_id == 0:
+        wandb.init(project='fediot', entity='automl', config=args)
 
     # Set the random seed. The np.random seed determines the dataset partition.
     # The torch_manual_seed determines the initial weight.
@@ -148,6 +151,8 @@ if __name__ == "__main__":
     np.random.seed(0)
     torch.manual_seed(0)
     torch.cuda.manual_seed_all(0)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
     # # Please check "GPU_MAPPING.md" to see how to define the topology
     logging.info("process_id = %d, size = %d" % (process_id, worker_number))
@@ -162,10 +167,13 @@ if __name__ == "__main__":
     # create model.
     # Note if the model is DNN (e.g., ResNet), the training will be very slow.
     # In this case, please use our FedML distributed version (./fedml_experiments/distributed_fedavg)
-    model = create_model(args, model_name='autoencoder', output_dim=None)
+    model = create_model(device)
+    model.to(device)
 
-    # try:
+    # create my own trainer
+    trainer = VAETrainer(model)
+
     # start "federated averaging (FedAvg)"
     FedML_FedAvg_distributed(process_id, worker_number, device, comm,
                              model, train_data_num, train_data_global, test_data_global,
-                             train_data_local_num_dict, train_data_local_dict, test_data_local_dict, args)
+                             train_data_local_num_dict, train_data_local_dict, test_data_local_dict, args, trainer)
