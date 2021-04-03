@@ -5,8 +5,9 @@ from torch.autograd import Variable
 
 
 class VAE(nn.Module):
-    def __init__(self):
+    def __init__(self, device):
         super(VAE, self).__init__()
+        self.device = device
         self.fc1 = nn.Linear(115, 64)
         self.fc21 = nn.Linear(64, 32)
         self.fc22 = nn.Linear(64, 32)
@@ -21,10 +22,7 @@ class VAE(nn.Module):
 
     def reparametrize(self, mu, logvar):
         std = logvar.mul(0.5).exp_()
-        if torch.cuda.is_available():
-            eps = torch.cuda.FloatTensor(std.size()).normal_()
-        else:
-            eps = torch.FloatTensor(std.size()).normal_()
+        eps = torch.FloatTensor(std.size()).normal_().to(self.device)
         eps = Variable(eps)
         return eps.mul(std).add_(mu)
 

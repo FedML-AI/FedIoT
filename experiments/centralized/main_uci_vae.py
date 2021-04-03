@@ -10,11 +10,9 @@ import torch.nn as nn
 import wandb
 from matplotlib import pyplot as plt
 
-from model.vae import VAE
-
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../../")))
 
-from model.ae import AutoEncoder
+from model.vae import VAE
 
 
 def add_args(parser):
@@ -22,15 +20,17 @@ def add_args(parser):
     parser : argparse.ArgumentParser
     return a parser added with args required by fit
     """
-    # Training settings
-    parser.add_argument('--model', type=str, default='vae', metavar='N',
-                        help='neural network used in training')
-
+    # dataset related
     parser.add_argument('--dataset', type=str, default='UCI_MLR', metavar='N',
                         help='dataset used for training')
 
     parser.add_argument('--data_dir', type=str, default='./../../data/UCI-MLR',
                         help='data directory')
+
+    # CPU/GPU device related
+    parser.add_argument('--device', type=str, default='cpu',
+                        help='cpu; gpu')
+
     # model related
     parser.add_argument('--model', type=str, default='vae',
                         help='model (default: vae): ae, vae')
@@ -85,28 +85,41 @@ def load_data(args):
     return trainloader, testloader, len(trainset), len(testset), testratio
 
 
-def create_model(args):
-    if args.model == "vae":
-        model = VAE()
-    elif args.model == "ae":
-        model = AutoEncoder()
-    else:
-        raise Exception("no such model")
+def create_model(device):
+    model = VAE(device)
     logging.info(model)
     return model
 
-def train(args, model, trainloader):
+
+def loss_function_vae(recon_x, x, mu, logvar):
+    """
+    recon_x: generating images
+    x: origin images
+    mu: latent mean
+    logvar: latent log variance
+    """
+    reconstruction_function = nn.BCELoss(size_average=False)  # mse loss
+    BCE = reconstruction_function(recon_x, x)
+    # loss = 0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
+    KLD_element = mu.pow(2).add_(logvar.exp()).mul_(-1).add_(1).add_(logvar)
+    KLD = torch.sum(KLD_element).mul_(-0.5)
+    # KL divergence
+    return BCE + KLD
+
+
+def train(args, model, device, trainloader):
     model.train()
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
-    loss_func = nn.MSELoss()
+
     for epoch in range(args.epochs):
 
         # mini- batch loop
         epoch_loss = 0.0
         for idx, inp in enumerate(trainloader):
+            inp = inp.to(device)
             optimizer.zero_grad()
-            decode = model(inp)
-            loss = loss_func(decode, inp)
+            decode, mu, logvar = model(inp)
+            loss = loss_function_vae(decode, inp, mu, logvar)
             epoch_loss += loss.item() / args.batch_size
             loss.backward()
             optimizer.step()
@@ -117,12 +130,14 @@ def train(args, model, trainloader):
     i = []
     model.eval()
     for idx, inp in enumerate(trainloader):
-        i.append(torch.sum(abs(model(inp) - inp)))
+        inp = inp.to(device)
+        decode, mu, logvar = model(inp)
+        i.append(torch.sum(abs(decode - inp)))
     i = torch.tensor(i)
     test = np.array(i)
     plt.hist(test, bins='auto', density=True)
     plt.show()
-    threshold = (torch.mean(i) + 1 * torch.std(i)) / args.batch_size
+    threshold = (torch.mean(i) + 0.8 * torch.std(i)) / args.batch_size
     test = np.array(i)
     plt.hist(test, bins='auto', density=True)
     plt.show()
@@ -130,11 +145,11 @@ def train(args, model, trainloader):
     return threshold
 
 
-def test(args, model, testloader, test_len, testratio):
-    model.eval()
+def test(args, model, device, testloader, test_len, testratio):
     anmoaly = []
     for idx, inp in enumerate(testloader):
-        decode = model(inp)
+        inp = inp.to(device)
+        decode, mu, logvar = model(inp)
         diff = torch.sum(abs(inp - decode))
         if diff > threshold:
             anmoaly.append(idx)
@@ -143,8 +158,6 @@ def test(args, model, testloader, test_len, testratio):
     print('The accuracy is ', precision)
     len(trainloader.dataset)
 
-    torch.save(model.state_dict(), "vae_v1.pth")
-    print("Saved PyTorch Model State to model.pth")
     wandb.log({"Precision": precision})
     return precision
 
@@ -160,21 +173,28 @@ if __name__ == "__main__":
     args = add_args(parser)
     logging.info(args)
 
+    # PyTorch Configuration
+    torch.set_default_tensor_type(torch.DoubleTensor)
+
     # experimental result tracking
     wandb.init(project='fediot', entity='automl', config=args)
 
-    # PyTorch configuration
-    torch.set_default_tensor_type(torch.DoubleTensor)
+    # GPU/CPU device management
+    if args.device == "gpu":
+        device = torch.device("cuda:0")
+    else:
+        device = torch.device("cpu")
 
     # load data
     trainloader, testloader, train_len, test_len, test_ratio = load_data(args)
 
     # create model
-    model = create_model(args)
+    model = create_model(device)
+    model.to(device)
 
     # start training
-    threshold = train(args, model, trainloader)
+    threshold = train(args, model, device, trainloader)
     logging.info("threshold = %f" % threshold)
 
     # start test
-    precision = test(args, testloader, test_len, test_ratio)
+    precision = test(args, model, device, testloader, test_len, test_ratio)

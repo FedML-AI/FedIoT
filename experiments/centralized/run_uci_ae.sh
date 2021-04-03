@@ -1,5 +1,6 @@
 
-python3 ./main_uci.py \
+python3 ./main_uci_ae.py \
+  --device "cpu" \
   --lr 0.00001 \
   --epochs 50 \
   --batch_size 64

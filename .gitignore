@@ -3,3 +3,5 @@
 
 experiments/centralized/wandb
 experiments/centralized/wandb*
+
+*.pyc

@@ -1,4 +1,5 @@
-python3 ./main_vae.py \
+python3 ./main_uci_vae.py \
+  --device "cpu" \
   --lr 0.0001 \
   --epochs 100 \
   --batch_size 64
