@@ -143,12 +143,13 @@ def test(args, model, device, testloader, test_len, testratio):
         if idx > 16515:
             logging.info("idx = %d, mse = %f" % (idx, diff))
         if diff > threshold:
-            anmoaly.append(idx)
+            anomaly.append(idx)
     precision = (len(anomaly)/test_len)/testratio
     print('The accuracy is ', precision)
-
+    print('The length of the test set is ', test_len)
+    print('The number of the detected anomaly is ', len(anomaly))
     wandb.log({"Precision": precision})
-    return precision, len(anomaly)
+    return precision
 
 
 if __name__ == "__main__":
