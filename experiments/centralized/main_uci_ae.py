@@ -55,34 +55,38 @@ def add_args(parser):
 
 
 def load_data(args):
-    path_benin_traffic = args.data_dir + '/benign_traffic.csv'
-    path_ack_traffic = args.data_dir + '/ack.csv'
+    path_benin_traffic = args.data_dir + '/Danmini_Doorbell/doorbell_train_raw.csv'
+    path_ack_traffic = args.data_dir + '/Danmini_Doorbell/doorbell_test_raw.csv'
     logging.info(path_benin_traffic)
     logging.info(path_ack_traffic)
 
     db_benigh = pd.read_csv(path_benin_traffic)
     db_attack = pd.read_csv(path_ack_traffic)
-    # trainset = torch.Tensor(db_benigh)
-    # testset = torch.Tensor(db_attack[0:round(len(db_attack) * 0.2)])
-    # trainset = (trainset - trainset.mean()) / (trainset.std())
-    # testset = (testset - testset.mean()) / (testset.std())
-    # trainloader = torch.utils.data.DataLoader(trainset, batch_size=args.batch_size, shuffle=False, num_workers=0)
-    # testloader = torch.utils.data.DataLoader(testset, batch_size=1, shuffle=False, num_workers=0)
-    # return trainloader, testloader, len(trainset), len(testset)
-    trainset = db_benigh[0:round(len(db_benigh) * 0.8)]
-    test_benigh = db_benigh[round(len(db_benigh) * 0.9):len(db_benigh)]
-    test_attack = db_attack[round(len(db_attack) * 0.1):round(len(db_attack) * 0.2)]
-    testset = pd.concat([test_benigh, test_attack])
+    trainset = db_benigh
+    testset = db_attack
     trainset = (trainset - trainset.mean()) / (trainset.std())
     testset = (testset - testset.mean()) / (testset.std())
     trainset = np.array(trainset)
     testset = np.array(testset)
-    testset = torch.Tensor(testset)
-    trainset = torch.Tensor(trainset)
-    testratio = 1 - abs((round(len(db_benigh) * 0.9) - len(db_benigh)) / len(testset))
+    testset[np.isnan(testset)] = 0
+    testratio = 1 - 16515 / len(testset)
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=args.batch_size, shuffle=False, num_workers=0)
     testloader = torch.utils.data.DataLoader(testset, batch_size=1, shuffle=False, num_workers=0)
     return trainloader, testloader, len(trainset), len(testset), testratio
+    # trainset = db_benigh[0:round(len(db_benigh) * 0.8)]
+    # test_benigh = db_benigh[round(len(db_benigh) * 0.9):len(db_benigh)]
+    # test_attack = db_attack[round(len(db_attack) * 0.1):round(len(db_attack) * 0.2)]
+    # testset = pd.concat([test_benigh, test_attack])
+    # trainset = (trainset - trainset.mean()) / (trainset.std())
+    # testset = (testset - testset.mean()) / (testset.std())
+    # trainset = np.array(trainset)
+    # testset = np.array(testset)
+    # testset = torch.Tensor(testset)
+    # trainset = torch.Tensor(trainset)
+    # testratio = 1 - abs((round(len(db_benigh) * 0.9) - len(db_benigh)) / len(testset))
+    # trainloader = torch.utils.data.DataLoader(trainset, batch_size=args.batch_size, shuffle=False, num_workers=0)
+    # testloader = torch.utils.data.DataLoader(testset, batch_size=1, shuffle=False, num_workers=0)
+    # return trainloader, testloader, len(trainset), len(testset), testratio
 
 
 def create_model(args):
@@ -114,16 +118,19 @@ def train(args, model, device, trainloader):
     i = []
     model.eval()
     for idx, inp in enumerate(trainloader):
-        i.append(torch.sum(abs(model(inp) - inp)))
+        i.append(torch.sum(torch.square(inp - model(inp)))/115/args.batch_size)
+    i.sort()
+    len_i = len(i)
+    i = i[1:round(len_i * 0.95)]
     i = torch.tensor(i)
-    test = np.array(i)
-    plt.hist(test, bins='auto', density=True)
-    plt.show()
-    threshold = (torch.mean(i) + 1 * torch.std(i)) / args.batch_size
-    test = np.array(i)
-    plt.hist(test, bins='auto', density=True)
-    plt.show()
-    wandb.log({"threshold": threshold})
+    # test = np.array(i)
+    # plt.hist(test, bins='auto', density=True)
+    # plt.show()
+    threshold = (torch.mean(i) + 2 * torch.std(i))
+    logging.info("threshold = %d" % threshold)
+    # test = np.array(i)
+    # plt.hist(test, bins='auto', density=True)
+    # plt.show()
     return threshold
 
 
@@ -132,17 +139,14 @@ def test(args, model, device, testloader, test_len, testratio):
     anmoaly = []
     for idx, inp in enumerate(testloader):
         inp = inp.to(device)
-        decode = model(inp)
-        diff = torch.sum(abs(inp - decode))
+        diff = torch.sum(torch.square(inp - model(inp)))/115
+        if idx > 16515:
+            logging.info("idx = %d, mse = %f" % (idx, diff))
         if diff > threshold:
             anmoaly.append(idx)
-    an_ratio = (len(anmoaly) / test_len)
-    precision = 1 - (abs(an_ratio - testratio) / testratio)
+    precision = (len(anmoaly)/test_len)/testratio
     print('The accuracy is ', precision)
-    len(trainloader.dataset)
 
-    torch.save(model.state_dict(), "vae_v1.pth")
-    print("Saved PyTorch Model State to model.pth")
     wandb.log({"Precision": precision})
     return precision
 
