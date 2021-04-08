@@ -25,7 +25,7 @@ def add_args(parser):
     parser.add_argument('--data_dir', type=str, default='./../data/UCI-MLR',
                         help='data directory')
 
-    parser.add_argument('--client_num_in_total', type=int, default=10, metavar='NN',
+    parser.add_argument('--client_num_in_total', type=int, default=20, metavar='NN',
                         help='number of workers in a distributed cluster')
 
     parser.add_argument('--client_num_per_round', type=int, default=4, metavar='NN',
@@ -57,16 +57,17 @@ def load_data(args, train_file_name, test_file_name):
     logging.info(path_data_test)
     db_train = pd.read_csv(path_data_train)
     db_test = pd.read_csv(path_data_test)
-    db_train = (db_train - db_train.mean()) / (db_train.std())
-    db_test = (db_test - db_test.mean()) / (db_test.std())
+    # db_train = (db_train - db_train.mean()) / (db_train.std())
+    # db_test = (db_test - db_test.mean()) / (db_test.std())
     db_train = np.array(db_train)
     db_test = np.array(db_test)
-    db_test[np.isnan(db_test)] = 0
+    # db_test[np.isnan(db_test)] = 0
     trainset = db_train
     testset = db_test
     len_train = len(trainset)
     len_test = len(testset)
-    return len_train, len_test, trainset, testset
+    correct_ratio = 1 - (0.5*len_train)/len_test
+    return len_train, len_test, trainset, testset, correct_ratio
 
 
 def homo_partition_data(args, process_id, dataset):
@@ -84,7 +85,8 @@ def homo_partition_data(args, process_id, dataset):
 def local_dataloader(args, train_file_name, test_file_name, process_id):
     train_data_local_dict = dict()
     test_data_local_dict = dict()
-    train_data_num, test_data_num, train_data_global, test_data_global = load_data(args, train_file_name, test_file_name)
+    train_data_num, test_data_num, train_data_global, test_data_global, correct_ratio = load_data(args, train_file_name, test_file_name)
+
     dataidx_map_train, train_data_local_num_dict = homo_partition_data(args, process_id, train_data_global)
     dataidx_map_test, test_data_local_num_dict = homo_partition_data(args, process_id, test_data_global)
 
@@ -99,13 +101,13 @@ def local_dataloader(args, train_file_name, test_file_name, process_id):
     # for local test data
     for client_idx in range(args.client_num_in_total):
         data_local_test = test_data_global[dataidx_map_test[client_idx]]
-        test_data_local_dict[client_idx] = torch.utils.data.DataLoader(data_local_test, batch_size=args.batch_size,
+        test_data_local_dict[client_idx] = torch.utils.data.DataLoader(data_local_test, batch_size= 1,
                                                                         shuffle=False,
                                                                         num_workers=0)
         #logging.info("client_idx = %d, local_test_sample_number = %d" % (client_idx, test_data_local_num_dict[client_idx]))
 
     return train_data_num, test_data_num, train_data_global, test_data_global, \
-           train_data_local_num_dict, train_data_local_dict, test_data_local_dict
+           train_data_local_num_dict, train_data_local_dict, test_data_local_dict, correct_ratio
 
 
 if __name__ == "__main__":
@@ -119,7 +121,8 @@ if __name__ == "__main__":
     args = add_args(parser)
     logging.info(args)
 
-    dataset = local_dataloader(args,'benign_traffic.csv', 'ack.csv', 1)
+    dataset = local_dataloader(args,'/Danmini_Doorbell/doorbell_train_norm.csv', '/Danmini_Doorbell/doorbell_test_norm.csv', 1)
     [train_data_num, test_data_num, train_data_global, test_data_global,
-     train_data_local_num_dict, train_data_local_dict, test_data_local_dict] = dataset
-    logging.info(test_data_local_dict)
+     train_data_local_num_dict, train_data_local_dict, test_data_local_dict, correct_ratio] = dataset
+
+
