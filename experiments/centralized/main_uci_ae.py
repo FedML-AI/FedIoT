@@ -55,8 +55,8 @@ def add_args(parser):
 
 
 def load_data(args):
-    path_benin_traffic = args.data_dir + '/Danmini_Doorbell/doorbell_train_raw.csv'
-    path_ack_traffic = args.data_dir + '/Danmini_Doorbell/doorbell_test_raw.csv'
+    path_benin_traffic = args.data_dir + '/Danmini_Doorbell/Danmini_Doorbell_train_raw.csv'
+    path_ack_traffic = args.data_dir + '/Danmini_Doorbell/Danmini_Doorbell_test_raw.csv'
     logging.info(path_benin_traffic)
     logging.info(path_ack_traffic)
 
@@ -136,7 +136,7 @@ def train(args, model, device, trainloader):
 
 def test(args, model, device, testloader, test_len, testratio):
     model.eval()
-    anmoaly = []
+    anomaly = []
     for idx, inp in enumerate(testloader):
         inp = inp.to(device)
         diff = torch.sum(torch.square(inp - model(inp)))/115
@@ -144,11 +144,11 @@ def test(args, model, device, testloader, test_len, testratio):
             logging.info("idx = %d, mse = %f" % (idx, diff))
         if diff > threshold:
             anmoaly.append(idx)
-    precision = (len(anmoaly)/test_len)/testratio
+    precision = (len(anomaly)/test_len)/testratio
     print('The accuracy is ', precision)
 
     wandb.log({"Precision": precision})
-    return precision
+    return precision, len(anomaly)
 
 
 if __name__ == "__main__":
