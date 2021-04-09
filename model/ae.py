@@ -6,29 +6,29 @@ class AutoEncoder(nn.Module):
         super(AutoEncoder, self).__init__()
         self.enc = nn.Sequential(
             nn.Linear(115, round(115*0.75)),
-            nn.ReLU(),
+            nn.Tanh(),
             nn.Dropout(p = 0.1),
             nn.Linear(round(115*0.75), round(115*0.50)),
-            nn.ReLU(),
+            nn.Tanh(),
             nn.Dropout(p = 0.1),
             nn.Linear(round(115*0.50), round(115*0.33)),
-            nn.ReLU(),
+            nn.Tanh(),
             nn.Dropout(p = 0.1),
             nn.Linear(round(115*0.33), round(115*0.25)),
-            nn.ReLU()
+            nn.Tanh()
         )
         self.dec = nn.Sequential(
             nn.Linear(round(115*0.25), round(115*0.33)),
-            nn.ReLU(),
+            nn.Tanh(),
             nn.Dropout(p = 0.1),
             nn.Linear(round(115*0.33), round(115*0.50)),
-            nn.ReLU(),
+            nn.Tanh(),
             nn.Dropout(p = 0.1),
             nn.Linear(round(115*0.50), round(115*0.75)),
-            nn.ReLU(),
+            nn.Tanh(),
             nn.Dropout(p = 0.1),
             nn.Linear(round(115*0.75), 115),
-            nn.ReLU(),
+            nn.Tanh()
         )
     def forward(self, x):
         encode = self.enc(x)

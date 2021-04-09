@@ -55,8 +55,8 @@ def add_args(parser):
 
 
 def load_data(args):
-    path_benin_traffic = args.data_dir + '/Danmini_Doorbell/doorbell_train_raw.csv'
-    path_ack_traffic = args.data_dir + '/Danmini_Doorbell/doorbell_test_raw.csv'
+    path_benin_traffic = args.data_dir + '/Ennio_Doorbell/Ennio_Doorbell_raw.csv'
+    path_ack_traffic = args.data_dir + '/Ennio_Doorbell/Ennio_Doorbell_test_raw.csv'
     logging.info(path_benin_traffic)
     logging.info(path_ack_traffic)
 
@@ -69,10 +69,11 @@ def load_data(args):
     trainset = np.array(trainset)
     testset = np.array(testset)
     testset[np.isnan(testset)] = 0
-    testratio = 1 - 16515 / len(testset)
+    testratio = 1 - len(trainset) / (2 * len(testset))
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=args.batch_size, shuffle=False, num_workers=0)
+    trainloader_test = torch.utils.data.DataLoader(trainset, batch_size= 1, shuffle=False, num_workers=0)
     testloader = torch.utils.data.DataLoader(testset, batch_size=1, shuffle=False, num_workers=0)
-    return trainloader, testloader, len(trainset), len(testset), testratio
+    return trainloader, trainloader_test, testloader, len(trainset), len(testset), testratio
     # trainset = db_benigh[0:round(len(db_benigh) * 0.8)]
     # test_benigh = db_benigh[round(len(db_benigh) * 0.9):len(db_benigh)]
     # test_attack = db_attack[round(len(db_attack) * 0.1):round(len(db_attack) * 0.2)]
@@ -95,7 +96,7 @@ def create_model(args):
     return model
 
 
-def train(args, model, device, trainloader):
+def train(args, model, device, trainloader,trainloader_test):
     model.train()
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     loss_func = nn.MSELoss()
@@ -117,32 +118,37 @@ def train(args, model, device, trainloader):
 
     i = []
     model.eval()
-    for idx, inp in enumerate(trainloader):
-        i.append(torch.sum(torch.square(inp - model(inp)))/115/args.batch_size)
+    thres_func = nn.MSELoss()
+    for idx, inp in enumerate(trainloader_test):
+        i.append(thres_func(model(inp), inp))
+        #i.append(torch.sum(torch.square(inp - model(inp))/115/args.batch_size))
+        #i.append(torch.sqrt(torch.sum(torch.square(inp - model(inp))) / 115 / args.batch_size))
     i.sort()
     len_i = len(i)
-    i = i[1:round(len_i * 0.95)]
+    i = i[round(len_i * 0.00):round(len_i * 0.95)]
     i = torch.tensor(i)
     # test = np.array(i)
     # plt.hist(test, bins='auto', density=True)
     # plt.show()
-    threshold = (torch.mean(i) + 2 * torch.std(i))
-    logging.info("threshold = %d" % threshold)
+    threshold = (torch.mean(i) + 1 * torch.std(i))
+    threshold_lower = torch.min(i)
+    logging.info("threshold = %d, threshold lower = %f" % (threshold, threshold_lower))
     # test = np.array(i)
     # plt.hist(test, bins='auto', density=True)
     # plt.show()
-    return threshold
+    return threshold, threshold_lower
 
 
 def test(args, model, device, testloader, test_len, testratio):
     model.eval()
     anmoaly = []
+    thres_func = nn.MSELoss()
     for idx, inp in enumerate(testloader):
         inp = inp.to(device)
-        diff = torch.sum(torch.square(inp - model(inp)))/115
+        diff = thres_func(model(inp), inp)
         if idx > 16515:
             logging.info("idx = %d, mse = %f" % (idx, diff))
-        if diff > threshold:
+        if diff > threshold or diff < threshold_lower:
             anmoaly.append(idx)
     precision = (len(anmoaly)/test_len)/testratio
     print('The accuracy is ', precision)
@@ -175,15 +181,16 @@ if __name__ == "__main__":
         device = torch.device("cpu")
 
     # load data
-    trainloader, testloader, train_len, test_len, test_ratio = load_data(args)
+    trainloader, trainloader_test, testloader, train_len, test_len, test_ratio = load_data(args)
 
     # create model
     model = create_model(args)
     model.to(device)
 
     # start training
-    threshold = train(args, model, device, trainloader)
+    threshold, threshold_lower = train(args, model, device, trainloader,trainloader_test)
     logging.info("threshold = %f" % threshold)
+    wandb.log({"Threshold": threshold})
 
     # start test
     precision = test(args, model, device, testloader, test_len, test_ratio)

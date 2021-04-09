@@ -57,11 +57,11 @@ def load_data(args, train_file_name, test_file_name):
     logging.info(path_data_test)
     db_train = pd.read_csv(path_data_train)
     db_test = pd.read_csv(path_data_test)
-    # db_train = (db_train - db_train.mean()) / (db_train.std())
-    # db_test = (db_test - db_test.mean()) / (db_test.std())
+    db_train = (db_train - db_train.mean()) / (db_train.std())
+    db_test = (db_test - db_test.mean()) / (db_test.std())
     db_train = np.array(db_train)
     db_test = np.array(db_test)
-    # db_test[np.isnan(db_test)] = 0
+    db_test[np.isnan(db_test)] = 0
     trainset = db_train
     testset = db_test
     len_train = len(trainset)
