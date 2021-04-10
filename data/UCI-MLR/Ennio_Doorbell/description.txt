@@ -1,0 +1,18 @@
+##################samples from the Ennio Doorbell################
+
+(1) Training set: 39100 instances (the first 2/3 of the benign traffic samples)
+
+(2) Test set: 110931 instances(the rest samples from the benign set and all malicious samples)
+
+   * Details of the test set:
+
+    samples from gafgyt attacks:
+     (53014, 115) -- combo
+     (29797, 115) -- junk
+     (28120, 115) -- scan
+
+  For the test set:
+
+0 -- 53013: combo_gafgyt
+53014 -- 82810: junk_gafgyt
+82811 -- 110930: scan_gafgyt

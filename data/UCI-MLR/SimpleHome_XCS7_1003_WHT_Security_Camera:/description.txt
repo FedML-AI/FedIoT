@@ -1,0 +1,31 @@
+##################SimpleHome_1003_Security_Camera################
+
+(1) Training set: 19528 instances (benign traffic samples)
+
+(2) Test set: 630243 instances(malicious traffic samples)
+
+   * Details of the test set:
+
+    samples from gafgyt attacks:
+     (59398, 115) -- combo
+     (27413, 115) -- junk
+     (28572, 115) -- scan
+
+    samples from mirai attacks:
+     (107187, 115) -- ack
+     (43674, 115) -- scan
+     (122479, 115) -- syn
+     (157084, 115) --udp
+     (84436, 115) --udpplain
+  
+  For the test set:
+
+  0 -- 59397: combo_gafgyt attack samples
+  59398 -- 86810: junk_gafgyt attack samples
+  86811 -- 115382: scan_gafgyt attack samples
+
+  115383 -- 222569: ack_mirai attack samples
+  222570 -- 266243: scan_mirai attack samples
+  266244 --388722: syn_mirai attack samples
+  388723 -- 545806: udp_mirai attack samples
+  545807-- 630242： udpplain_mirai attack samples

@@ -1,0 +1,30 @@
+##################samples from the Ecobee Thermostat################
+
+(1) Training set: 13113 instances (the first 2/3 of the benign traffic samples)
+
+(2) Test set: 622951 instances(the rest samples from the benign set and all malicious samples)
+
+   * Details of the test set:
+
+    samples from gafgyt attacks:
+     (53012, 115) -- combo
+     (30312, 115) -- junk
+     (27494, 115) -- scan
+
+    samples from mirai attacks:
+     (113285, 115) -- ack
+     (43192, 115) -- scan
+     (116807, 115) -- syn
+     (151481, 115) --udp
+     (87368, 115) --udpplain
+  
+  For the test set:
+
+0 - 53011: combo_gafgyt attack samples
+53012 - 83323: junk_gafgyt attack samples
+83324 - 110817: scan_gafgyt attack samples
+110808 - 224102: ack_mirai attack samples
+224103 - 267294: scan_mirai attack samples
+267295- 384101: syn_mirai attack samples
+384102 - 535582: udp_mirai attack samples
+535583 - 622950: udpplain_mirai attack samples

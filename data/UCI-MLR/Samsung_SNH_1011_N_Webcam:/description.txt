@@ -1,0 +1,18 @@
+##################Samsung_SNH_Webcam################
+
+(1) Training set: 52150 instances (benign traffic samples)
+
+(2) Test set: 114672 instances(malicious traffic samples)
+
+   * Details of the test set:
+
+    samples from gafgyt attacks:
+     (58669, 115) -- combo
+     (28305, 115) -- junk
+     (27698, 115) -- scan
+
+  For the test set:
+
+  0 -- 58668: combo_gafgyt attack samples
+  58669 -- 86973: junk_gafgyt attack samples
+  86974 -- 114671: scan_gafgyt attack samples

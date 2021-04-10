@@ -1,0 +1,31 @@
+##################samples from the Philips Baby Monitor################
+
+(1) Training set: 175240 instances (benign traffic samples)
+
+(2) Test set: 725074 instances(malicious traffic samples)
+
+   * Details of the test set:
+
+    samples from gafgyt attacks:
+     (58152, 115) -- combo
+     (28349, 115) -- junk
+     (27859, 115) -- scan
+
+    samples from mirai attacks:
+     (91123, 115) -- ack
+     (103621, 115) -- scan
+     (118128, 115) -- syn
+     (217034, 115) --udp
+     (80808, 115) --udpplain
+  
+  For the test set:
+
+  0 -- 58151: combo_gafgyt attack samples
+  58152 -- 86500: junk_gafgyt attack samples
+  86501 -- 114359: scan_gafgyt attack samples
+
+  114360 -- 205482: ack_mirai attack samples
+  205483 -- 309103: scan_mirai attack samples
+  309104 -- 427231: syn_mirai attack samples
+  427232 -- 644265: udp_mirai attack samples
+  644266 -- 725073: udpplain_mirai attack samples

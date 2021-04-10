@@ -1,0 +1,31 @@
+##################Provision_838_Security_Camera################
+
+(1) Training set: 98514 instances (benign traffic samples)
+
+(2) Test set: 544332 instances(malicious traffic samples)
+
+   * Details of the test set:
+
+    samples from gafgyt attacks:
+     (57530, 115) -- combo
+     (29068, 115) -- junk
+     (28397, 115) -- scan
+
+    samples from mirai attacks:
+     (57997, 115) -- ack
+     (97096, 115) -- scan
+     (61851, 115) -- syn
+     (158608, 115) --udp
+     (53785, 115) --udpplain
+  
+  For the test set:
+
+  0 -- 57529: combo_gafgyt attack samples
+  57530 -- 86597: junk_gafgyt attack samples
+  86598 -- 114994: scan_gafgyt attack samples
+
+  114995-- 172991: ack_mirai attack samples
+  172992 -- 270087: scan_mirai attack samples
+  270088 -- 331938: syn_mirai attack samples
+  331939 -- 490546: udp_mirai attack samples
+  490547 -- 544331： udpplain_mirai attack samples
