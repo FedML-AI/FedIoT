@@ -55,25 +55,28 @@ def add_args(parser):
 
 
 def load_data(args):
-    path_benin_traffic = args.data_dir + '/Ennio_Doorbell/Ennio_Doorbell_raw.csv'
-    path_ack_traffic = args.data_dir + '/Ennio_Doorbell/Ennio_Doorbell_test_raw.csv'
+    path_benin_traffic = args.data_dir + '/Danmini_Doorbell/Danmini_Doorbell_benign_raw.csv'
+    path_ack_traffic = args.data_dir + '/Danmini_Doorbell/Danmini_Doorbell_atk_raw.csv'
     logging.info(path_benin_traffic)
     logging.info(path_ack_traffic)
 
-    db_benigh = pd.read_csv(path_benin_traffic)
+    db_benign = pd.read_csv(path_benin_traffic)
     db_attack = pd.read_csv(path_ack_traffic)
-    trainset = db_benigh
-    testset = db_attack
-    trainset = (trainset - trainset.mean()) / (trainset.std())
-    testset = (testset - testset.mean()) / (testset.std())
+    db_benign = (db_benign - db_benign.mean()) / (db_benign.std())
+    db_attack = (db_attack - db_attack.mean()) / (db_attack.std())
+    db_benign[np.isnan(db_benign)] = 0
+    db_attack[np.isnan(db_attack)] = 0
+    trainset = db_benign[0:round(len(db_benign) * 0.67)]
+    optset = db_benign[round(len(db_benign) * 0.67):len(db_benign)]
+    testset = pd.concat([db_benign[round(len(db_benign) * 0.67):len(db_benign)], db_attack])
     trainset = np.array(trainset)
+    optset = np.array(optset)
     testset = np.array(testset)
-    testset[np.isnan(testset)] = 0
     testratio = 1 - len(trainset) / (2 * len(testset))
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=args.batch_size, shuffle=False, num_workers=0)
-    trainloader_test = torch.utils.data.DataLoader(trainset, batch_size= 1, shuffle=False, num_workers=0)
+    optloader = torch.utils.data.DataLoader(optset, batch_size= args.batch_size, shuffle=False, num_workers=0)
     testloader = torch.utils.data.DataLoader(testset, batch_size=1, shuffle=False, num_workers=0)
-    return trainloader, trainloader_test, testloader, len(trainset), len(testset), testratio
+    return trainloader, testloader, optloader, len(trainset), len(testset), testratio
     # trainset = db_benigh[0:round(len(db_benigh) * 0.8)]
     # test_benigh = db_benigh[round(len(db_benigh) * 0.9):len(db_benigh)]
     # test_attack = db_attack[round(len(db_attack) * 0.1):round(len(db_attack) * 0.2)]
@@ -96,10 +99,11 @@ def create_model(args):
     return model
 
 
-def train(args, model, device, trainloader,trainloader_test):
+def train(args, model, device, trainloader, optloader):
     model.train()
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     loss_func = nn.MSELoss()
+    #model training
     for epoch in range(args.epochs):
 
         # mini- batch loop
@@ -116,27 +120,28 @@ def train(args, model, device, trainloader,trainloader_test):
         wandb.log({"loss": epoch_loss, "epoch": epoch})
     logging.info("batch size = %d" % args.batch_size)
 
+    #threshold selecting
     i = []
     model.eval()
     thres_func = nn.MSELoss()
-    for idx, inp in enumerate(trainloader_test):
-        i.append(thres_func(model(inp), inp))
-        #i.append(torch.sum(torch.square(inp - model(inp))/115/args.batch_size))
-        #i.append(torch.sqrt(torch.sum(torch.square(inp - model(inp))) / 115 / args.batch_size))
+    for idx, inp in enumerate(optloader):
+        mse_tr = thres_func(model(inp), inp)
+        i.append(mse_tr.item())
+        # i.append(torch.sum(torch.square(inp - model(inp))/115/args.batch_size))
+        # i.append(torch.sqrt(torch.sum(torch.square(inp - model(inp))) / 115 / args.batch_size))
     i.sort()
     len_i = len(i)
-    i = i[round(len_i * 0.00):round(len_i * 0.95)]
+    i = i[round(len_i * 0.00):round(len_i * 0.90)]
     i = torch.tensor(i)
     # test = np.array(i)
     # plt.hist(test, bins='auto', density=True)
     # plt.show()
-    threshold = (torch.mean(i) + 1 * torch.std(i))
-    threshold_lower = torch.min(i)
-    logging.info("threshold = %d, threshold lower = %f" % (threshold, threshold_lower))
+    threshold = (torch.mean(i) + 1 * torch.std(i) / np.sqrt(args.batch_size))
+    logging.info("threshold = %d" % threshold)
     # test = np.array(i)
     # plt.hist(test, bins='auto', density=True)
     # plt.show()
-    return threshold, threshold_lower
+    return threshold
 
 
 def test(args, model, device, testloader, test_len, testratio):
@@ -146,19 +151,25 @@ def test(args, model, device, testloader, test_len, testratio):
     for idx, inp in enumerate(testloader):
         inp = inp.to(device)
         diff = thres_func(model(inp), inp)
-        if idx > 16515:
+        mse = diff.item()
+        if idx > 10000:
             logging.info("idx = %d, mse = %f" % (idx, diff))
-        if diff > threshold or diff < threshold_lower:
+        if mse > threshold:
             anmoaly.append(idx)
-    precision = (len(anmoaly)/test_len)/testratio
-    print('The accuracy is ', precision)
+        # else:
+        #     logging.info("idx = %d, mse = %f" % (idx, diff))
 
+    precision = (len(anmoaly) / test_len) / testratio
+    print('The accuracy is ', precision)
+    print('The length of the test set is ', test_len)
+    print('The number of the detected anomaly is ', len(anmoaly))
     wandb.log({"Precision": precision})
     return precision
 
 
 if __name__ == "__main__":
     # logging.basicConfig(level=logging.INFO,
+
     logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
                         datefmt='%a, %d %b %Y %H:%M:%S')
@@ -181,14 +192,14 @@ if __name__ == "__main__":
         device = torch.device("cpu")
 
     # load data
-    trainloader, trainloader_test, testloader, train_len, test_len, test_ratio = load_data(args)
+    trainloader, testloader, optloader, train_len, test_len, test_ratio = load_data(args)
 
     # create model
     model = create_model(args)
     model.to(device)
 
     # start training
-    threshold, threshold_lower = train(args, model, device, trainloader,trainloader_test)
+    threshold = train(args, model, device, trainloader, optloader)
     logging.info("threshold = %f" % threshold)
     wandb.log({"Threshold": threshold})
 
