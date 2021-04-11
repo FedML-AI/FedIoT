@@ -82,6 +82,6 @@ Threshold: 0.02576 / 90% length
 
 Accuracy: 1.0045
 Test length: 4883916
-Detected Anomaly Number: 471862
+Detected Anomaly Number: 4718612
 Threshold: 0.25706 / 90% length
 
