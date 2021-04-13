@@ -6,7 +6,7 @@ pip install --upgrade wandb
 wandb login ee0b5f53d949c84cee7decbe7a629e63fb2f8408
 ```
 
-Apr 10's update on Centralized Training:
+## Apr 10's update on Centralized Training:
 
 We train the 9 device sepreately and split each datasets into trainset, optimization set and test set. 
 Trainset is made by 2/3 benign data; optimization set is made by the rest benign data, and test set is made by optimization set combined with all attack data.
@@ -77,4 +77,11 @@ Accuracy: 1.0015
 Test length: 636687
 Detected Anomaly Number: 641149
 Threshold: 0.02576 / 90% length
+
+## Apr 11's update on centralized training using the unified dataset
+
+Accuracy: 1.0045
+Test length: 4883916
+Detected Anomaly Number: 4718612
+Threshold: 0.25706 / 90% length
 
