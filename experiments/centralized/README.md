@@ -100,7 +100,7 @@ TP: 770487
 FN: 0
 Accuracy: 0.9946
 Precision: 0.9945
-FPR: 0.2576
+FPR: 0.2576 / 90% length
 
 (2) Ecobee_Thermostat
 
@@ -111,7 +111,7 @@ TP: 622884
 FN: 0
 Accuracy: 0.9981
 Precision: 0.9981
-FPR: 0.2729
+FPR: 0.2729 / 90% length
 
 (3) Ennio_Doorbell   
 
@@ -122,7 +122,7 @@ TP: 110735
 FN: 0
 Accuracy: 0.9756
 Precision: 0.9733
-FPR: 0.2312
+FPR: 0.2312 / 90% length
 
 (4) Philips_Baby_Monitor
 
@@ -133,7 +133,7 @@ TP: 724197
 FN: 0
 Accuracy: 0.9781
 Precision: 0.9769
-FPR: 0.2920
+FPR: 0.2920 / 90% length
 
 (5) Provision_737E_Sevcurity_Camera
 
@@ -144,7 +144,7 @@ TP: 557274
 FN: 0
 Accuracy: 0.9894
 Precision: 0.9891
-FPR: 0.2944
+FPR: 0.2944 / 90% length
 
 (6) Provision_838_Sevcurity_Camera
 
@@ -155,7 +155,7 @@ TP: 543839
 FN: 0
 Accuracy: 0.9780
 Precision: 0.9771
-FPR: 0.3855
+FPR: 0.3855 / 90% length
 
 (7) Samsung_SNH_Webcam
 
@@ -166,7 +166,7 @@ TP: 114411
 FN: 0
 Accuracy: 0.9706
 Precision: 0.9672
-FPR: 0.2221
+FPR: 0.2221 / 90% length
 
 (8) SimpleHome_1002_Security_Camera
 
@@ -177,7 +177,7 @@ TP: 623701
 FN: 0
 Accuracy: 0.9942
 Precision: 0.9941
-FPR: 0.2375
+FPR: 0.2375 / 90% length
 
 (9) SimpleHome_1003_Security_Camera
 
@@ -188,4 +188,4 @@ TP: 630144
 FN: 0
 Accuracy: 0.9980
 Precision: 0.9980
-FPR: 0.1935
+FPR: 0.1935 / 90% length
