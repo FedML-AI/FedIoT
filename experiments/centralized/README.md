@@ -189,3 +189,44 @@ FN: 0
 Accuracy: 0.9980
 Precision: 0.9980
 FPR: 0.1935 / 90% length
+
+## Apr 13's update on centralized training using the 9 saparated datasets (unfinished)
+We remain the whole original data as the input instead of eliminating the largest 10% MSE
+
+(1) Danmini Doorbell
+Threshold 0.35605
+Accuracy 0.999215
+Precision  0.999198
+False Positive Rate 0.03723 / 100% length (v.s. 0.257606 in 90% length )
+
+(2) Ecobee_Thermostat
+Threshold 0.105233
+Accuracy 0.99894
+Precision 0.99893
+False Positive Rate 0.15134 / 100% length (v.s. 0.27287 in 90% length )
+
+(3) Ennio Doorbell
+Threshold 0.12339
+Accuracy 0.99409
+Precision 0.99343
+False Positive Rate 0.05588 / 100% length (v.s. 0.23124 in 90% length )
+
+(4) Philips_Baby_Monitor
+Threshold 0.103674
+Accuracy 0.99272
+Precision 0.99219
+False Positive Rate 0.097077 / 100% length (v.s. 0.29206 in 90% length )
+
+(5) Provision_737E_Sevcurity_Camera
+Threshold 0.04451
+Accuracy 0.997538
+Precision 0.99745
+False Positive Rate 0.06834 / 100% length (v.s. 0.2944 in 90% length )
+
+(6) Provision_838_Sevcurity_Camera
+Threshold 0.04382
+Accuracy 0.9957
+Precision 0.9954
+False Positive Rate: 0.07593 / 100% length (v.s. 0.38548 in 90% length )
+
+
