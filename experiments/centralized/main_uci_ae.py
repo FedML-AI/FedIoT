@@ -73,10 +73,11 @@ def load_data(args):
     optset = np.array(optset)
     testset = np.array(testset)
     testratio = 1 - len(trainset) / (2 * len(testset))
+    test_tr = len(trainset) * 0.5
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=args.batch_size, shuffle=False, num_workers=0)
     optloader = torch.utils.data.DataLoader(optset, batch_size= args.batch_size, shuffle=False, num_workers=0)
     testloader = torch.utils.data.DataLoader(testset, batch_size=1, shuffle=False, num_workers=0)
-    return trainloader, testloader, optloader, len(trainset), len(testset), testratio
+    return trainloader, testloader, optloader, len(trainset), len(testset), testratio, test_tr
     # trainset = db_benigh[0:round(len(db_benigh) * 0.8)]
     # test_benigh = db_benigh[round(len(db_benigh) * 0.9):len(db_benigh)]
     # test_attack = db_attack[round(len(db_attack) * 0.1):round(len(db_attack) * 0.2)]
@@ -144,27 +145,56 @@ def train(args, model, device, trainloader, optloader):
     return threshold
 
 
-def test(args, model, device, testloader, test_len, testratio):
+def test(args, model, device, testloader, test_len, testratio, test_tr):
     model.eval()
-    anmoaly = []
+
+    true_negative = []
+    false_positive = []
+    true_positive = []
+    false_negative = []
+
     thres_func = nn.MSELoss()
     for idx, inp in enumerate(testloader):
         inp = inp.to(device)
         diff = thres_func(model(inp), inp)
         mse = diff.item()
-        if idx > 10000:
-            logging.info("idx = %d, mse = %f" % (idx, diff))
-        if mse > threshold:
-            anmoaly.append(idx)
+        logging.info("idx is %d, mse is %f" %(idx, mse))
+        if idx <= test_tr:
+            if mse > threshold:
+                false_positive.append(idx)
+            else:
+                true_negative.append(idx)
+        else:
+            if mse > threshold:
+                true_positive.append(idx)
+            else:
+                false_negative.append(idx)
+        # if idx > 10000:
+        #     logging.info("idx = %d, mse = %f" % (idx, diff))
+        # if mse > threshold:
+        #     anmoaly.append(idx)
         # else:
         #     logging.info("idx = %d, mse = %f" % (idx, diff))
 
-    precision = (len(anmoaly) / test_len) / testratio
-    print('The accuracy is ', precision)
-    print('The length of the test set is ', test_len)
-    print('The number of the detected anomaly is ', len(anmoaly))
-    wandb.log({"Precision": precision})
-    return precision
+    accuracy = (len(true_positive) + len(true_negative)) \
+                / (len(true_positive) + len(true_negative) + len(false_positive) + len(false_negative))
+    precision = len(true_positive) / (len(true_positive) + len(false_positive))
+    false_positive_rate = len(false_positive) / (len(false_positive) + len(true_negative))
+
+    print('The True negative number is ', len(true_negative))
+    print('The False positive number is ', len(false_positive))
+    print('The True positive number is ', len(true_positive))
+    print('The False negative number is ', len(false_negative))
+
+    print('The accuracy is ', accuracy)
+    print('The precision is ', precision)
+    print('The false positive rate is ', false_positive_rate)
+
+    wandb.log({"accuracy": precision})
+    wandb.log({"precision": precision})
+    wandb.log({"false positive rate": precision})
+
+    return accuracy, precision, false_positive_rate
 
 
 if __name__ == "__main__":
@@ -192,7 +222,7 @@ if __name__ == "__main__":
         device = torch.device("cpu")
 
     # load data
-    trainloader, testloader, optloader, train_len, test_len, test_ratio = load_data(args)
+    trainloader, testloader, optloader, train_len, test_len, test_ratio, test_tr = load_data(args)
 
     # create model
     model = create_model(args)
@@ -204,4 +234,4 @@ if __name__ == "__main__":
     wandb.log({"Threshold": threshold})
 
     # start test
-    precision = test(args, model, device, testloader, test_len, test_ratio)
+    accuracy, precision, false_positive_rate = test(args, model, device, testloader, test_len, test_ratio, test_tr)
