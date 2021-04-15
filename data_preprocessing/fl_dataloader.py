@@ -25,13 +25,13 @@ def add_args(parser):
     parser.add_argument('--data_dir', type=str, default='./../data/UCI-MLR',
                         help='data directory')
 
-    parser.add_argument('--client_num_in_total', type=int, default=20, metavar='NN',
+    parser.add_argument('--client_num_in_total', type=int, default=9, metavar='NN',
                         help='number of workers in a distributed cluster')
 
     parser.add_argument('--client_num_per_round', type=int, default=4, metavar='NN',
                         help='number of workers')
 
-    parser.add_argument('--batch_size', type=int, default=32, metavar='N',
+    parser.add_argument('--batch_size', type=int, default=64, metavar='N',
                         help='input batch size for training (default: 64)')
 
     parser.add_argument('--client_optimizer', type=str, default='adam',
@@ -56,52 +56,75 @@ def load_data(args, benign_file_name, attack_file_name):
     logging.info(path_benin_traffic)
     logging.info(path_ack_traffic)
 
-
     db_benign = pd.read_csv(path_benin_traffic)
     db_attack = pd.read_csv(path_ack_traffic)
     db_benign = (db_benign - db_benign.mean()) / (db_benign.std())
     db_attack = (db_attack - db_attack.mean()) / (db_attack.std())
-    trainset = db_benign[0:round(len(db_benign) * 0.67)]
-    optset = db_benign[round(len(db_benign) * 0.67):len(db_benign)]
-    testset = pd.concat([db_benign[round(len(db_benign) * 0.67):len(db_benign)], db_attack])
-    trainset = np.array(trainset)
-    optset = np.array(optset)
-    testset = np.array(testset)
+
+    trainset = np.array(db_benign)
+    testset = np.array(db_attack)
     trainset[np.isnan(trainset)] = 0
-    optset[np.isnan(optset)] = 0
     trainset[np.isnan(trainset)] = 0
 
     len_train = len(trainset)
     len_test = len(testset)
-    correct_ratio = 1 - len(trainset) / (2 * len(testset))
-    # trainloader = torch.utils.data.DataLoader(trainset, batch_size=args.batch_size, shuffle=False, num_workers=0)
-    # optloader = torch.utils.data.DataLoader(optset, batch_size=args.batch_size, shuffle=False, num_workers=0)
-    # testloader = torch.utils.data.DataLoader(testset, batch_size=1, shuffle=False, num_workers=0)
-    return len_train, len_test, trainset, testset, optset, correct_ratio
+    logging.info('Origin csv data is loaded, waiting for partition')
+    return len_train, len_test, trainset, testset
 
 
-def homo_partition_data(args, process_id, dataset):
+def homo_partition_data(args, process_id, benign_data, attack_data):
+    device_num = 9
     if process_id == 0:  # for centralized training
-        return dataset
+        return benign_data, attack_data
     else:
-        total_num = len(dataset)
-        idxs = list(range(total_num))
-        batch_idxs = np.array_split(idxs, args.client_num_in_total)
-        net_dataidx_map = {i: batch_idxs[i] for i in range(args.client_num_in_total)}
-        train_data_local_num_dict = {i: len(batch_idxs[i]) for i in range(args.client_num_in_total)}
-    return net_dataidx_map, train_data_local_num_dict
+        # For benign set
+        ## records the range of idxs for each device
+        benign_split_list = [0, 49548, 62661, 101761, 277001, 339155, 437669, 489819, 536404, 555932]
+        ## records the number of samples of each device
+        benign_len = [49548, 13113, 39100, 175240, 62154, 98514, 52150, 46585, 19528]
+
+        # For attack set
+        ## records the range of idxs for each device
+        attack_split_list = [0, 770735, 1393686, 1504617, 2229691, 2787276, 3331608, 3446280, 4070215, 4700458]
+
+        # training and opt data are from the unified benign dataset
+        train_dataidx_map = {}
+        opt_dataidx_map = {}
+        attack_dataidx_map = {}
+
+        # loop for 9 devices
+        for i in range(device_num):
+            # index range for train
+            benign_idxs = list(np.arange(benign_split_list[i], benign_split_list[i + 1]))
+            # separate train range and opt range
+            train_dataidx_map[i] = benign_idxs[: round(2 / 3 * benign_len[i])]
+            opt_dataidx_map[i] = benign_idxs[round(2 / 3 * benign_len[i]):]
+            # index range for attack
+            attack_idxs = list(np.arange(attack_split_list[i], attack_split_list[i + 1]))
+            attack_dataidx_map[i] = attack_idxs
+        # record the number of samples
+        train_data_local_num_dict = {i: len(train_dataidx_map[i]) for i in range(device_num)}
+        opt_data_local_num_dict = {i: len(opt_dataidx_map[i]) for i in range(device_num)}
+        attack_data_local_num_dict = {i: len(attack_dataidx_map[i]) for i in range(device_num)}
+
+    logging.info('Partition is completed, waiting for input')
+    return train_dataidx_map, train_data_local_num_dict, opt_dataidx_map, \
+           opt_data_local_num_dict, attack_dataidx_map, attack_data_local_num_dict
 
 
 def local_dataloader(args, benign_file_name, attack_file_name, process_id):
+    # Dict: records dataloaders for each devices
     train_data_local_dict = dict()
     test_data_local_dict = dict()
     opt_data_local_dict = dict()
-    train_data_num, test_data_num, train_data_global, test_data_global, opt_data_global, correct_ratio \
+
+    # get training and test set
+    train_data_num, test_data_num, train_data_global, test_data_global \
         = load_data(args, benign_file_name, attack_file_name)
 
-    dataidx_map_train, train_data_local_num_dict = homo_partition_data(args, process_id, train_data_global)
-    dataidx_map_test, test_data_local_num_dict = homo_partition_data(args, process_id, test_data_global)
-    dataidx_map_opt, opt_data_local_num_dict = homo_partition_data(args, process_id, opt_data_global)
+    dataidx_map_train, train_data_local_num_dict, dataidx_map_opt, opt_data_local_num_dict, \
+    dataidx_map_attack, attack_data_local_num_dict = homo_partition_data(args, process_id, \
+                                                                         train_data_global, test_data_global)
 
     # for local train data
     for client_idx in range(args.client_num_in_total):
@@ -109,25 +132,30 @@ def local_dataloader(args, benign_file_name, attack_file_name, process_id):
         train_data_local_dict[client_idx] = torch.utils.data.DataLoader(data_local_train, batch_size=args.batch_size,
                                                                         shuffle=False,
                                                                         num_workers=0)
-        #logging.info("client_idx = %d, local_train_sample_number = %d" % (client_idx, train_data_local_num_dict[client_idx]))
+        logging.info(
+            "client_idx = %d, local_train_sample_number = %d" % (client_idx, train_data_local_num_dict[client_idx]))
 
-    # for local test data
+    # for local opt and test data
     for client_idx in range(args.client_num_in_total):
-        data_local_test = test_data_global[dataidx_map_test[client_idx]]
-        test_data_local_dict[client_idx] = torch.utils.data.DataLoader(data_local_test, batch_size= 1,
-                                                                        shuffle=False,
-                                                                        num_workers=0)
-        #logging.info("client_idx = %d, local_test_sample_number = %d" % (client_idx, test_data_local_num_dict[client_idx]))
+        data_local_attack = test_data_global[dataidx_map_attack[client_idx]]
+        data_local_opt = train_data_global[dataidx_map_opt[client_idx]]
+        data_local_test = np.concatenate((data_local_opt, data_local_attack), axis=0)
 
-    # for local opt data
-    for client_idx in range(args.client_num_in_total):
-        data_local_opt = opt_data_global[dataidx_map_opt[client_idx]]
+        test_data_local_dict[client_idx] = torch.utils.data.DataLoader(data_local_test, batch_size=1,
+                                                                       shuffle=False,
+                                                                       num_workers=0)
         opt_data_local_dict[client_idx] = torch.utils.data.DataLoader(data_local_opt, batch_size=args.batch_size,
-                                                                        shuffle=False,
-                                                                        num_workers=0)
+                                                                      shuffle=False,
+                                                                      num_workers=0)
+        logging.info(
+            "client_idx = %d, local_opt_sample_number = %d" % (client_idx, opt_data_local_num_dict[client_idx]))
 
-    return train_data_num, test_data_num, train_data_global, test_data_global, opt_data_global, \
-           train_data_local_num_dict, train_data_local_dict, test_data_local_dict, opt_data_local_dict, correct_ratio
+        logging.info("true local test sample number = %d, real local_test_sample_number = %d" % (opt_data_local_num_dict[client_idx] +
+                                                                                                 attack_data_local_num_dict[client_idx],\
+                                                                                                 len(data_local_test)))
+
+    return train_data_num, test_data_num, train_data_global, test_data_global, \
+           train_data_local_num_dict, train_data_local_dict, test_data_local_dict, opt_data_local_dict
 
 
 if __name__ == "__main__":
@@ -141,8 +169,8 @@ if __name__ == "__main__":
     args = add_args(parser)
     logging.info(args)
 
-    dataset = local_dataloader(args,'/Danmini_Doorbell/Danmini_Doorbell_benign_raw.csv', '/Danmini_Doorbell/Danmini_Doorbell_atk_raw.csv', 1)
-    [train_data_num, test_data_num, train_data_global, test_data_global, opt_data_global,
-     train_data_local_num_dict, train_data_local_dict, test_data_local_dict, opt_data_local_dict, correct_ratio] = dataset
-
-
+    dataset = local_dataloader(args, '/federated_learning_data/train_unified.csv',
+                               '/federated_learning_data/test_unified.csv', 1)
+    [train_data_num, test_data_num, train_data_global, test_data_global,
+     train_data_local_num_dict, train_data_local_dict, test_data_local_dict, opt_data_local_dict
+     ] = dataset
