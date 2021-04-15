@@ -55,8 +55,8 @@ def add_args(parser):
 
 
 def load_data(args):
-    path_benin_traffic = args.data_dir + '/Danmini_Doorbell/Danmini_Doorbell_benign_raw.csv'
-    path_ack_traffic = args.data_dir + '/Danmini_Doorbell/Danmini_Doorbell_atk_raw.csv'
+    path_benin_traffic = args.data_dir + '/Ennio_Doorbell/Ennio_Doorbell_benign_raw.csv'
+    path_ack_traffic = args.data_dir + '/Ennio_Doorbell/Ennio_Doorbell_atk_raw.csv'
     logging.info(path_benin_traffic)
     logging.info(path_ack_traffic)
 
@@ -77,6 +77,7 @@ def load_data(args):
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=args.batch_size, shuffle=False, num_workers=0)
     optloader = torch.utils.data.DataLoader(optset, batch_size= args.batch_size, shuffle=False, num_workers=0)
     testloader = torch.utils.data.DataLoader(testset, batch_size=1, shuffle=False, num_workers=0)
+    logging.info('train length is %d, test_tr is %f' %(len(trainset),test_tr))
     return trainloader, testloader, optloader, len(trainset), len(testset), testratio, test_tr
     # trainset = db_benigh[0:round(len(db_benigh) * 0.8)]
     # test_benigh = db_benigh[round(len(db_benigh) * 0.9):len(db_benigh)]
@@ -132,7 +133,7 @@ def train(args, model, device, trainloader, optloader):
         # i.append(torch.sqrt(torch.sum(torch.square(inp - model(inp))) / 115 / args.batch_size))
     i.sort()
     len_i = len(i)
-    i = i[round(len_i * 0.00):round(len_i * 0.90)]
+    i = i[round(len_i * 0.00):round(len_i * 1)]
     i = torch.tensor(i)
     # test = np.array(i)
     # plt.hist(test, bins='auto', density=True)
@@ -190,9 +191,9 @@ def test(args, model, device, testloader, test_len, testratio, test_tr):
     print('The precision is ', precision)
     print('The false positive rate is ', false_positive_rate)
 
-    wandb.log({"accuracy": precision})
+    wandb.log({"accuracy": accuracy})
     wandb.log({"precision": precision})
-    wandb.log({"false positive rate": precision})
+    wandb.log({"false positive rate": false_positive_rate})
 
     return accuracy, precision, false_positive_rate
 
