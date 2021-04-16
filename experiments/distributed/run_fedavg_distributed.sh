@@ -22,4 +22,4 @@ mpirun -np $PROCESS_NUM -hostfile ./mpi_host_file python3 ./main_uci_vae.py \
   --comm_round $ROUND \
   --epochs $EPOCH \
   --batch_size $BATCH_SIZE \
-  --lr $LR \
+  --lr $LR

@@ -97,32 +97,32 @@ def homo_partition_data(args, process_id, benign_data, attack_data):
             # index range for train
             benign_idxs = list(np.arange(benign_split_list[i], benign_split_list[i + 1]))
             # separate train range and opt range
-            train_dataidx_map[i] = benign_idxs[: round(2 / 3 * benign_len[i])]
+            train_dataidx_map[i] = benign_idxs
             opt_dataidx_map[i] = benign_idxs[round(2 / 3 * benign_len[i]):]
             # index range for attack
             attack_idxs = list(np.arange(attack_split_list[i], attack_split_list[i + 1]))
             attack_dataidx_map[i] = attack_idxs
         # record the number of samples
         train_data_local_num_dict = {i: len(train_dataidx_map[i]) for i in range(device_num)}
-        opt_data_local_num_dict = {i: len(opt_dataidx_map[i]) for i in range(device_num)}
+        #opt_data_local_num_dict = {i: len(opt_dataidx_map[i]) for i in range(device_num)}
         attack_data_local_num_dict = {i: len(attack_dataidx_map[i]) for i in range(device_num)}
 
     logging.info('Partition is completed, waiting for input')
-    return train_dataidx_map, train_data_local_num_dict, opt_dataidx_map, \
-           opt_data_local_num_dict, attack_dataidx_map, attack_data_local_num_dict
+    return train_dataidx_map, train_data_local_num_dict, opt_dataidx_map,\
+           attack_dataidx_map, attack_data_local_num_dict
 
 
 def local_dataloader(args, benign_file_name, attack_file_name, process_id):
     # Dict: records dataloaders for each devices
     train_data_local_dict = dict()
     test_data_local_dict = dict()
-    opt_data_local_dict = dict()
+    #opt_data_local_dict = dict()
 
     # get training and test set
     train_data_num, test_data_num, train_data_global, test_data_global \
         = load_data(args, benign_file_name, attack_file_name)
 
-    dataidx_map_train, train_data_local_num_dict, dataidx_map_opt, opt_data_local_num_dict, \
+    dataidx_map_train, train_data_local_num_dict, opt_dataidx_map,\
     dataidx_map_attack, attack_data_local_num_dict = homo_partition_data(args, process_id, \
                                                                          train_data_global, test_data_global)
 
@@ -138,24 +138,19 @@ def local_dataloader(args, benign_file_name, attack_file_name, process_id):
     # for local opt and test data
     for client_idx in range(args.client_num_in_total):
         data_local_attack = test_data_global[dataidx_map_attack[client_idx]]
-        data_local_opt = train_data_global[dataidx_map_opt[client_idx]]
+        data_local_opt = train_data_global[opt_dataidx_map[client_idx]]
         data_local_test = np.concatenate((data_local_opt, data_local_attack), axis=0)
 
         test_data_local_dict[client_idx] = torch.utils.data.DataLoader(data_local_test, batch_size=1,
                                                                        shuffle=False,
                                                                        num_workers=0)
-        opt_data_local_dict[client_idx] = torch.utils.data.DataLoader(data_local_opt, batch_size=args.batch_size,
-                                                                      shuffle=False,
-                                                                      num_workers=0)
-        logging.info(
-            "client_idx = %d, local_opt_sample_number = %d" % (client_idx, opt_data_local_num_dict[client_idx]))
 
-        logging.info("true local test sample number = %d, real local_test_sample_number = %d" % (opt_data_local_num_dict[client_idx] +
+        logging.info("true local test sample number = %d, real local_test_sample_number = %d" % (len(opt_dataidx_map[client_idx]) +
                                                                                                  attack_data_local_num_dict[client_idx],\
                                                                                                  len(data_local_test)))
 
     return train_data_num, test_data_num, train_data_global, test_data_global, \
-           train_data_local_num_dict, train_data_local_dict, test_data_local_dict, opt_data_local_dict
+           train_data_local_num_dict, train_data_local_dict, test_data_local_dict
 
 
 if __name__ == "__main__":
@@ -172,5 +167,4 @@ if __name__ == "__main__":
     dataset = local_dataloader(args, '/federated_learning_data/train_unified.csv',
                                '/federated_learning_data/test_unified.csv', 1)
     [train_data_num, test_data_num, train_data_global, test_data_global,
-     train_data_local_num_dict, train_data_local_dict, test_data_local_dict, opt_data_local_dict
-     ] = dataset
+     train_data_local_num_dict, train_data_local_dict, test_data_local_dict] = dataset

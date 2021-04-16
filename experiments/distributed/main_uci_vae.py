@@ -46,13 +46,13 @@ def add_args(parser):
     # parser.add_argument('--partition_alpha', type=float, default=0.5, metavar='PA',
     #                     help='partition alpha (default: 0.5)')
 
-    parser.add_argument('--client_num_in_total', type=int, default=1000, metavar='NN',
+    parser.add_argument('--client_num_in_total', type=int, default=9, metavar='NN',
                         help='number of workers in a distributed cluster')
 
     parser.add_argument('--client_num_per_round', type=int, default=4, metavar='NN',
                         help='number of workers')
 
-    parser.add_argument('--batch_size', type=int, default=32, metavar='N',
+    parser.add_argument('--batch_size', type=int, default=64, metavar='N',
                         help='input batch size for training (default: 64)')
 
     parser.add_argument('--client_optimizer', type=str, default='adam',
@@ -61,8 +61,8 @@ def add_args(parser):
     parser.add_argument('--backend', type=str, default="MPI",
                         help='Backend for Server and Client')
 
-    parser.add_argument('--lr', type=float, default=0.001, metavar='LR',
-                        help='learning rate (default: 0.001)')
+    parser.add_argument('--lr', type=float, default=0.0001, metavar='LR',
+                        help='learning rate (default: 0.0001)')
 
     parser.add_argument('--wd', help='weight decay parameter;', type=float, default=0.001)
 
@@ -101,12 +101,15 @@ def add_args(parser):
 
 
 def load_data(args, train_file_name, test_file_name):
+
     logging.info("load_train_data. dataset_name = %s" % train_file_name)
     logging.info("load_test_data. dataset_name = %s" % test_file_name)
     train_data_num, test_data_num, train_data_global, test_data_global, \
-    train_data_local_num_dict, train_data_local_dict, test_data_local_dict = local_dataloader(args, train_file_name, test_file_name, 1)
+    train_data_local_num_dict, train_data_local_dict, test_data_local_dict\
+        = local_dataloader(args, train_file_name, test_file_name, 1)
     dataset = [train_data_num, test_data_num, train_data_global, test_data_global,
                train_data_local_num_dict, train_data_local_dict, test_data_local_dict]
+
     return dataset
 
 
@@ -165,7 +168,8 @@ if __name__ == "__main__":
                                                             args.gpu_mapping_key)
 
     # load data
-    dataset = load_data(args, 'benign_traffic.csv', 'ack.csv')
+
+    dataset = load_data(args, '/federated_learning_data/train_unified.csv', '/federated_learning_data/test_unified.csv')
     [train_data_num, test_data_num, train_data_global, test_data_global,
      train_data_local_num_dict, train_data_local_dict, test_data_local_dict] = dataset
 
