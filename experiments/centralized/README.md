@@ -251,3 +251,8 @@ Precision: 0.99920
 FPR: 0.077182 / 100% length (v.s. 0.1935 / 90% length)
 
 
+## Apr 19's update on Federated Learning training using the 9 saparated datasets with 10% data
+
+Accuracy: 0.967479
+Precision: 0.999
+FPR: 0.427746
