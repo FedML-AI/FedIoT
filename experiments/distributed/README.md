@@ -20,6 +20,7 @@ Precision: 0.999
 False Positive Rate: 0.427746
 
 ##Apr 22's update on Federated Learning: training using the 9 separated datasets with 50% data:
+Each client shares the same threshold value computed by central server.
 
 (1) Mean Result:
 
@@ -76,11 +77,11 @@ False Positive Rate: 0.664234
 
 Accuracy: 0.982213
 Precision: 0.999822
-FPR: 0.459016
+False Positive Rate: 0.459016
 
 (9) SimpleHome_1002_Security_Camera
 
 Accuracy: 0.990744
 Precision: 0.999997
-FPR: 0.019608
+False Positive Rate: 0.019608
 
