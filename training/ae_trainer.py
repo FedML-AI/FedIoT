@@ -69,6 +69,7 @@ class AETrainer(ModelTrainer):
         precision = len(true_positive) / (len(true_positive) + len(false_positive))
         false_positive_rate = len(false_positive) / (len(false_positive) + len(true_negative))
 
+        logging.info('client_index = %d, The threshold is %f' % (client_index, threshold))
         logging.info('client_index = %d, The True negative number is %f' % (client_index, len(true_negative)))
         logging.info('client_index = %d, The False positive number is %f' % (client_index, len(false_positive)))
         logging.info('client_index = %d, The True positive number is %f' % (client_index, len(true_positive)))
