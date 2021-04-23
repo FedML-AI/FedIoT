@@ -176,83 +176,109 @@ Note: Each client shares the same threshold value computed by central server.
 
 (1) Mean Result:
 
-Accuracy: 
-
-Precision: 
-
-FPR: 
+Global Threshold: 0.24026
+Accuracy: 0.703906
+Precision: 0.999843
+FPR: 0.039062
 
 
 (2) Detail Result (client-wise):
 
 a. Danmini Doorbell
 
-Accuracy:
+TN number: 260
+FP number: 0
+TP number: 76382
+FN number: 16947
 
-Precision:
-
-False Positive Rate:
+Accuracy: 0.818921
+Precision: 1.0
+False Positive Rate: 0.0
 
 b. Ecobee_Thermostat
 
-Accuracy: 
+TN number: 56
+FP number: 13
+TP number: 63072
+FN number: 3524
 
-Precision: 
-
-False Positive Rate: 
+Accuracy: 0.946944
+Precision: 0.999794
+False Positive Rate: 0.188406
 
 c. Ennio Doorbell
 
-Accuracy: 
+TN number: 205
+FP number: 0
+TP number: 11258
+FN number: 12663
 
-Precision: 
-
-False Positive Rate: 
+Accuracy: 0.475131
+Precision: 1.0
+False Positive Rate: 0.0
 
 d. Philips_Baby_Monitor
 
-Accuracy: 
+TN number: 918
+FP number: 0
+TP number: 74885
+FN number: 55117
 
-Precision: 
-
-False Positive Rate: 
+Accuracy: 0.579002
+Precision: 1.0
+False Positive Rate: 0.0
 
 e. Provision_737E_Security_Camera
 
-Accuracy: 
+TN number: 320
+FP number: 6
+TP number: 53693
+FN number: 22458
 
-Precision: 
-
-False Positive Rate: 
+Accuracy: 0.706265
+Precision: 0.999888
+False Positive Rate: 0.018405
 
 f. Provision_838_Security_Camera
 
-Accuracy: 
+TN number: 462
+FP number: 54
+TP number: 54943
+FN number: 31813
 
-Precision: 
-
-False Positive Rate: 
+Accuracy: 0.634854
+Precision: 0.999018
+False Positive Rate: 0.104651
 
 g. Samsung_SNH_Webcam
 
-Accuracy: 
+TN number: 273
+FP number: 0
+TP number: 12562
+FN number: 16015
 
-Precision: 
-
-False Positive Rate: 
+Accuracy: 0.444887
+Precision: 1.0
+False Positive Rate: 0.0
 
 h. SimpleHome_1002_Security_Camera
 
-Accuracy: 
+TN number: 239
+FP number: 5
+TP number: 63839
+FN number: 13838
 
-Precision: 
-
-False Positive Rate: 
+Accuracy: 0.822346
+Precision: 0.999922
+False Positive Rate: 0.020492
 
 i. SimpleHome_1002_Security_Camera
 
-Accuracy: 
+TN number: 100
+FP number: 2
+TP number: 62953
+FN number: 6478
 
-Precision: 
-
-False Positive Rate: 
+Accuracy: 0.906807
+Precision: 0.999968
+False Positive Rate: 0.019608
