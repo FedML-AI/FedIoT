@@ -251,8 +251,11 @@ Precision: 0.99920
 FPR: 0.077182 / 100% length (v.s. 0.1935 / 90% length)
 
 
-## Apr 19's update on Federated Learning training using the 9 saparated datasets with 10% data
+## Apr 24's update on Centralized Learning
+Note: Each client shares the same super testset.
+a. Danmini Doorbell
 
-Accuracy: 0.967479
-Precision: 0.999
-FPR: 0.427746
+TN number: 15991 FP number: 608 TP number: 469796 FN number: 0
+
+Accuracy: 0.99874 Precision: 0.9987 False Positive Rate: 0.0366
+
