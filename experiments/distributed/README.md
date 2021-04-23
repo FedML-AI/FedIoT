@@ -12,7 +12,7 @@ wandb login ee0b5f53d949c84cee7decbe7a629e63fb2f8408
 sh run_fedavg_distributed.sh 20 4 vae 50 1 32 0.0001
 ```
 # Experiment Results
-##Apr 19's update on Federated Learning: training using the 9 separated datasets with 10% data:
+## Apr 19's update on Federated Learning: training using the 9 separated datasets with 10% data:
 
 Mean Result:
 Accuracy: 0.967479 
@@ -21,7 +21,7 @@ Precision: 0.999
 
 False Positive Rate: 0.427746
 
-##Apr 22's update on Federated Learning: training using the 9 separated datasets with 50% data:
+## Apr 22's update on Federated Learning: training using the 9 separated datasets with 50% data:
 Note: Each client shares the same threshold value computed by central server.
 
 (1) Mean Result:
@@ -109,7 +109,7 @@ Precision: 0.999997
 
 False Positive Rate: 0.019608
 
-##Apr 23's update on Federated Learning: training using the 9 separated datasets with 10% data:
+## Apr 23's update on Federated Learning: training using the 9 separated datasets with 10% data:
 Note: Each client calculates its own local threshold
 
 (1) Mean Result:
@@ -213,7 +213,7 @@ Precision: 0.999843
 
 False Positive Rate: 1.0
 
-##Apr 23's update on Federated Learning: using all training samples and 10% of test data:
+## Apr 23's update on Federated Learning: using all training samples and 10% of test data:
 Note: Each client shares the same threshold value computed by central server.
 
 (1) Mean Result:
