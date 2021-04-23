@@ -85,3 +85,77 @@ Accuracy: 0.990744
 Precision: 0.999997
 False Positive Rate: 0.019608
 
+##Apr 23's update on Federated Learning: training using the 9 separated datasets with 10% data:
+Each client calculates its own local threshold
+
+(1) Mean Result:
+
+Accuracy: 0.979725
+Precision: 0.999436
+FPR: 0.742984
+
+
+Detail Result (client-wise):
+
+(1) Danmini Doorbell
+
+Local Threshold: 0.001383
+Accuracy:0.979501
+Precision:0.999670
+False Positive Rate:1.0
+
+(2) Ecobee_Thermostat
+
+Local Threshold: 0.031324
+Accuracy: 0.998055
+Precision: 0.999904
+False Positive Rate: 0.857143 
+
+(3) Ennio Doorbell
+
+Local Threshold: 0.013218
+Accuracy: 0.958051
+Precision: 0.998822
+False Positive Rate: 0.0.666667
+
+(4) Philips_Baby_Monitor
+
+Local Threshold: 0.131865
+Accuracy: 0.924555
+Precision: 0.999793
+False Positive Rate: 0.163043
+
+(5) Provision_737E_Security_Camera
+
+Local Threshold: 0.035064
+Accuracy: 0.0.975601
+Precision: 0.999415
+False Positive Rate: 1.0
+
+(6) Provision_838_Security_Camera
+
+Local Threshold: 0.043778
+Accuracy: 0.968900
+Precision: 1.0
+False Positive Rate: 0.0
+
+(7) Samsung_SNH_Webcam
+
+Local Threshold: 0.010397
+Accuracy: 0.993260
+Precision: 0.997870
+False Positive Rate: 1.0 
+
+(8) SimpleHome_1002_Security_Camera
+
+Local Threshold: 0.014768
+Accuracy: 0.999593
+Precision: 0.999609
+False Positive Rate: 1.0
+
+(9) SimpleHome_1002_Security_Camera
+
+Local Threshold: 0.009147
+Accuracy: 0.999843
+Precision: 0.999843
+False Positive Rate: 1.0
