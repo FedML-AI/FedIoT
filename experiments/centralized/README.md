@@ -301,6 +301,21 @@ Accuracy: 0.995238 Precision: 0.994929 False Positive Rate: 0.0725
 
 g. Samsung_SNH_Webcam
 
-TN number:  FP number:  TP number:  FN number: 
+TN number: 16223 FP number: 1248 TP number: 442103 FN number: 27680
 
-Accuracy:  Precision:  False Positive Rate: 
+Accuracy: 0.94063 Precision: 0.99718 False Positive Rate: 0.0714
+
+
+h. SimpleHome_1002_Security_Camera
+
+TN number: 13747 FP number: 1860  TP number: 469810 FN number: 0
+
+Accuracy: 0.99616  Precision: 0.99605 False Positive Rate: 0.1192
+
+
+
+i. SimpleHome_1002_Security_Camera
+
+TN number: 6069  FP number: 474 TP number: 469945 FN number: 0
+
+Accuracy: 0.9990 Precision: 0.9989 False Positive Rate: 0.0724
