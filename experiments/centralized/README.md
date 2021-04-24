@@ -253,9 +253,40 @@ FPR: 0.077182 / 100% length (v.s. 0.1935 / 90% length)
 
 ## Apr 24's update on Centralized Learning
 Note: Each client shares the same super testset.
+
+
 a. Danmini Doorbell
 
 TN number: 15991 FP number: 608 TP number: 469796 FN number: 0
 
 Accuracy: 0.99874 Precision: 0.9987 False Positive Rate: 0.0366
 
+
+
+b. Ecobee_Thermostat
+
+TN number: 3705 FP number: 689 TP number: 469977 FN number: 0
+
+Accuracy: 0.99854 Precision: 0.99853 False Positive Rate: 0.156804
+
+
+c. Ennio Doorbell
+
+TN number: 12349 FP number: 750 TP number: 469848 FN number: 0
+
+Accuracy: 0.99844 Precision: 0.99840 False Positive Rate: 0.057
+
+
+
+d. Philips_Baby_Monitor
+
+TN number: 918 FP number: 0 TP number: 74885 FN number: 55117
+
+Accuracy: 0.579002 Precision: 1.0 False Positive Rate: 0.0
+
+
+e. Provision_737E_Security_Camera
+
+TN number: 19319 FP number: 1503 TP number: 469733 FN number: 0
+
+Accuracy: 0.99693 Precision: 0.9968 False Positive Rate: 0.0721
