@@ -280,9 +280,9 @@ Accuracy: 0.99844 Precision: 0.99840 False Positive Rate: 0.057
 
 d. Philips_Baby_Monitor
 
-TN number: 918 FP number: 0 TP number: 74885 FN number: 55117
+TN number: 52515 FP number: 6191 TP number: 469167 FN number: 0
 
-Accuracy: 0.579002 Precision: 1.0 False Positive Rate: 0.0
+Accuracy: 0.98827 Precision: 0.98697 False Positive Rate: 0.10545
 
 
 e. Provision_737E_Security_Camera
@@ -290,3 +290,17 @@ e. Provision_737E_Security_Camera
 TN number: 19319 FP number: 1503 TP number: 469733 FN number: 0
 
 Accuracy: 0.99693 Precision: 0.9968 False Positive Rate: 0.0721
+
+
+f. Provision_838_Security_Camera
+
+TN number: 30610  FP number: 2393  TP number: 469551  FN number: 0
+
+Accuracy: 0.995238 Precision: 0.994929 False Positive Rate: 0.0725
+
+
+g. Samsung_SNH_Webcam
+
+TN number:  FP number:  TP number:  FN number: 
+
+Accuracy:  Precision:  False Positive Rate: 
