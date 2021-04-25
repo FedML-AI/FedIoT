@@ -27,6 +27,7 @@ class AETrainer(ModelTrainer):
             # mini- batch loop
             epoch_loss = 0.0
             for idx, inp in enumerate(train_data):
+
                 inp = inp.to(device)
                 optimizer.zero_grad()
                 decode = model(inp)
@@ -82,8 +83,8 @@ class AETrainer(ModelTrainer):
 
     def test_on_the_server(self, train_data_local_dict, test_data_local_dict, device, args=None):
         logging.info(device)
-        #mse_results_global = []
-        threshold_dict = {}
+        mse_results_global = []
+        # threshold_dict = {}
         thres_func = nn.MSELoss()
         opt_threshold = [round(49548.0 * 0.67 / args.batch_size), round(13113.0 * 0.67 / args.batch_size),
                          round(39100.0 * 0.67 / args.batch_size), round(175240.0 * 0.67 / args.batch_size),
@@ -92,7 +93,7 @@ class AETrainer(ModelTrainer):
                          round(19528.0 * 0.67 / args.batch_size)]
         for client_index in train_data_local_dict.keys():
             opt_data = train_data_local_dict[client_index]
-            mse_results_per_client = []
+            #mse_results_per_client = []
             self.model.eval()
             for idx, inp in enumerate(opt_data):
                 if idx >= opt_threshold[client_index]:
@@ -100,14 +101,14 @@ class AETrainer(ModelTrainer):
                     decode = self.model(inp)
                     diff = thres_func(decode, inp)
                     mse = diff.item()
-                    mse_results_per_client.append(mse)
-                    #mse_results_global.append(mse)
-            mse_results_per_client = torch.tensor(mse_results_per_client)
-            threshold_dict[client_index] = (torch.mean(mse_results_per_client) + 1 * torch.std(mse_results_per_client)) / np.sqrt(
+                    #mse_results_per_client.append(mse)
+                    mse_results_global.append(mse)
+            # mse_results_per_client = torch.tensor(mse_results_per_client)
+            # threshold_dict[client_index] = (torch.mean(mse_results_per_client) + 1 * torch.std(mse_results_per_client)) / np.sqrt(
+            # args.batch_size)
+        mse_results_global = torch.tensor(mse_results_global)
+        threshold_global = (torch.mean(mse_results_global) + 1 * torch.std(mse_results_global)) / np.sqrt(
             args.batch_size)
-        # mse_results_global = torch.tensor(mse_results_global)
-        # threshold_global = (torch.mean(mse_results_global) + 1 * torch.std(mse_results_global)) / np.sqrt(
-        #     args.batch_size)
 
         accuracy_array_global = []
         precision_array_global = []
@@ -118,7 +119,7 @@ class AETrainer(ModelTrainer):
 
             # using global threshold for test
             [accuracy_client, precision_client, fpr_client] = self.test_local(client_index,
-                                                                              (opt_threshold[client_index] / 2), threshold_dict[client_index], test_data, device, args)
+                                                                              (opt_threshold[client_index] / 2), threshold_global, test_data, device, args)
             accuracy_array_global.append(accuracy_client)
             precision_array_global.append(precision_client)
             fpr_array_global.append(fpr_client)
