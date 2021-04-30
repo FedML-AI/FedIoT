@@ -282,3 +282,125 @@ FN number: 6478
 Accuracy: 0.906807
 Precision: 0.999968
 False Positive Rate: 0.019608
+
+## Apr 30's update on Federated Learning: using all training samples and 50% of test data:
+Note: Each client calculated its own local threshold
+
+30 Epochs
+
+(1) Mean Result:
+
+Accuracy: 0.794362
+Precision: 0.999900
+FPR: 0.096573
+
+
+(2) Detail Result (client-wise):
+
+a. Danmini Doorbell
+
+Local threshold: 0.104592
+TN number: 260
+FP number: 0
+TP number: 385608
+FN number: 16014
+
+Accuracy: 0.960152
+Precision: 1.0
+False Positive Rate: 0.0
+
+b. Ecobee Thermostat
+
+Local threshold: 0.306545
+TN number: 43
+FP number: 23
+TP number: 295972
+FN number: 19805
+
+Accuracy: 0.937213
+Precision: 0.999912
+False Positive Rate: 0.376812
+
+c. Ennio Doorbell
+
+Local threshold: 0.114706
+TN number: 193
+FP number: 12
+TP number: 56543
+FN number: 11750
+
+Accuracy: 0.828287
+Precision: 0.999788
+False Positive Rate: 0.058537
+
+d. Philips_Baby_Monitor
+
+Local threshold: 0.284898
+TN number: 917
+FP number: 1
+TP number: 352138
+FN number: 67894
+
+Accuracy: 0.838710
+Precision: 0.999997
+False Positive Rate: 0.001089
+
+e. Provision_737E_Security_Camera
+
+Local threshold: 0.133146
+TN number: 259
+FP number: 67
+TP number: 282725
+FN number: 16458
+
+Accuracy: 0.944826
+Precision: 0.999763
+False Positive Rate: 0.205521
+
+f. Provision_838_Security_Camera
+
+Local threshold: 0.147193
+TN number: 419
+FP number: 97
+TP number: 279733
+FN number: 24754
+
+Accuracy: 0.918522
+Precision: 0.999653
+False Positive Rate: 0.187984
+
+g. Samsung_SNH_Webcam
+
+Local threshold: 0.301008
+TN number: 273
+FP number: 0
+TP number: 57711
+FN number: 16734
+
+Accuracy: 0.776038
+Precision: 1.0
+False Positive Rate: 0.0
+
+h. SimpleHome_1002_Security_Camera
+
+Local threshold = 2.181594
+TN number: 244
+FP number: 0
+TP number: 4697
+FN number: 322556
+
+Accuracy: 0.015087
+Precision: 1.0
+False Positive Rate: 0
+
+i. SimpleHome_1002_Security_Camera
+
+Local threshold: 0.314181
+TN number: 98
+FP number: 4
+TP number: 299155
+FN number: 22374
+
+Accuracy: 0.930423
+Precision: 0.999987
+False Positive Rate: 0.039216
