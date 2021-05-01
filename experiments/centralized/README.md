@@ -254,6 +254,10 @@ FPR: 0.077182 / 100% length (v.s. 0.1935 / 90% length)
 ## Apr 24's update on Centralized Learning
 Note: Each client shares the same super testset.
 
+(1) Mean results:
+Accuracy: 0.9902 Precision: 0.9963 False Positive Rate: 0.0848
+
+(2) Details
 
 a. Danmini Doorbell
 
