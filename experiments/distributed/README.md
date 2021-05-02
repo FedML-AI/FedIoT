@@ -414,7 +414,7 @@ Global Threshold: 0.234620
 Accuracy: 0.929921
 Precision: 0.971453
 FPR: 0.078795
-
+lr: 0.0001
 
 (2) Detail Result (client-wise):
 
