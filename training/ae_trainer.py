@@ -117,7 +117,7 @@ class AETrainer(ModelTrainer):
         # plt.hist(test, bins='auto', density=True)
         # plt.show()
         mse_results_global = torch.tensor(mse_results_global)
-        threshold_global = torch.mean(mse_results_global)/args.batch_size + 1 * torch.std(mse_results_global)/ np.sqrt(args.batch_size)
+        threshold_global = torch.mean(mse_results_global) + 1 * torch.std(mse_results_global)/ np.sqrt(args.batch_size)
 
         accuracy_array_global = []
         precision_array_global = []
