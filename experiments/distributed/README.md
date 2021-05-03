@@ -516,3 +516,118 @@ FN number: 4659
 Accuracy: 0.9303
 Precision: 0.9968
 False Positive Rate: 0.028
+
+
+## May 3rd's update on Federated Learning: using all training samples and 10% of test data:
+Note: Each client shares the same threshold value computed by central server.
+
+batch size = 64, lr = 1e-3, round = 50, epoch = 15
+
+(1) Mean Result:
+
+Global Threshold: 0.263881
+Accuracy: 0.929010
+Precision: 0.969896
+FPR: 0.071560
+
+(2) Detail Result (client-wise):
+
+a. Danmini Doorbell
+
+TN number: 16517
+FP number: 82
+TP number: 68868
+FN number: 8122
+
+Accuracy: 0.912
+Precision: 0.999
+False Positive Rate: 0.0049
+
+b. Ecobee_Thermostat
+
+TN number: 3565
+FP number: 828
+TP number: 56937
+FN number: 5335
+
+Accuracy: 0.908
+Precision: 0.986
+False Positive Rate: 0.188
+
+c. Ennio Doorbell
+
+TN number: 13028
+FP number: 71
+TP number: 10840
+FN number: 187
+
+Accuracy: 0.989
+Precision: 0.993
+False Positive Rate: 0.005
+
+d. Philips_Baby_Monitor
+
+TN number: 56993
+FP number: 1713
+TP number: 64826
+FN number: 7388
+
+Accuracy: 0.930
+Precision: 0.974
+False Positive Rate: 0.029
+
+e. Provision_737E_Security_Camera
+
+TN number: 18543
+FP number: 2279
+TP number: 51658
+FN number: 3887
+
+Accuracy: 0.918
+Precision: 0.958
+False Positive Rate: 0.109
+
+f. Provision_838_Security_Camera
+
+TN number: 28558
+FP number: 4444
+TP number: 50384
+FN number: 3886
+
+Accuracy: 0.905
+Precision: 0.919
+False Positive Rate: 0.1346
+
+g. Samsung_SNH_Webcam
+
+TN number: 16598
+FP number: 872
+TP number: 11158
+FN number: 222
+
+Accuracy: 0.962
+Precision: 0.928
+False Positive Rate: 0.0499
+
+h. SimpleHome_1002_Security_Camera
+
+TN number: 14227
+FP number: 1379
+TP number: 57120
+FN number: 5195
+
+Accuracy: 0.916
+Precision: 0.976
+False Positive Rate: 0.088
+
+i. SimpleHome_1002_Security_Camera
+
+TN number: 6322
+FP number: 220
+TP number: 57732
+FN number: 5259
+
+Accuracy: 0.921
+Precision: 0.996
+False Positive Rate: 0.034
+
