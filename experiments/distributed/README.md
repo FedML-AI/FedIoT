@@ -631,3 +631,123 @@ Accuracy: 0.921
 Precision: 0.996
 False Positive Rate: 0.034
 
+## May 5th's update on Federated Learning: using all training samples and 10% of test data:
+Note: Each client calculate its own local threshold
+batch size = 64, lr = 1e-3, round = 50, epoch = 15
+
+(1) Mean Result:
+
+Accuracy: 0.868
+Precision: 0.914
+FPR: 0.147
+
+(2) Detail Result (client-wise):
+
+a. Danmini Doorbell
+
+Local threshold: 0.006024
+TN number: 15926
+FP number:673
+TP number: 76990
+FN number: 0
+
+Accuracy: 0.993
+Precision: 0.991
+False Positive Rate: 0.041
+
+b. Ecobee_Thermostat
+
+Local threshold: 0.227607
+TN number: 3156
+FP number: 1237
+TP number: 58507
+FN number: 3765
+
+Accuracy: 0.925
+Precision: 0.979
+False Positive Rate: 0.282
+
+c. Ennio Doorbell
+
+Local threshold: 0.011878
+TN number: 10169
+FP number: 2930
+TP number: 11027
+FN number: 0
+
+Accuracy: 0.879
+Precision: 0.790
+False Positive Rate: 0.224
+
+d. Philips_Baby_Monitor
+
+Local threshold: 0.064790
+TN number: 54558
+FP number: 4148
+TP number: 72214
+FN number: 0
+
+Accuracy: 0.968
+Precision: 0.946
+False Positive Rate: 0.071
+
+e. Provision_737E_Security_Camera
+
+Local threshold: 0.090970
+TN number: 15909
+FP number: 4913
+TP number: 55655
+FN number: 0
+
+Accuracy: 0.936
+Precision: 0.919
+False Positive Rate: 0.236
+
+f. Provision_838_Security_Camera
+
+Local threshold: 0.112439
+TN number: 23413
+FP number: 9589
+TP number: 54270
+FN number: 0
+
+Accuracy: 0.890
+Precision: 0.850
+False Positive Rate: 0.290558
+
+g. Samsung_SNH_Webcam
+
+Local threshold: 0.156782
+TN number: 16311
+FP number: 1159
+TP number: 11380
+FN number: 0
+
+Accuracy: 0.960
+Precision: 0.908
+False Positive Rate: 0.066
+
+h. SimpleHome_1002_Security_Camera
+
+Local threshold: 1.381402
+TN number: 14526
+FP number: 1080
+TP number: 6297
+FN number: 56018
+
+Accuracy: 0.267
+Precision: 0.854
+False Positive Rate: 0.069
+
+i. SimpleHome_1002_Security_Camera
+
+Local threshold: 0.084559
+TN number: 6226
+FP number: 316
+TP number: 62991
+FN number: 0
+
+Accuracy: 0.995
+Precision: 0.995
+False Positive Rate: 0.048
+
