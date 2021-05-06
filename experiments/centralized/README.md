@@ -323,3 +323,131 @@ i. SimpleHome_1002_Security_Camera
 TN number: 6069  FP number: 474 TP number: 469945 FN number: 0
 
 Accuracy: 0.9990 Precision: 0.9989 False Positive Rate: 0.0724
+
+## May 6th's update on Centralized Learning
+Note: Each client shares the same super testset.
+
+Mean result:
+
+Accuracy: 0.94077
+Precision: 0.99684
+FPR: 0.07368
+
+(1) Danmini_Doorbell
+
+Threshold: 0.54931 
+
+The True negative number is  15955  
+The False positive number is  644
+The True positive number is  468767
+The False negative number is  1029
+
+The accuracy is  0.99656
+The precision is  0.99863
+The false positive rate is  0.038798
+
+
+(2) Ecobee_Thermostat
+
+Threshold = 0.148883
+
+The True negative number is  3730
+The False positive number is  664
+The True positive number is  462046
+The False negative number is  7931
+
+The accuracy is  0.98188
+The precision is  0.99856
+The false positive rate is  0.15112
+
+(3) Ennio_Doorbell
+
+Threshold = 0.21051
+
+The True negative number is  12426
+The False positive number is  673
+The True positive number is  469848
+The False negative number is  0
+
+The accuracy is  0.99861
+The precision is  0.99857
+The false positive rate is  0.051378
+
+(4) Philips_Baby_Monitor 
+
+Threshold = 0.179716
+
+The True negative number is  53861
+The False positive number is  4845
+The True positive number is  469161
+The False negative number is  6
+
+The accuracy is  0.99081
+The precision is  0.98978
+The false positive rate is  0.082530
+
+(5) Provision_737E_Security_Camera
+
+Threshold = 0.10321
+
+The True negative number is  19739
+The False positive number is  1083
+The True positive number is  469733
+The False negative number is  0
+
+The accuracy is  0.99779
+The precision is  0.99770
+The false positive rate is  0.05201
+
+(6) Provision_838_Security_Camera
+
+Threshold = 0.09312
+
+The True negative number is  31724
+The False positive number is  1279
+The True positive number is  469551
+The False negative number is  0
+
+The accuracy is  0.99745
+The precision is  0.99728
+The false positive rate is  0.038754
+
+(7) Samsumg_SNH_Webcam
+
+Threshold = 0.31852
+
+The True negative number is  16542
+The False positive number is  929
+The True positive number is  251645
+The False negative number is  218138
+
+The accuracy is  0.550405
+The precision is  0.99632
+The false positive rate is  0.053173
+
+(8) SimpleHome_1002
+
+Threshold: 0.13678
+
+The True negative number is  13715
+The False positive number is  1892
+The True positive number is  450713
+The False negative number is  19097
+
+The accuracy is  0.956761
+The precision is  0.99582
+The false positive rate is  0.12123
+
+(9) SimpleHome_1003
+
+Threshold: 0.20081
+
+The True negative number is  6058
+The False positive number is  485
+The True positive number is  468843
+The False negative number is  1102
+
+The accuracy is  0.99667
+The precision is  0.99897
+The false positive rate is  0.074125
+
