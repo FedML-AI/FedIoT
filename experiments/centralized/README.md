@@ -414,16 +414,16 @@ The false positive rate is  0.038754
 
 (7) Samsumg_SNH_Webcam
 
-Threshold = 0.31852
+Threshold = 0.33131
 
-The True negative number is  16542
-The False positive number is  929
-The True positive number is  251645
-The False negative number is  218138
+The True negative number is  16346
+The False positive number is  1125
+The True positive number is  338116
+The False negative number is  131667
 
-The accuracy is  0.550405
-The precision is  0.99632
-The false positive rate is  0.053173
+The accuracy is  0.7274686303242252
+The precision is  0.9966837734825684
+The false positive rate is  0.06439242172743403
 
 (8) SimpleHome_1002
 
