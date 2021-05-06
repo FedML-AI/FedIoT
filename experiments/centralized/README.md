@@ -329,9 +329,9 @@ Note: Each client shares the same super testset.
 
 Mean result:
 
-Accuracy: 0.94077
-Precision: 0.99684
-FPR: 0.07368
+Accuracy: 0.96044
+Precision: 0.99689
+FPR: 0.074927
 
 (1) Danmini_Doorbell
 
@@ -421,9 +421,9 @@ The False positive number is  1125
 The True positive number is  338116
 The False negative number is  131667
 
-The accuracy is  0.7274686303242252
-The precision is  0.9966837734825684
-The false positive rate is  0.06439242172743403
+The accuracy is  0.72747
+The precision is  0.99668
+The false positive rate is  0.064392
 
 (8) SimpleHome_1002
 
