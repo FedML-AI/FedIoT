@@ -739,7 +739,7 @@ Accuracy: 0.267
 Precision: 0.854
 False Positive Rate: 0.069
 
-i. SimpleHome_1002_Security_Camera
+i. SimpleHome_1003_Security_Camera
 
 Local threshold: 0.084559
 TN number: 6226
@@ -750,4 +750,126 @@ FN number: 0
 Accuracy: 0.995
 Precision: 0.995
 False Positive Rate: 0.048
+
+
+## May 8th's update on Federated Learning: using all training samples and 1% of test data:
+Note: Each client calculate its own local threshold
+batch size = 64, lr = 1e-3, round = 50, epoch = 15 
+
+(1) Mean results:
+
+Accuracy: 0.86532
+Precision: 0.608786
+FPR: 0.14705
+
+a. Danmini Doorbell
+
+Local threshold: 0.005843
+
+TN number: 15923
+FP number:676
+TP number: 7625
+FN number: 0
+
+Accuracy: 0.97209
+Precision: 0.91856
+False Positive Rate: 0.040725
+
+b. Ecobee_Thermostat
+
+Local threshold: 0.206668
+
+TN number is 3166
+FP number is 1227
+TP number is 6169
+FN number is 39
+
+Accuracy: 0.880577
+Precision: 0.834100
+False Positive Rate: 0.279308
+
+
+c. Ennio Doorbell
+
+Local threshold: 0.011196
+TN number: 10231
+FP number: 2868
+TP number: 1043
+FN number: 0
+
+Accuracy: 0.7972
+Precision: 0.266684
+False Positive Rate: 0.218948
+
+d. Philips_Baby_Monitor
+
+Local threshold: 0.061079
+TN number: 54403
+FP number: 4303
+TP number: 6957
+FN number: 0
+
+Accuracy: 0.93447
+Precision: 0.61785
+False Positive Rate: 0.073297
+
+e. Provision_737E_Security_Camera
+
+Local threshold: 0.089253
+TN number: 15845
+FP number: 4977
+TP number: 5472
+FN number: 0
+
+Accuracy: 0.810717
+Precision: 0.523686
+False Positive Rate: 0.239026
+
+f. Provision_838_Security_Camera
+
+Local threshold: 0.126871
+TN number: 23716
+FP number: 9286
+TP number: 5280
+FN number: 0
+
+Accuracy: 0.75743
+Precision: 0.36248
+False Positive Rate: 0.28138
+
+g. Samsung_SNH_Webcam
+
+Local threshold: 0.14421
+TN number: 16175
+FP number: 1295
+TP number: 1060
+FN number: 0
+
+Accuracy: 0.93011
+Precision: 0.45010
+False Positive Rate: 0.07412
+
+h. SimpleHome_1002_Security_Camera
+
+Local threshold: 1.080745
+TN number: 14496
+FP number: 1110
+TP number: 1362
+FN number: 4799
+
+Accuracy: 0.728534
+Precision: 0.55097
+False Positive Rate: 0.07113
+
+i. SimpleHome_1003_Security_Camera
+
+Local threshold: 0.08757
+TN number: 6244
+FP number: 298
+TP number: 6270
+FN number: 0
+
+Accuracy: 0.97674
+Precision: 0.95463
+False Positive Rate: 0.04555
 
