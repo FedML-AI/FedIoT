@@ -414,7 +414,7 @@ Global Threshold: 0.234620
 Accuracy: 0.929921
 Precision: 0.971453
 FPR: 0.078795
-
+lr: 0.0001
 
 (2) Detail Result (client-wise):
 
@@ -516,3 +516,360 @@ FN number: 4659
 Accuracy: 0.9303
 Precision: 0.9968
 False Positive Rate: 0.028
+
+
+## May 3rd's update on Federated Learning: using all training samples and 10% of test data:
+Note: Each client shares the same threshold value computed by central server.
+
+batch size = 64, lr = 1e-3, round = 50, epoch = 15
+
+(1) Mean Result:
+
+Global Threshold: 0.263881
+Accuracy: 0.929010
+Precision: 0.969896
+FPR: 0.071560
+
+(2) Detail Result (client-wise):
+
+a. Danmini Doorbell
+
+TN number: 16517
+FP number: 82
+TP number: 68868
+FN number: 8122
+
+Accuracy: 0.912
+Precision: 0.999
+False Positive Rate: 0.0049
+
+b. Ecobee_Thermostat
+
+TN number: 3565
+FP number: 828
+TP number: 56937
+FN number: 5335
+
+Accuracy: 0.908
+Precision: 0.986
+False Positive Rate: 0.188
+
+c. Ennio Doorbell
+
+TN number: 13028
+FP number: 71
+TP number: 10840
+FN number: 187
+
+Accuracy: 0.989
+Precision: 0.993
+False Positive Rate: 0.005
+
+d. Philips_Baby_Monitor
+
+TN number: 56993
+FP number: 1713
+TP number: 64826
+FN number: 7388
+
+Accuracy: 0.930
+Precision: 0.974
+False Positive Rate: 0.029
+
+e. Provision_737E_Security_Camera
+
+TN number: 18543
+FP number: 2279
+TP number: 51658
+FN number: 3887
+
+Accuracy: 0.918
+Precision: 0.958
+False Positive Rate: 0.109
+
+f. Provision_838_Security_Camera
+
+TN number: 28558
+FP number: 4444
+TP number: 50384
+FN number: 3886
+
+Accuracy: 0.905
+Precision: 0.919
+False Positive Rate: 0.1346
+
+g. Samsung_SNH_Webcam
+
+TN number: 16598
+FP number: 872
+TP number: 11158
+FN number: 222
+
+Accuracy: 0.962
+Precision: 0.928
+False Positive Rate: 0.0499
+
+h. SimpleHome_1002_Security_Camera
+
+TN number: 14227
+FP number: 1379
+TP number: 57120
+FN number: 5195
+
+Accuracy: 0.916
+Precision: 0.976
+False Positive Rate: 0.088
+
+i. SimpleHome_1002_Security_Camera
+
+TN number: 6322
+FP number: 220
+TP number: 57732
+FN number: 5259
+
+Accuracy: 0.921
+Precision: 0.996
+False Positive Rate: 0.034
+
+## May 5th's update on Federated Learning: using all training samples and 10% of test data:
+Note: Each client calculate its own local threshold
+batch size = 64, lr = 1e-3, round = 50, epoch = 15
+
+(1) Mean Result:
+
+Accuracy: 0.868
+Precision: 0.914
+FPR: 0.147
+
+(2) Detail Result (client-wise):
+
+a. Danmini Doorbell
+
+Local threshold: 0.006024
+TN number: 15926
+FP number:673
+TP number: 76990
+FN number: 0
+
+Accuracy: 0.993
+Precision: 0.991
+False Positive Rate: 0.041
+
+b. Ecobee_Thermostat
+
+Local threshold: 0.227607
+TN number: 3156
+FP number: 1237
+TP number: 58507
+FN number: 3765
+
+Accuracy: 0.925
+Precision: 0.979
+False Positive Rate: 0.282
+
+c. Ennio Doorbell
+
+Local threshold: 0.011878
+TN number: 10169
+FP number: 2930
+TP number: 11027
+FN number: 0
+
+Accuracy: 0.879
+Precision: 0.790
+False Positive Rate: 0.224
+
+d. Philips_Baby_Monitor
+
+Local threshold: 0.064790
+TN number: 54558
+FP number: 4148
+TP number: 72214
+FN number: 0
+
+Accuracy: 0.968
+Precision: 0.946
+False Positive Rate: 0.071
+
+e. Provision_737E_Security_Camera
+
+Local threshold: 0.090970
+TN number: 15909
+FP number: 4913
+TP number: 55655
+FN number: 0
+
+Accuracy: 0.936
+Precision: 0.919
+False Positive Rate: 0.236
+
+f. Provision_838_Security_Camera
+
+Local threshold: 0.112439
+TN number: 23413
+FP number: 9589
+TP number: 54270
+FN number: 0
+
+Accuracy: 0.890
+Precision: 0.850
+False Positive Rate: 0.290558
+
+g. Samsung_SNH_Webcam
+
+Local threshold: 0.156782
+TN number: 16311
+FP number: 1159
+TP number: 11380
+FN number: 0
+
+Accuracy: 0.960
+Precision: 0.908
+False Positive Rate: 0.066
+
+h. SimpleHome_1002_Security_Camera
+
+Local threshold: 1.381402
+TN number: 14526
+FP number: 1080
+TP number: 6297
+FN number: 56018
+
+Accuracy: 0.267
+Precision: 0.854
+False Positive Rate: 0.069
+
+i. SimpleHome_1003_Security_Camera
+
+Local threshold: 0.084559
+TN number: 6226
+FP number: 316
+TP number: 62991
+FN number: 0
+
+Accuracy: 0.995
+Precision: 0.995
+False Positive Rate: 0.048
+
+
+## May 8th's update on Federated Learning: using all training samples and 1% of test data:
+Note: Each client calculate its own local threshold
+batch size = 64, lr = 1e-3, round = 50, epoch = 15 
+
+(1) Mean results:
+
+Accuracy: 0.86532
+Precision: 0.608786
+FPR: 0.14705
+
+a. Danmini Doorbell
+
+Local threshold: 0.005843
+
+TN number: 15923
+FP number:676
+TP number: 7625
+FN number: 0
+
+Accuracy: 0.97209
+Precision: 0.91856
+False Positive Rate: 0.040725
+
+b. Ecobee_Thermostat
+
+Local threshold: 0.206668
+
+TN number is 3166
+FP number is 1227
+TP number is 6169
+FN number is 39
+
+Accuracy: 0.880577
+Precision: 0.834100
+False Positive Rate: 0.279308
+
+
+c. Ennio Doorbell
+
+Local threshold: 0.011196
+TN number: 10231
+FP number: 2868
+TP number: 1043
+FN number: 0
+
+Accuracy: 0.7972
+Precision: 0.266684
+False Positive Rate: 0.218948
+
+d. Philips_Baby_Monitor
+
+Local threshold: 0.061079
+TN number: 54403
+FP number: 4303
+TP number: 6957
+FN number: 0
+
+Accuracy: 0.93447
+Precision: 0.61785
+False Positive Rate: 0.073297
+
+e. Provision_737E_Security_Camera
+
+Local threshold: 0.089253
+TN number: 15845
+FP number: 4977
+TP number: 5472
+FN number: 0
+
+Accuracy: 0.810717
+Precision: 0.523686
+False Positive Rate: 0.239026
+
+f. Provision_838_Security_Camera
+
+Local threshold: 0.126871
+TN number: 23716
+FP number: 9286
+TP number: 5280
+FN number: 0
+
+Accuracy: 0.75743
+Precision: 0.36248
+False Positive Rate: 0.28138
+
+g. Samsung_SNH_Webcam
+
+Local threshold: 0.14421
+TN number: 16175
+FP number: 1295
+TP number: 1060
+FN number: 0
+
+Accuracy: 0.93011
+Precision: 0.45010
+False Positive Rate: 0.07412
+
+h. SimpleHome_1002_Security_Camera
+
+Local threshold: 1.080745
+TN number: 14496
+FP number: 1110
+TP number: 1362
+FN number: 4799
+
+Accuracy: 0.728534
+Precision: 0.55097
+False Positive Rate: 0.07113
+
+i. SimpleHome_1003_Security_Camera
+
+Local threshold: 0.08757
+TN number: 6244
+FP number: 298
+TP number: 6270
+FN number: 0
+
+Accuracy: 0.97674
+Precision: 0.95463
+False Positive Rate: 0.04555
+
