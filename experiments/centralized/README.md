@@ -578,3 +578,229 @@ The False negative number is  692
 The accuracy is  0.9785219831618335
 The precision is  0.9902294786912644
 The false positive rate is  0.06969280146721687
+
+## May 9's update on centralized training
+
+using training samples from b, g and h to train the model then test the performance on 9 devices
+
+threshold = 0.867741
+
+mean accuracy = 0.6456428384941383
+mean precision = 0.45845565953575573
+mean false positive rate = 0.245764731536723
+
+(a) Danmini_Doorbell
+
+The True negative number is  13165
+The False positive number is  3187
+The True positive number is  2095
+The False negative number is  5612
+
+The accuracy is  0.6342740762292697
+The precision is  0.396630064369557
+The false positive rate is  0.19489970645792565
+
+(b) Ecobee_Thermostat
+
+The True negative number is  2635
+The False positive number is  1693
+The True positive number is  1766
+The False negative number is  4463
+
+The accuracy is  0.41687979539641945
+The precision is  0.5105521827117664
+The false positive rate is  0.391173752310536
+
+(c) Ennio_Doorbell
+
+The True negative number is  10261
+The False positive number is  2643
+The True positive number is  1108
+The False negative number is  0
+
+The accuracy is  0.8113759634598915
+The precision is  0.2953878965609171
+The false positive rate is  0.20482021078735277
+
+(d) Philips_Baby_Monitor
+
+The True negative number is  38280
+The False positive number is  19550
+The True positive number is  2449
+The False negative number is  4800
+
+The accuracy is  0.6258393644647274
+The precision is  0.11132324196554388
+The false positive rate is  0.33805983053778316
+
+(e) Provision_737E
+
+The True negative number is  9481
+The False positive number is  11031
+The True positive number is  1727
+The False negative number is  3848
+
+The accuracy is  0.42963928393452677
+The precision is  0.13536604483461356
+The false positive rate is  0.5377827613104524
+
+(f) Provision_838
+
+The True negative number is  16775
+The False positive number is  15736
+The True positive number is  2157
+The False negative number is  3286
+
+The accuracy is  0.4988143542182642
+The precision is  0.12054993572905605
+The false positive rate is  0.484020792962382
+
+(g) Samsung_Webcam
+
+The True negative number is  16803
+The False positive number is  408
+The True positive number is  1146
+The False negative number is  0
+
+The accuracy is  0.9777741461023043
+The precision is  0.7374517374517374
+The false positive rate is  0.023705769565975247
+
+(h) SimpleHome_1002
+
+The True negative number is  15209
+The False positive number is  165
+The True positive number is  1500
+The False negative number is  4738
+
+The accuracy is  0.7731352952063668
+The precision is  0.9009009009009009
+The false positive rate is  0.010732405359698192
+
+(i) SimpleHome_1003
+
+The True negative number is  6273
+The False positive number is  172
+The True positive number is  1924
+The False negative number is  4378
+
+The accuracy is  0.643053267435475
+The precision is  0.9179389312977099
+The false positive rate is  0.02668735453840186
+
+
+## May 9's update on centralized training
+
+using device a, c and f 
+
+threshold = 0.64176
+
+mean accuracy = 0.8034269080114653
+mean precision = 0.6404332131218307
+mean false positive rate = 0.09346267287646917
+
+
+(a) Danmini_Doorbell
+
+The True negative number is  16084
+The False positive number is  268
+The True positive number is  3732
+The False negative number is  3975
+
+The accuracy is  0.8236418803774056
+The precision is  0.933
+The false positive rate is  0.016389432485322895
+
+(b) Ecobee_Thermostat
+
+The True negative number is  3254
+The False positive number is  1074
+The True positive number is  3017
+The False negative number is  3212
+
+The accuracy is  0.5940134507909444
+The precision is  0.7374725006110975
+The false positive rate is  0.24815157116451017
+
+(c) Ennio_Doorbell
+
+The True negative number is  11221
+The False positive number is  1683
+The True positive number is  330
+The False negative number is  778
+
+The accuracy is  0.8243648301455895
+The precision is  0.16393442622950818
+The false positive rate is  0.13042467451952883
+
+
+(d) Philips_Baby_Monitor
+
+The True negative number is  54157
+The False positive number is  3673
+The True positive number is  2927
+The False negative number is  4322
+
+The accuracy is  0.8771493108375974
+The precision is  0.4434848484848485
+The false positive rate is  0.06351374719003977
+
+
+(e) Provision_737E
+
+The True negative number is  20224
+The False positive number is  288
+The True positive number is  1759
+The False negative number is  3816
+
+The accuracy is  0.842680262199563
+The precision is  0.8593063019052272
+The false positive rate is  0.014040561622464899
+
+
+(f) Provision_838
+
+The True negative number is  32430
+The False positive number is  81
+The True positive number is  2073
+The False negative number is  3370
+
+The accuracy is  0.9090741423828845
+The precision is  0.9623955431754875
+The false positive rate is  0.002491464427424564
+
+
+(g) Samsung_Webcam
+
+The True negative number is  13560
+The False positive number is  3651
+The True positive number is  285
+The False negative number is  861
+
+The accuracy is  0.7542082039548946
+The precision is  0.07240853658536585
+The false positive rate is  0.21213177618964615
+
+
+(h) SimpleHome_1002
+
+The True negative number is  13674
+The False positive number is  1700
+The True positive number is  3189
+The False negative number is  3049
+
+The accuracy is  0.7802609661299278
+The precision is  0.6522806299856821
+The false positive rate is  0.11057629764537531
+
+
+(i) SimpleHome_1003
+
+The True negative number is  6165
+The False positive number is  280
+The True positive number is  4357
+The False negative number is  1945
+
+The accuracy is  0.8254491252843806
+The precision is  0.9396161311192581
+The false positive rate is  0.04344453064391001
