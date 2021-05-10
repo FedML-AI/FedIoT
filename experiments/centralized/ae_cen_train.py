@@ -98,23 +98,23 @@ def train(args, model, device, trainloader, optloader):
         wandb.log({"loss": epoch_loss, "epoch": epoch})
     logging.info("batch size = %d" % args.batch_size)
 
-    #threshold selecting
-    i = []
-    model.eval()
-    thres_func = nn.MSELoss()
-    for idx, inp in enumerate(optloader):
-        mse_tr = thres_func(model(inp), inp)
-        i.append(mse_tr.item())
-    i.sort()
-    len_i = len(i)
-    i = i[round(len_i * 0.00):round(len_i * 1)]
-    i = torch.tensor(i)
-    # test = np.array(i)
-    # plt.hist(test, bins='auto', density=True)
-    # plt.show()
-    threshold = (torch.mean(i) + 1 * torch.std(i) / np.sqrt(args.batch_size))
-    logging.info("threshold = %d" % threshold)
-    return threshold
+    # #threshold selecting
+    # i = []
+    # model.eval()
+    # thres_func = nn.MSELoss()
+    # for idx, inp in enumerate(optloader):
+    #     mse_tr = thres_func(model(inp), inp)
+    #     i.append(mse_tr.item())
+    # i.sort()
+    # len_i = len(i)
+    # i = i[round(len_i * 0.00):round(len_i * 1)]
+    # i = torch.tensor(i)
+    # # test = np.array(i)
+    # # plt.hist(test, bins='auto', density=True)
+    # # plt.show()
+    # threshold = (torch.mean(i) + 1 * torch.std(i) / np.sqrt(args.batch_size))
+    # logging.info("threshold = %d" % threshold)
+    # return threshold
 
 def test(args, model, device, test_index):
 
@@ -158,7 +158,26 @@ def test(args, model, device, test_index):
     testloader = torch.utils.data.DataLoader(testset, batch_size=1, shuffle=False, num_workers=0)
     logging.info('testloader is finished')
 
+    optset = db_benign[round(len(db_benign) * 0.67):len(db_benign)]
+    optset = np.array(optset)
+    optloader = torch.utils.data.DataLoader(optset, batch_size=args.batch_size, shuffle=False, num_workers=0)
+    logging.info('optloader is finished')
+
     model.eval()
+
+    i = []
+    model.eval()
+    thres_func = nn.MSELoss()
+    for idx, inp in enumerate(optloader):
+        mse_tr = thres_func(model(inp), inp)
+        i.append(mse_tr.item())
+    i.sort()
+    len_i = len(i)
+    i = i[round(len_i * 0.00):round(len_i * 1)]
+    i = torch.tensor(i)
+    threshold = (torch.mean(i) + 1 * torch.std(i) / np.sqrt(args.batch_size))
+    logging.info("threshold = %d" % threshold)
+
 
     true_negative = []
     false_positive = []
@@ -188,6 +207,7 @@ def test(args, model, device, test_index):
     false_positive_rate = len(false_positive) / (len(false_positive) + len(true_negative))
 
     print('Device index is ', test_index)
+    print('The Threshold is ', threshold)
     print('The True negative number is ', len(true_negative))
     print('The False positive number is ', len(false_positive))
     print('The True positive number is ', len(true_positive))
@@ -235,9 +255,9 @@ if __name__ == "__main__":
     model.to(device)
 
     # start training
-    threshold = train(args, model, device, trainloader, optloader)
-    logging.info("threshold = %f" % threshold)
-    wandb.log({"Threshold": threshold})
+    train(args, model, device, trainloader, optloader)
+    # logging.info("threshold = %f" % threshold)
+    # wandb.log({"Threshold": threshold})
 
     # start test
     for i in range(9):
