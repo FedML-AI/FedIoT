@@ -804,3 +804,238 @@ The False negative number is  1945
 The accuracy is  0.8254491252843806
 The precision is  0.9396161311192581
 The false positive rate is  0.04344453064391001
+
+
+May 10's update on centralized training 
+
+a, c, f with number-adjusted test set
+
+mean accuracy = 0.8536064879730138
+mean precision = 0.7372995968904188
+mean false positive rate = 0.1449454553978402
+
+(A) Danmini_Doorbell
+
+The Threshold is  tensor(0.2860)
+
+The True negative number is  15885
+The False positive number is  467
+The True positive number is  38535
+The False negative number is  0
+
+The accuracy is  0.9914916100351632
+The precision is  0.9880262550638429
+The false positive rate is  0.028559197651663405
+
+(B) Ecobee_Thermostat
+
+The Threshold is  tensor(0.6940)
+
+The True negative number is  2922
+The False positive number is  1406
+The True positive number is  4996
+The False negative number is  1233
+
+The accuracy is  0.7500236809699725
+The precision is  0.7803811308965948
+The false positive rate is  0.32486136783733827
+
+(C) Ennio_Doorbell
+
+The Threshold is  tensor(0.5094)
+
+The True negative number is  10869
+The False positive number is  2035
+The True positive number is  836
+The False negative number is  272
+
+The accuracy is  0.8353554096488724
+The precision is  0.29118773946360155
+The false positive rate is  0.15770303781773093
+
+(D) Philips_Baby_Monitor
+
+The Threshold is  tensor(0.5525)
+
+The True negative number is  53432
+The False positive number is  4398
+The True positive number is  69708
+The False negative number is  2798
+
+The accuracy is  0.9447888534249939
+The precision is  0.9406525787385637
+The false positive rate is  0.07605049282379388
+
+(E) Provision_737E
+
+The Threshold is  tensor(0.1201)
+
+The True negative number is  15852
+The False positive number is  4660
+The True positive number is  55758
+The False negative number is  0
+
+The accuracy is  0.9389012717975613
+The precision is  0.9228706676818167
+The false positive rate is  0.22718408736349455
+
+(F) Provision_838
+
+The Threshold is  tensor(0.0547)
+
+The True negative number is  28540
+The False positive number is  3971
+The True positive number is  5443
+The False negative number is  0
+
+The accuracy is  0.8953733466828265
+The precision is  0.5781814319099214
+The false positive rate is  0.12214327458398695
+
+(G) Samsung_Webcam
+
+The Threshold is  tensor(0.9247)
+
+The True negative number is  13600
+The False positive number is  3611
+The True positive number is  1163
+The False negative number is  10303
+
+The accuracy is  0.5148028036405482
+The precision is  0.24361122748219521
+The false positive rate is  0.20980768113415837
+
+(H) SimpleHome_1002
+
+The Threshold is  tensor(0.6931)
+
+The True negative number is  13667
+The False positive number is  1707
+The True positive number is  25610
+The False negative number is  5585
+
+The accuracy is  0.8434151474156628
+The precision is  0.9375114397627851
+The false positive rate is  0.11103161181215038
+
+(I) SimpleHome_1003
+
+The Threshold is  tensor(0.5781)
+
+The True negative number is  6141
+The False positive number is  304
+The True positive number is  6202
+The False negative number is  100
+
+The accuracy is  0.9683062681415235
+The precision is  0.9532739010144482
+The false positive rate is  0.04716834755624515
+
+
+## May 10's update on centralized training 
+
+b, g, h with number-adjusted test set
+
+mean accuracy = 0.6106045410553165
+mean precision = 0.46476935125981833
+mean false positive rate = 0.19898762645265686
+
+
+(A) Danmini_Doorbell 
+
+The Threshold is  tensor(1.3826)
+The True negative number is  13165
+The False positive number is  3187
+The True positive number is  1733
+The False negative number is  36802
+The accuracy is  0.2714303933536174
+The precision is  0.3522357723577236
+The false positive rate is  0.19489970645792565
+
+(B) Ecobee_Thermostat
+
+The Threshold is  tensor(1.7047)
+The True negative number is  3196
+The False positive number is  1132
+The True positive number is  163
+The False negative number is  6066
+The accuracy is  0.3181775125509141
+The precision is  0.12586872586872586
+The false positive rate is  0.26155268022181144
+
+(C) Ennio_Doorbell
+
+The Threshold is  tensor(1.3766)
+The True negative number is  10517
+The False positive number is  2387
+The True positive number is  1108
+The False negative number is  0
+The accuracy is  0.8296460176991151
+The precision is  0.3170243204577968
+The false positive rate is  0.18498140111593303
+
+(D) Philips_Baby_Monitor
+
+The Threshold is  tensor(1.8861)
+The True negative number is  45391
+The False positive number is  12439
+The True positive number is  414
+The False negative number is  72092
+The accuracy is  0.3514378222440462
+The precision is  0.032210378899867734
+The false positive rate is  0.21509597094933425
+
+(E) Provision_737E
+
+The Threshold is  tensor(2.3248)
+The True negative number is  13832
+The False positive number is  6680
+The True positive number is  4348
+The False negative number is  51410
+The accuracy is  0.23836370787990036
+The precision is  0.3942691331157055
+The false positive rate is  0.3256630265210608
+
+(F) Provision_838
+
+The Threshold is  tensor(1.3024)
+The True negative number is  20118
+The False positive number is  12393
+The True positive number is  2142
+The False negative number is  3301
+The accuracy is  0.5864994466986352
+The precision is  0.14736842105263157
+The false positive rate is  0.3811940573959583
+
+(G) Samsung_Webcam
+
+The Threshold is  tensor(0.2115)
+The True negative number is  16188
+The False positive number is  1023
+The True positive number is  11466
+The False negative number is  0
+The accuracy is  0.9643268124280783
+The precision is  0.9180879173672832
+The false positive rate is  0.059438731044099705
+
+(H) SimpleHome_1003
+
+The Threshold is  tensor(0.0862)
+The True negative number is  13575
+The False positive number is  1799
+The True positive number is  31195
+The False negative number is  0
+The accuracy is  0.9613691511520539
+The precision is  0.9454749348366369
+The false positive rate is  0.11701574086119422
+
+(I) SimpleHome_1003
+
+The Threshold is  tensor(0.1661)
+The True negative number is  6116
+The False positive number is  329
+The True positive number is  6302
+The False negative number is  0
+The accuracy is  0.9741900054914882
+The precision is  0.9503845573819937
+The false positive rate is  0.05104732350659426
