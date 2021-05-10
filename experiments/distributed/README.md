@@ -985,3 +985,121 @@ FN number: 45
 Accuracy: 0.97924
 Precision: 0.96572
 False Positive Rate: 0.03378
+
+
+## May 10's update on FL
+
+Each client shares the same global threshold 
+
+Note: The propotion of test data in each devices is 
+
+A: 5% B: 1% C: 1% D: 10% E: 10% F: 1% G: 10% H: 5% I: 1%
+
+(1) Mean results
+
+Global threshold: 0.225507
+Accuracy: 0.922332
+Precision: 0.885823
+False Positive Rate: 0.090127
+
+(2) Details
+
+a. Danmini_Doorbell
+
+The True negative number is 16512.000000
+The False positive number is 87.000000
+The True positive number is 34653.000000
+The False negative number is 3800.000000
+
+The accuracy is 0.929394
+The precision is 0.997496
+The false positive rate is 0.005241
+
+b. Ecobee_Thermostat
+
+The True negative number is 3126.000000
+The False positive number is 1267.000000
+The True positive number is 5499.000000
+The False negative number is 709.000000
+
+The accuracy is 0.813602
+The precision is 0.812740
+The false positive rate is 0.288413
+
+c. Ennio_Doorbell
+
+The True negative number is 13025.000000
+The False positive number is 74.000000
+The True positive number is 1043.000000
+The False negative number is 0.000000
+
+The accuracy is 0.994767
+The precision is 0.933751
+The false positive rate is 0.005649
+
+d. Philips_Baby_Monitor
+
+The True negative number is 56907.000000
+The False positive number is 1799.000000
+The True positive number is 70904.000000
+The False negative number is 1310.000000
+
+The accuracy is 0.976253
+The precision is 0.975255
+The false positive rate is 0.030644
+
+e. Provision_737E
+
+The True negative number is 18270.000000
+The False positive number is 2552.000000
+The True positive number is 52938.000000
+The False negative number is 2717.000000
+
+The accuracy is 0.931103
+The precision is 0.954010
+The false positive rate is 0.122563
+
+f. Provision_838
+
+True negative number is 27174.000000
+The False positive number is 5828.000000
+The True positive number is 5060.000000
+The False negative number is 220.000000
+
+The accuracy is 0.842015
+The precision is 0.464732
+The false positive rate is 0.176595
+
+g. Samsung_Webcam
+
+The True negative number is 16496.000000
+The False positive number is 974.000000
+The True positive number is 11380.000000
+The False negative number is 0.000000
+
+The accuracy is 0.966239
+The precision is 0.921159
+The false positive rate is 0.055753
+
+h. SimpleHome_1002
+
+The True negative number is 14191.000000
+The False positive number is 1415.000000
+The True positive number is 27521.000000
+The False negative number is 3597.000000
+
+The accuracy is 0.892732
+The precision is 0.951099
+The false positive rate is 0.090670
+
+i. SimpleHome_1003
+
+The True negative number is 6309.000000
+The False positive number is 233.000000
+The True positive number is 5925.000000
+The False negative number is 345.000000
+
+The accuracy is 0.954886
+The precision is 0.962163
+The false positive rate is 0.035616
+
