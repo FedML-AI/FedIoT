@@ -1039,3 +1039,11 @@ The False negative number is  0
 The accuracy is  0.9741900054914882
 The precision is  0.9503845573819937
 The false positive rate is  0.05104732350659426
+
+## May 11's update on centralized training 
+
+I. Baseline 1: Local data model.
+
+II. Baseline 2: ACF data model.
+
+III. Baseline 3: All union data model
