@@ -169,7 +169,7 @@ if __name__ == "__main__":
 
     # load data
 
-    dataset = load_data(args, '/federated_learning_data/train_unified.csv', '/unified_10pc/test_unified_10_nr.csv')
+    dataset = load_data(args, '/federated_learning_data/train_unified.csv', '/new_centralized_set/global_testset_norm.csv')
     [train_data_num, test_data_num, train_data_global, test_data_global,
      train_data_local_num_dict, train_data_local_dict, test_data_local_dict] = dataset
 

@@ -64,7 +64,7 @@ def load_data(args, benign_file_name, attack_file_name):
     trainset = np.array(db_benign)
     testset = np.array(db_attack)
     trainset[np.isnan(trainset)] = 0
-    trainset[np.isnan(trainset)] = 0
+    #trainset[np.isnan(trainset)] = 0
 
     len_train = len(trainset)
     len_test = len(testset)
@@ -138,18 +138,18 @@ def local_dataloader(args, benign_file_name, attack_file_name, process_id):
 
     # for local opt and test data
     for client_idx in range(args.client_num_in_total):
-        data_local_attack = test_data_global[dataidx_map_attack[client_idx]]
-        data_local_opt = train_data_global[opt_dataidx_map[client_idx]]
-        data_local_test = np.concatenate((data_local_opt, data_local_attack), axis=0)
+        #data_local_attack = test_data_global[dataidx_map_attack[client_idx]]
+        #data_local_opt = train_data_global[opt_dataidx_map[client_idx]]
+        #data_local_test = np.concatenate((data_local_opt, data_local_attack), axis=0)
 
-        test_data_local_dict[client_idx] = torch.utils.data.DataLoader(data_local_test, batch_size=1,
+        test_data_local_dict[client_idx] = torch.utils.data.DataLoader(test_data_global, batch_size=1,
                                                                        shuffle=False,
                                                                        num_workers=0)
 
-        logging.info("true local test sample number = %d, real local_test_sample_number = %d" % (len(opt_dataidx_map[client_idx]) +
-                                                                                                 attack_data_local_num_dict[client_idx],\
-                                                                                                 len(data_local_test)))
-
+        # logging.info("true local test sample number = %d, real local_test_sample_number = %d" % (len(opt_dataidx_map[client_idx]) +
+        #                                                                                          attack_data_local_num_dict[client_idx],\
+        #                                                                                          len(data_local_test)))
+        logging.info('Local test sample number = %d' % (len(test_data_global)))
     return train_data_num, test_data_num, train_data_global, test_data_global, \
            train_data_local_num_dict, train_data_local_dict, test_data_local_dict
 

@@ -93,11 +93,13 @@ class AETrainer(ModelTrainer):
                          round(52150.0 * 0.67 / args.batch_size), round(46585.0 * 0.67 / args.batch_size),
                          round(19528.0 * 0.67 / args.batch_size)]
 
-        test_threshold = [round(49548.0 * 0.67), round(13113.0 * 0.67),
-                         round(39100.0 * 0.67), round(175240.0 * 0.67),
-                         round(62154.0 * 0.67), round(98514.0 * 0.67),
-                         round(52150.0 * 0.67), round(46585.0 * 0.67),
-                         round(19528.0 * 0.67)]
+        # test_threshold = [round(49548.0 * 0.67), round(13113.0 * 0.67),
+        #                  round(39100.0 * 0.67), round(175240.0 * 0.67),
+        #                  round(62154.0 * 0.67), round(98514.0 * 0.67),
+        #                  round(52150.0 * 0.67), round(46585.0 * 0.67),
+        #                  round(19528.0 * 0.67)]
+        test_threshold = 9000
+
         for client_index in train_data_local_dict.keys():
             opt_data = train_data_local_dict[client_index]
             # mse_results_per_client = []
@@ -116,8 +118,9 @@ class AETrainer(ModelTrainer):
         # test = np.array(mse_results_global)
         # plt.hist(test, bins='auto', density=True)
         # plt.show()
+
         mse_results_global = torch.tensor(mse_results_global)
-        threshold_global = torch.mean(mse_results_global) + 1 * torch.std(mse_results_global)/ np.sqrt(args.batch_size)
+        threshold_global =torch.mean(mse_results_global) + 1 * torch.std(mse_results_global)/ np.sqrt(args.batch_size)
 
         accuracy_array_global = []
         precision_array_global = []
@@ -127,8 +130,11 @@ class AETrainer(ModelTrainer):
             test_data = test_data_local_dict[client_index]
 
             # using global threshold for test
+            # [accuracy_client, precision_client, fpr_client] = self.test_local(client_index,
+            #                                                                   (test_threshold[client_index] / 2), threshold_global, test_data, device, args)
             [accuracy_client, precision_client, fpr_client] = self.test_local(client_index,
-                                                                              (test_threshold[client_index] / 2), threshold_global, test_data, device, args)
+                                                                              test_threshold,
+                                                                              threshold_global, test_data, device, args)
             accuracy_array_global.append(accuracy_client)
             precision_array_global.append(precision_client)
             fpr_array_global.append(fpr_client)
