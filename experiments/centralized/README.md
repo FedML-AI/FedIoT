@@ -1050,6 +1050,14 @@ Mean precision: 0.460
 
 Mean false positive rate: 0.811
 
+Avg TN: 1706
+
+Avg FP: 7294
+
+Avg TP: 6200
+
+Avg FN: 0
+
 
 (a) Danmini_Doorbell
 
