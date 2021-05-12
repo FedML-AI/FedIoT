@@ -1103,3 +1103,15 @@ The accuracy is 0.954886
 The precision is 0.962163
 The false positive rate is 0.035616
 
+
+## May 12's update on FL
+With the global testset
+
+The accuracy is 0.80
+The precision is 0.81
+The false positive rate is 0.174
+Threshold = 0.355
+TN = 7448
+FP = 1552
+TP = 4649
+FN = 1550
