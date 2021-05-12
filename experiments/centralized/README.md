@@ -1050,6 +1050,7 @@ Mean precision: 0.460
 
 Mean false positive rate: 0.811
 
+
 (a) Danmini_Doorbell
 
 threshold = 0.358700
@@ -1168,19 +1169,7 @@ The precision is 0.458
 The false positive rate is 0.815
 
 
-II. Baseline 2: BGI data model.
-
-threshold = 0.126311
-
-The True negative number is  3933
-The False positive number is  5067
-The True positive number is  6200
-The False negative number is  0
-
-The accuracy is 0.667
-The precision is 0.550
-The false positive rate is 0.563
-
+II. Baseline 2: ACF data model.
 
 III. Baseline 3: All union data model
 
