@@ -1105,13 +1105,26 @@ The false positive rate is 0.035616
 
 
 ## May 12's update on FL
-With the global testset
+With the global testset, global threshold
 
 The accuracy is 0.80
-The precision is 0.81
-The false positive rate is 0.174
+The precision is 0.75
+The false positive rate is 0.172
 Threshold = 0.355
 TN = 7448
 FP = 1552
 TP = 4649
 FN = 1550
+
+With the global testset, local threshold
+
+The accuracy is 0.76
+The precision is 0.652
+The false positive rate is 0.325
+Avg Threshold is 0.2916
+
+Threshold = [0.0149, 0.203, 0.0305, 0.135, 0.05, 0.075, 0.271, 1.69, 0.155]
+TN = 6078
+FP = 2922
+TP = 5478
+FN = 721
