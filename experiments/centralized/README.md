@@ -1039,3 +1039,167 @@ The False negative number is  0
 The accuracy is  0.9741900054914882
 The precision is  0.9503845573819937
 The false positive rate is  0.05104732350659426
+
+## May 11's update on centralized training 
+
+I. Baseline 1: Local data model.
+
+Mean accuracy: 0.520
+
+Mean precision: 0.460
+
+Mean false positive rate: 0.811
+
+Avg TN: 1706
+
+Avg FP: 7294
+
+Avg TP: 6200
+
+Avg FN: 0
+
+
+(a) Danmini_Doorbell
+
+threshold = 0.358700
+
+The True negative number is  1988
+The False positive number is  7012
+The True positive number is  6200
+The False negative number is  0
+
+The accuracy is 0.539
+The precision is 0.469
+The false positive rate is 0.779
+
+(b) Ecobee
+
+threshold = 0.102526
+
+The True negative number is  1674
+The False positive number is  7326
+The True positive number is  6200
+The False negative number is  0
+
+The accuracy is 0.518
+The precision is 0.458
+The false positive rate is 0.814
+
+(c) Ennio
+
+threshold = 0.117762
+
+The True negative number is  1763
+The False positive number is  7237
+The True positive number is  6200
+The False negative number is  0
+
+The accuracy is 0.524
+The precision is 0.461
+The false positive rate is 0.804
+
+(d) Philips
+
+threshold = 0.113661
+
+The True negative number is  2136
+The False positive number is  6864
+The True positive number is  6200
+The False negative number is  0
+
+The accuracy is 0.548
+The precision is 0.475
+The false positive rate is 0.763
+
+(e) Provision_7
+
+threshold = 0.040038
+
+The True negative number is  1319
+The False positive number is  7681
+The True positive number is  6200
+The False negative number is  0
+
+The accuracy is 0.495
+The precision is 0.447
+The false positive rate is 0.853
+
+(f) Provision_8
+
+threshold = 0.045994
+
+The True negative number is  1507
+The False positive number is  7493
+The True positive number is  6200
+The False negative number is  0
+
+The accuracy is 0.507
+The precision is 0.453
+The false positive rate is 0.833
+
+(g) Samsung
+
+threshold = 0.192586
+
+The True negative number is  2700
+The False positive number is  6300
+The True positive number is  6200
+The False negative number is  0
+
+The accuracy is 0.586
+The precision is 0.496
+The false positive rate is 0.700
+
+(h) SimpleHome_1002
+
+hreshold = 0.068146
+
+The True negative number is  595
+The False positive number is  8405
+The True positive number is  6200
+The False negative number is  0
+
+The accuracy is 0.447
+The precision is 0.425
+The false positive rate is 0.934
+
+(i) SimpleHome_1003
+
+threshold = 0.138309
+
+The True negative number is  1669
+The False positive number is  7331
+The True positive number is  6200
+The False negative number is  0
+
+The accuracy is 0.518
+The precision is 0.458
+The false positive rate is 0.815
+
+
+II. Baseline 2: BGI data model.
+
+threshold = 0.126311
+
+The True negative number is  3933
+The False positive number is  5067
+The True positive number is  6200
+The False negative number is  0
+
+The accuracy is 0.667
+The precision is 0.550
+The false positive rate is 0.563
+
+
+III. Baseline 3: All union data model
+
+Threshold = 0.146357
+
+The True negative number is  6592
+The False positive number is  2408
+The True positive number is  6101
+The False negative number is  99
+
+The accuracy is 0.835
+The precision is 0.717
+The false positive rate is 0.268
