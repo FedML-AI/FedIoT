@@ -1,0 +1,15 @@
+
+## Unified training set, 10% test set
+
+The length of the training set: 555932
+The length of the testing set: 470044
+                                                                                 
+Device '0': Danmini Doorbell                                  (49548, 77073)    # (num_train_set, num_test_set)
+Device '1': Ecobee Thermostat                               (13113, 62294)
+Device '2': Ennio Doorbell                                      (39100, 11093)
+Device '3': Philips_Baby_Monitor                            (175240, 72507)
+Device '4': Provision_737E_Security_Camera            (62154, 55759)
+Device '5': Provision_838_Security_Camera              (98514, 54434)
+Device '6': Samsung_Webcam                                 (52150, 11467)
+Device '7': SimpleHome_1002_Security_Camera       (46585, 62393)
+Device '8': SimpleHome_1003_Security_Camera       (19528, 63024)

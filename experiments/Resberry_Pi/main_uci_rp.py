@@ -4,6 +4,8 @@ import os
 import random
 import socket
 import sys
+import time
+import requests
 
 import numpy as np
 import psutil
@@ -20,6 +22,10 @@ from data_preprocessing.fl_dataloader import local_dataloader
 from FedML.fedml_api.distributed.utils.gpu_mapping import mapping_processes_to_gpu_device_from_yaml_file
 
 from FedML.fedml_api.distributed.fedavg.FedAvgAPI import FedML_init, FedML_FedAvg_distributed
+
+from FedML.fedml_api.distributed.fedavg.MyModelTrainer import MyModelTrainer
+from FedML.fedml_api.distributed.fedavg.FedAVGTrainer import FedAVGTrainer
+from FedML.fedml_api.distributed.fedavg.FedAvgClientManager import FedAVGClientManager
 
 from model.ae import AutoEncoder
 from training.ae_trainer import AETrainer
@@ -96,9 +102,64 @@ def add_args(parser):
 
     parser.add_argument('--ci', type=int, default=0,
                         help='CI')
+
+    parser.add_argument('--server_ip', type=str, default="http://127.0.0.1:5000",
+                        help='IP address of the FedML server')
+
+    parser.add_argument('--client_uuid', type=str, default="0",
+                        help='number of workers in a distributed cluster')
+
     args = parser.parse_args()
     return args
 
+def register(args, uuid):
+    str_device_UUID = uuid
+    URL = args.server_ip + "/api/register"
+
+    # defining a params dict for the parameters to be sent to the API
+    PARAMS = {'device_id': str_device_UUID}
+
+    # sending get request and saving the response as response object
+    r = requests.post(url=URL, params=PARAMS)
+    result = r.json()
+    client_ID = result['client_id']
+    # executorId = result['executorId']
+    # executorTopic = result['executorTopic']
+    training_task_args = result['training_task_args']
+
+    class Args:
+        def __init__(self):
+            self.dataset = training_task_args['dataset']
+            self.data_dir = training_task_args['data_dir']
+            self.partition_method = training_task_args['partition_method']
+            self.partition_alpha = training_task_args['partition_alpha']
+            self.model = training_task_args['model']
+            self.client_num_per_round = training_task_args['client_num_per_round']
+            self.comm_round = training_task_args['comm_round']
+            self.epochs = training_task_args['epochs']
+            self.lr = training_task_args['lr']
+            self.wd = training_task_args['wd']
+            self.batch_size = training_task_args['batch_size']
+            self.frequency_of_the_test = training_task_args['frequency_of_the_test']
+            self.is_mobile = training_task_args['is_mobile']
+
+    args = Args()
+    return client_ID, args
+
+def init_training_device(process_ID, fl_worker_num, gpu_num_per_machine):
+    # initialize the mapping from process ID to GPU ID: <process ID, GPU ID>
+    if process_ID == 0:
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        return device
+    process_gpu_dict = dict()
+    for client_index in range(fl_worker_num):
+        gpu_index = client_index % gpu_num_per_machine
+        process_gpu_dict[client_index] = gpu_index
+
+    logging.info(process_gpu_dict)
+    device = torch.device("cuda:" + str(process_gpu_dict[process_ID - 1]) if torch.cuda.is_available() else "cpu")
+    logging.info(device)
+    return device
 
 def load_data(args, train_file_name, test_file_name):
 
@@ -125,7 +186,10 @@ if __name__ == "__main__":
 
     # parse python script input parameters
     parser = argparse.ArgumentParser()
-    args = add_args(parser)
+    main_args = add_args(parser)
+    uuid = main_args.client_uuid
+    client_ID, args = register(main_args, uuid)
+    client_index = client_ID - 1
 
     # customize the process name
     str_process_name = "FedAvg (distributed):" + str(process_id)
@@ -164,8 +228,9 @@ if __name__ == "__main__":
 
     # # Please check "GPU_MAPPING.md" to see how to define the topology
     logging.info("process_id = %d, size = %d" % (process_id, worker_number))
-    device = mapping_processes_to_gpu_device_from_yaml_file(process_id, worker_number, None,
-                                                            args.gpu_mapping_key)
+    # device = mapping_processes_to_gpu_device_from_yaml_file(process_id, worker_number, None,
+    #                                                         args.gpu_mapping_key)
+    device = init_training_device(client_ID - 1, args.client_num_per_round - 1, 4)
 
     # load data
 
@@ -179,9 +244,17 @@ if __name__ == "__main__":
     model = create_model(device)
 
     # create my own trainer
-    trainer = AETrainer(model)
+    model_trainer = AETrainer(model)
 
-    # start "federated averaging (FedAvg)"
-    FedML_FedAvg_distributed(process_id, worker_number, device, comm,
-                             model, train_data_num, train_data_global, test_data_global,
-                             train_data_local_num_dict, train_data_local_dict, test_data_local_dict, args, trainer)
+    # start training
+    trainer = FedAVGTrainer(client_index, train_data_local_dict, train_data_local_num_dict, train_data_num, device,
+                            args, model_trainer)
+
+    size = args.client_num_per_round + 1
+    client_manager = FedAVGClientManager(args, trainer, rank=client_ID, size=size, backend="MQTT")
+    client_manager.run()
+    client_manager.start_training()
+
+    time.sleep(100000)
+
+

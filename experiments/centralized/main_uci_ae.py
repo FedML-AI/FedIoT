@@ -55,8 +55,8 @@ def add_args(parser):
 
 
 def load_data(args):
-    path_benin_traffic = args.data_dir + '/Ennio_Doorbell/Ennio_Doorbell_benign_raw.csv'
-    path_ack_traffic = args.data_dir + '/Ennio_Doorbell/Ennio_Doorbell_atk_raw.csv'
+    path_benin_traffic = args.data_dir + '/SimpleHome_XCS7_1003_WHT_Security_Camera/benign_traffic.csv'
+    path_ack_traffic = args.data_dir + '/unified_10pc/test_unified_10.csv'
     logging.info(path_benin_traffic)
     logging.info(path_ack_traffic)
 
@@ -77,7 +77,7 @@ def load_data(args):
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=args.batch_size, shuffle=False, num_workers=0)
     optloader = torch.utils.data.DataLoader(optset, batch_size= args.batch_size, shuffle=False, num_workers=0)
     testloader = torch.utils.data.DataLoader(testset, batch_size=1, shuffle=False, num_workers=0)
-    logging.info('train length is %d, test_tr is %f' %(len(trainset),test_tr))
+    logging.info('train length is %d, test_tr is %f' %(len(trainset),testratio))
     return trainloader, testloader, optloader, len(trainset), len(testset), testratio, test_tr
     # trainset = db_benigh[0:round(len(db_benigh) * 0.8)]
     # test_benigh = db_benigh[round(len(db_benigh) * 0.9):len(db_benigh)]

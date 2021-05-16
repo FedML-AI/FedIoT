@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 name_list = ['A','B','C','D','E','F','G','H','I']
-acc_num_list_cen = [0.8236, 0.5940, 0.8243, 0.8771, 0.8426, 0.9090, 0.7542, 0.7802, 0.8254]
+acc_num_list_cen = [0.9914, 0.750, 0.8353, 0.9447, 0.8426, 0.9090, 0.7542, 0.7802, 0.8254]
 acc_num_list_dis = [0.9552, 0.8253, 0.9947, 0.9709, 0.8911, 0.8763, 0.9472, 0.8948, 0.9792]
 x =list(range(len(name_list)))
 total_width, n = 0.5, 2
