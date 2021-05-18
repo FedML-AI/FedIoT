@@ -85,6 +85,7 @@ At each communication round, the system would randomly select 1 device and its d
 accuracy_mean_global 0.79482
 precision_mean_global 0.67386
 fpr_mean_global 0.25611
+avg_tr = 0.591
 
 (2) 
 
