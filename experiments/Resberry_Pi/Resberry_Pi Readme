@@ -1,4 +1,4 @@
-# Some Tips for the User in Resberry Pi
+## Some Tips for the User in Resberry Pi
 
 1. Make all ip address the same as your server address. For example, if you want your PC become the server for the FL, 
 then make all the ip host to your PC's IP address. You should change your IP address in both client and server manager
@@ -13,4 +13,6 @@ as the server of the Mqtt.
 
 5. It now only supports the old version of FedML, the version that inside the FedIoT, pls do not upgrade it.
 
-6. Pls believe that this lib could work, but it may take you a very long time to let it run.
+6. In this folder, you should put app.py in your PC and main_uci_rp.py in your Rasberry Pi. These two files could definitely work.
+
+7. Pls believe that this lib could work, but it may take you a very long time to let it run.
