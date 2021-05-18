@@ -16,3 +16,23 @@ as the server of the Mqtt.
 6. In this folder, you should put app.py in your PC and main_uci_rp.py in your Rasberry Pi. These two files could definitely work.
 
 7. Pls believe that this lib could work, but it may take you a very long time to let it run.
+
+## Instruction for the Mqtt
+
+To run a Mqtt, you need to install a server first on your PC.
+
+1. Download emqx to your PC. Run the following on your terminal.
+
+```brew tap emqx/emqx```
+
+```brew install emqx```
+
+2. Activate your server, run the following on your terminal.
+
+```emqx start```
+
+3. You could see your server activity by http://127.0.0.1:18083. User name is admin, pwd is public.
+
+4. When you stop your server, type the following on your terminal.
+
+```emqx stop```
