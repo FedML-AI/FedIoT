@@ -1,0 +1,16 @@
+# Some Tips for the User in Resberry Pi
+
+1. Make all ip address the same as your server address. For example, if you want your PC become the server for the FL, 
+then make all the ip host to your PC's IP address. You should change your IP address in both client and server manager
+in the FedML file in both sides.
+
+2. Because we use the Mqtt as the communication between the device and server. We highly suggest you to install a Emqs on your PC
+as the server of the Mqtt.
+
+3. When you use the Mqtt, the port number should be 1883. When you use the HTTP in the app.py, the port should be 5000.
+
+4. NEVER change the time.sleep(), it may trigger very serious bugs.
+
+5. It now only supports the old version of FedML, the version that inside the FedIoT, pls do not upgrade it.
+
+6. Pls believe that this lib could work, but it may take you a very long time to let it run.
