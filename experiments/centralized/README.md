@@ -1203,3 +1203,17 @@ The False negative number is  99
 The accuracy is 0.835
 The precision is 0.717
 The false positive rate is 0.268
+
+## May 18's update on centralized training 
+10% of all union data model
+
+threshold = 0.92968
+
+The True negative number is  6928
+The False positive number is  2072
+The True positive number is  1932
+The False negative number is  4268
+
+The accuracy is 0.583
+The precision is 0.483
+The false positive rate is 0.23
