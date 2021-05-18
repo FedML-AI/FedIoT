@@ -72,3 +72,62 @@ Avg uplink time: 0.176s
 Avg comm time: 10.559s
 Avg comp time: 9.641s
 ratio between comm and comp: 1.095
+
+## Raspberry Pi Results on May 19th. 
+
+# Personalized threshold 
+
+At each communication round, the system would randomly select 1 device and its data to train the model
+
+
+(1) Mean results:
+
+accuracy_mean_global 0.79482
+precision_mean_global 0.67386
+fpr_mean_global 0.25611
+
+(2) 
+
+TN number: 6695
+FP number: 2305
+TP number: 5342
+FN number: 857
+
+(3)Personalized threshold details
+
+threshold_a: 0.15509
+
+threshold_b: 0.38903
+
+threshold_c: 0.18088
+
+threshold_d: 0.6344
+
+threshold_e: 0.38689
+
+threshold_f: 0.53697
+
+threshold_g: 0.48035
+
+threshold_h: 2.18243
+
+threshold_i: 0.37587
+
+
+## Global threshold
+
+(1) Mean results
+
+threshold_global 0.71018
+accuracy_mean_global 0.73806
+precision_mean_global 0.70541
+fpr_mean_global 0.20656
+
+(2)
+
+TN number: 7141
+FP number: 1859
+TP number: 4027
+FN number: 2172
+
+
