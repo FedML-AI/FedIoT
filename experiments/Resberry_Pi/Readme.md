@@ -73,9 +73,9 @@ Avg comm time: 10.559s
 Avg comp time: 9.641s
 ratio between comm and comp: 1.095
 
-## Raspberry Pi Results on May 19th. 
+## Raspberry Pi Results on May 18th. 
 
-# Personalized threshold 
+I. Personalized threshold 
 
 At each communication round, the system would randomly select 1 device and its data to train the model
 
@@ -114,7 +114,7 @@ threshold_h: 2.18243
 threshold_i: 0.37587
 
 
-## Global threshold
+II. Global threshold
 
 (1) Mean results
 
