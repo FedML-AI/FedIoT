@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "")))
 
 from data_preprocessing.fl_dataloader import local_dataloader
 
-from FedML.fedml_api.distributed.utils.gpu_mapping import mapping_processes_to_gpu_device_from_yaml_file
+#from FedML.fedml_api.distributed.utils.gpu_mapping import mapping_processes_to_gpu_device_from_yaml_file
 
 from FedML.fedml_api.distributed.fedavg.FedAvgAPI import FedML_init, FedML_FedAvg_distributed
 
@@ -55,7 +55,7 @@ def add_args(parser):
     parser.add_argument('--client_num_in_total', type=int, default=9, metavar='NN',
                         help='number of workers in a distributed cluster')
 
-    parser.add_argument('--client_num_per_round', type=int, default=4, metavar='NN',
+    parser.add_argument('--client_num_per_round', type=int, default=1, metavar='NN',
                         help='number of workers')
 
     parser.add_argument('--batch_size', type=int, default=64, metavar='N',
@@ -72,10 +72,10 @@ def add_args(parser):
 
     parser.add_argument('--wd', help='weight decay parameter;', type=float, default=0.001)
 
-    parser.add_argument('--epochs', type=int, default=50, metavar='EP',
+    parser.add_argument('--epochs', type=int, default=1, metavar='EP',
                         help='how many epochs will be trained locally')
 
-    parser.add_argument('--comm_round', type=int, default=10,
+    parser.add_argument('--comm_round', type=int, default=100,
                         help='how many round of communications we shoud use')
 
     parser.add_argument('--is_mobile', type=int, default=1,
@@ -103,7 +103,7 @@ def add_args(parser):
     parser.add_argument('--ci', type=int, default=0,
                         help='CI')
 
-    parser.add_argument('--server_ip', type=str, default="http://127.0.0.1:5000",
+    parser.add_argument('--server_ip', type=str, default="http://192.168.3.86:5000",
                         help='IP address of the FedML server')
 
     parser.add_argument('--client_uuid', type=str, default="0",
@@ -234,7 +234,7 @@ if __name__ == "__main__":
 
     # load data
 
-    dataset = load_data(args, '/federated_learning_data/train_unified.csv', '/new_centralized_set/global_testset_test.csv')
+    dataset = load_data(main_args, 'federated_learning_data/train_unified_10.csv', 'new_centralized_set/global_testset_test.csv')
     [train_data_num, test_data_num, train_data_global, test_data_global,
      train_data_local_num_dict, train_data_local_dict, test_data_local_dict] = dataset
 
@@ -245,12 +245,13 @@ if __name__ == "__main__":
 
     # create my own trainer
     model_trainer = AETrainer(model)
-
+    # client_index = 1
     # start training
-    trainer = FedAVGTrainer(client_index, train_data_local_dict, train_data_local_num_dict, train_data_num, device,
+    trainer = FedAVGTrainer(client_index, train_data_local_dict, train_data_local_num_dict, test_data_local_dict,
+                            train_data_num, device,
                             args, model_trainer)
 
-    size = args.client_num_per_round + 1
+    size = main_args.client_num_per_round + 1
     client_manager = FedAVGClientManager(args, trainer, rank=client_ID, size=size, backend="MQTT")
     client_manager.run()
     client_manager.start_training()
