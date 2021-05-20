@@ -1128,3 +1128,525 @@ TN = 6078
 FP = 2922
 TP = 5478
 FN = 721
+
+## May 20's on Sampling( Dropout) method
+
+Using 10% training data and global testset. 
+
+comm_round = 100, epoch_per_round = 1, batch_size = 64, lr = 1e-3
+
+I. Centralized training
+
+The True negative number is  6672
+The False positive number is  2328
+The True positive number is  981
+The False negative number is  5219
+
+The accuracy is  0.503
+The precision is  0.296
+The false positive rate is  0.259
+
+II. FedIoT && Global threshold:
+
+ (1) Random sample 1 device
+ 
+ a. 
+ 
+The threshold is 0.220851
+
+The True negative number is 1000
+The False positive number is 0
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 1.000
+The precision is 1.000
+The false positive rate is 0.000
+
+b.
+
+The threshold is 0.220851
+
+The True negative number is 865
+The False positive number is 135
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.925
+The precision is 0.856
+The false positive rate is 0.135
+
+c. 
+
+The threshold is 0.220851
+
+The True negative number is 995
+The False positive number is 5
+The True positive number is 300
+The False negative number is 0
+
+The accuracy is 0.996
+The precision is 0.984
+The false positive rate is 0.005
+
+d. 
+
+The threshold is 0.220851
+
+The True negative number is 927
+The False positive number is 73
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.959
+The precision is 0.916
+The false positive rate is 0.073
+
+e.
+
+The threshold is 0.220851
+
+The True negative number is 792
+The False positive number is 208
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.884
+The precision is 0.794
+The false positive rate is 0.208
+
+f.
+
+The threshold is 0.220851
+
+The True negative number is 772
+The False positive number is 228
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.873
+The precision is 0.778
+The false positive rate is 0.228
+
+g.
+
+The threshold is 0.220851
+
+The True negative number is 999
+The False positive number is 1
+The True positive number is 300
+The False negative number is 0
+
+The accuracy is 0.999
+The precision is 0.997
+The false positive rate is 0.001
+
+h.
+
+The threshold is 0.220851
+
+The True negative number is 992
+The False positive number is 8
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.996
+The precision is 0.990
+The false positive rate is 0.008
+
+i. 
+
+The threshold is 0.220851
+
+The True negative number is 998
+The False positive number is 2
+The True positive number is 762
+The False negative number is 38
+
+The accuracy is 0.978
+The precision is 0.997
+The false positive rate is 0.002
+
+Mean results
+
+accuracy_mean_global = 0.957
+precision_mean_global = 0.924
+fpr_mean_global = 0.073
+
+ (2) Random samples 3 devices
+
+a.
+
+The threshold is 0.178757
+
+The True negative number is 1000
+The False positive number is 0
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 1
+The precision is 1
+The false positive rate is 0
+
+b.
+
+The threshold is 0.178757
+
+The True negative number is 701
+The False positive number is 299
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.834
+The precision is 0.728
+The false positive rate is 0.299
+
+c.
+
+The threshold is 0.178757
+
+The True negative number is 990
+The False positive number is 10
+The True positive number is 300
+The False negative number is 0
+
+The accuracy is 0.992
+The precision is 0.968
+The false positive rate is 0.010
+
+d.
+
+The threshold is 0.178757
+
+The True negative number is 929
+The False positive number is 71
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.961
+The precision is 0.918
+The false positive rate is 0.071
+
+e.
+
+The threshold is 0.178757
+
+The True negative number is 844
+The False positive number is 156
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.913
+The precision is 0.837
+The false positive rate is 0.156
+
+f.
+
+The threshold is 0.178757
+
+The True negative number is 800
+The False positive number is 200
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.889
+The precision is 0.800
+The false positive rate is 0.200
+
+g.
+
+The threshold is 0.178757
+
+The True negative number is 998
+The False positive number is 2
+The True positive number is 300
+The False negative number is 0
+
+The accuracy is 0.998
+The precision is 0.993
+The false positive rate is 0.002
+
+h.
+
+The threshold is 0.178757
+
+The True negative number is 984
+The False positive number is 16
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.991
+The precision is 0.980
+The false positive rate is 0.016
+
+i.
+
+The threshold is 0.178757
+
+The True negative number is 997
+The False positive number is 3
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.998
+The precision is 0.996
+The false positive rate is 0.003
+
+Mean results
+
+accuracy_mean_global = 0.952987
+precision_mean_global = 0.913446
+fpr_mean_global = 0.084111
+
+(3) Random sample 6 devices
+
+a.
+
+The threshold is 0.171713
+
+The True negative number is 1000
+The False positive number is 0
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 1
+The precision is 1
+The false positive rate is 0
+
+b.
+
+The threshold is 0.171713
+
+The True negative number is 535
+The False positive number is 465
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.742
+The precision is 0.632
+The false positive rate is 0.465
+
+c.
+
+The threshold is 0.171713
+
+The True negative number is 901
+The False positive number is 99
+The True positive number is 300
+The False negative number is 0
+
+The accuracy is 0.924
+The precision is 0.751
+The false positive rate is 0.099
+
+d.
+
+The threshold is 0.171713
+
+The True negative number is 926
+The False positive number is 74
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.958
+The precision is 0.915
+The false positive rate is 0.074
+
+e.
+
+The threshold is 0.171713
+
+The True negative number is 876
+The False positive number is 124
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.931
+The precision is 0.865
+The false positive rate is 0.124
+
+f.
+
+The threshold is 0.171713
+
+The True negative number is 836
+The False positive number is 164
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.909
+The precision is 0.830
+The false positive rate is 0.164
+
+g.
+
+The threshold is 0.171713
+
+The True negative number is 996
+The False positive number is 4
+The True positive number is 300
+The False negative number is 0
+
+The accuracy is 0.997
+The precision is 0.987
+The false positive rate is 0.004
+
+h.
+
+The threshold is 0.171713
+
+The True negative number is 942
+The False positive number is 58
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.968
+The precision is 0.932
+The false positive rate is 0.058
+
+i.
+
+The threshold is 0.171713
+
+The True negative number is 996
+The False positive number is 4
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.998
+The precision is 0.995
+The false positive rate is 0.004
+
+Mean results
+
+accuracy_mean_global = 0.936
+precision_mean_global = 0.879
+fpr_mean_global = 0.110
+
+(4). No sampling method, using all devices for training
+
+a.
+
+The threshold is 0.159562
+
+The True negative number is 1000
+The False positive number is 0
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 1
+The precision is 1
+The false positive rate is 0
+
+b.
+
+The threshold is 0.159562
+
+The True negative number is 305
+The False positive number is 695
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.614
+The precision is 0.535
+The false positive rate is 0.695
+
+c.
+
+The threshold is 0.159562
+
+The True negative number is 88.000000
+The False positive number is 114
+The True positive number is 300
+The False negative number is 0
+
+The accuracy is 0.912
+The precision is 0.725
+The false positive rate is 0.114
+
+d.
+
+The threshold is 0.159562
+
+The True negative number is 930
+The False positive number is 70
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.961
+The precision is 0.920
+The false positive rate is 0.070
+
+e.
+
+The threshold is 0.159562
+
+The True negative number is 841
+The False positive number is 159
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.912
+The precision is 0.834
+The false positive rate is 0.159
+
+f.
+
+The threshold is 0.159562
+
+The True negative number is 802
+The False positive number is 198
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.890
+The precision is 0.802
+The false positive rate is 0.198
+
+g.
+
+The threshold is 0.159562
+The True negative number is 995
+The False positive number is 5
+The True positive number is 300
+The False negative number is 0
+
+The accuracy is 0.996
+The precision is 0.984
+The false positive rate is 0
+
+h.
+
+The threshold is 0.159562
+
+The True negative number is 893
+The False positive number is 107
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.940
+The precision is 0.882
+The false positive rate is 0.107
+
+i.
+
+The threshold is 0.159562
+
+The True negative number is 996
+The False positive number is 4
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.998
+The precision is 0.995
+The false positive rate is 0.004
+
+Mean result
+
+accuracy_mean_global = 0.914
+precision_mean_global = 0.853
+fpr_mean_global = 0.150
+
+
+
+
