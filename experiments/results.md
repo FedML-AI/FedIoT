@@ -4,25 +4,70 @@
 
 ### Baseline 1:
 
-### Baseline 2:
+Mean accuracy: 0.520
+Mean precision: 0.460
+Mean false positive rate: 0.811
+
+### Baseline 2(BGI):
+
+The accuracy is 0.667 
+The precision is 0.550 
+The false positive rate is 0.563
 
 ### Baseline 3:
 
+The accuracy is 0.835 
+The precision is 0.717 
+The false positive rate is 0.268
+
 ### FL 9-1 Personalized:
+
+accuracy_mean_global = 0.771543
+precision_mean_global = 0.631561
+fpr_mean_global = 0.299667
 
 ### FL 9-1 Globalized:
 
+accuracy_mean_global = 0.851216
+precision_mean_global = 0.775326
+fpr_mean_global = 0.207778
+
 ### FL 9-3 Personalized:
+
+accuracy_mean_global = 0.769193
+precision_mean_global = 0.637543
+fpr_mean_global = 0.308556
 
 ### FL 9-3 Globalized:
 
+accuracy_mean_global = 0.814131
+precision_mean_global = 0.795958
+fpr_mean_global = 0.172333
+
+
 ### FL 9-6 Personalized:
+
+accuracy_mean_global = 0.762080
+precision_mean_global = 0.636533
+fpr_mean_global = 0.319000
 
 ### FL 9-6 Globalized:
 
+accuracy_mean_global = 0.838077
+precision_mean_global = 0.796786
+fpr_mean_global = 0.187111
+
 ### FL 9-9 Personalized:
 
+accuracy_mean_global is 0.76
+precision_mean_global is 0.652
+fpr_mean_global is 0.325 
+
 ### FL 9-9 Globalized:
+
+accuracy_mean_global is 0.80 
+precision_mean_global is 0.75 
+fpr_mean_global is 0.172 
 
 ## Train with 50% benign data
 
