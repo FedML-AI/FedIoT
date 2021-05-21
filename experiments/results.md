@@ -32,6 +32,22 @@
 
 ### Baseline 3:
 
+threshold = 1.12323
+
+The True negative number is 7473
+
+The False positive number is 1527 
+
+The True positive number is 3184
+
+The False negative number is 3016
+
+The accuracy is  0.701
+
+The precision is 0.676 
+
+The false positive rate is 0.170
+
 ### FL 9-1 Personalized:
 
 ### FL 9-1 Globalized:
