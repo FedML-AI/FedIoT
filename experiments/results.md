@@ -8,6 +8,22 @@
 
 ### Baseline 3:
 
+### FL 9-1 Personalized:
+
+### FL 9-1 Globalized:
+
+### FL 9-3 Personalized:
+
+### FL 9-3 Globalized:
+
+### FL 9-6 Personalized:
+
+### FL 9-6 Globalized:
+
+### FL 9-9 Personalized:
+
+### FL 9-9 Globalized:
+
 ## Train with 50% benign data
 
 ### Baseline 1:
@@ -15,6 +31,22 @@
 ### Baseline 2:
 
 ### Baseline 3:
+
+### FL 9-1 Personalized:
+
+### FL 9-1 Globalized:
+
+### FL 9-3 Personalized:
+
+### FL 9-3 Globalized:
+
+### FL 9-6 Personalized:
+
+### FL 9-6 Globalized:
+
+### FL 9-9 Personalized:
+
+### FL 9-9 Globalized:
 
 ## Train with 10% benign data
 
@@ -39,3 +71,19 @@ The accuracy is 0.583
 The precision is 0.483 
 
 The false positive rate is 0.23
+
+### FL 9-1 Personalized:
+
+### FL 9-1 Globalized:
+
+### FL 9-3 Personalized:
+
+### FL 9-3 Globalized:
+
+### FL 9-6 Personalized:
+
+### FL 9-6 Globalized:
+
+### FL 9-9 Personalized:
+
+### FL 9-9 Globalized:
