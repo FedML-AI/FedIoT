@@ -1647,6 +1647,124 @@ accuracy_mean_global = 0.914
 precision_mean_global = 0.853
 fpr_mean_global = 0.150
 
+III. FeDIoT && Personalized threshold
+
+ (1). Random sample 1 device
+ 
+a. 
+ 
+The threshold is 0.039895
+
+The True negative number is 795
+The False positive number is 205
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.886
+The precision is 0.796
+The false positive rate is 0.205
+
+b.
+
+The threshold is 0.126308
+
+The True negative number is 795
+The False positive number is 205
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.886
+The precision is 0.796
+The false positive rate is 0.205
+
+c. 
+
+The threshold is 0.049999
+The True negative number is 664
+The False positive number is 336
+The True positive number is 300
+The False negative number is 0
+The accuracy is 0.742
+The precision is 0.472
+The false positive rate is 0.336
+
+d.
+
+The threshold is 0.253140
+The True negative number is 940
+The False positive number is 60
+The True positive number is 767
+The False negative number is 33
+The accuracy is 0.948
+The precision is 0.927
+The false positive rate is 0.060
+
+e.
+
+The threshold is 0.138744
+
+The True negative number is 783
+The False positive number is 217
+The True positive number is 800
+The False negative number is 0
+The accuracy is 0.879
+The precision is 0.787
+The false positive rate is 0.217
+
+f.
+
+The threshold is 0.193109
+
+The True negative number is 771
+The False positive number is 229
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.873
+The precision is 0.777
+The false positive rate is 0.229
+
+g.
+
+The threshold is 0.006141
+
+The True negative number is 782
+The False positive number is 218
+The True positive number is 300
+The False negative number is 0
+The accuracy is 0.832
+The precision is 0.579
+The false positive rate is 0.218
+
+h.
+
+The threshold is 0.033419
+The True negative number is 775
+The False positive number is 225
+The True positive number is 800
+The False negative number is 0
+The accuracy is 0.875
+The precision is 0.780
+The false positive rate is 0.225
+
+i. 
+
+The threshold is 0.017004
+
+The True negative number is 371
+The False positive number is 629
+The True positive number is 800
+The False negative number is 0
+
+The accuracy is 0.651
+The precision is 0.560
+The false positive rate is 0.629
+
+Mean results: 
+
+accuracy_mean_global = 0.841
+precision_mean_global = 0.719
+fpr_mean_global = 0.258
 
 
 
