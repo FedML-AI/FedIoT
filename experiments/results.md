@@ -95,19 +95,51 @@ The false positive rate is 0.170
 
 ### FL 9-1 Personalized:
 
+accuracy_mean_global = 0.932887
+precision_mean_global = 0.872468
+fpr_mean_global = 0.111222
+
 ### FL 9-1 Globalized:
+
+accuracy_mean_global = 0.946933
+precision_mean_global = 0.912602
+fpr_mean_global = 0.092000
 
 ### FL 9-3 Personalized:
 
+accuracy_mean_global = 0.931524
+precision_mean_global = 0.886346
+fpr_mean_global = 0.091889
+
 ### FL 9-3 Globalized:
+
+accuracy_mean_global = 0.951738
+precision_mean_global = 0.929538
+fpr_mean_global = 0.071111
 
 ### FL 9-6 Personalized:
 
+accuracy_mean_global = 0.929031
+precision_mean_global = 0.884828
+fpr_mean_global = 0.085333
+
 ### FL 9-6 Globalized:
+
+accuracy_mean_global = 0.939658
+precision_mean_global = 0.917425
+fpr_mean_global = 0.097556
 
 ### FL 9-9 Personalized:
 
+accuracy_mean_global = 0.904065
+precision_mean_global = 0.839900
+fpr_mean_global = 0.114667
+
 ### FL 9-9 Globalized:
+
+accuracy_mean_global = 0.922118
+precision_mean_global = 0.861413
+fpr_mean_global = 0.123778
 
 ## Train with 10% benign data
 
