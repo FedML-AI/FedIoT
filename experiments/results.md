@@ -73,7 +73,15 @@ fpr_mean_global is 0.172
 
 ### Baseline 1:
 
-### Baseline 2:
+Mean accuracy: 0.514
+Mean precision: 0.448
+Mean false positive rate: 0.682
+
+### Baseline 2(BHI):
+
+The accuracy is  0.5869
+The precision is  0.4967
+The false positive rate is  0.674
 
 ### Baseline 3:
 
@@ -144,6 +152,9 @@ fpr_mean_global = 0.123778
 ## Train with 10% benign data
 
 ### Baseline 1:
+Mean Accuracy is 0.482
+Mean Precision is 0.444
+Mean FPR is 0.872
 
 ### Baseline 2:
 
