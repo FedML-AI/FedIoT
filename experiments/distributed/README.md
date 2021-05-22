@@ -1555,7 +1555,7 @@ c.
 
 The threshold is 0.159562
 
-The True negative number is 88.000000
+The True negative number is 886
 The False positive number is 114
 The True positive number is 300
 The False negative number is 0
