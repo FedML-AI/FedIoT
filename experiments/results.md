@@ -157,6 +157,9 @@ Mean Precision is 0.444
 Mean FPR is 0.872
 
 ### Baseline 2:
+The accuracy is  0.5168
+The precision is  0.458
+The false positive rate is  0.816
 
 ### Baseline 3:
 
