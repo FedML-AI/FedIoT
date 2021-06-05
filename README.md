@@ -70,4 +70,15 @@ Please read the experiment section in our paper.
 Please cite our FedIoT and FedML paper if it helps your research.
 You can describe us in your paper like this: "We develop our experiments based on FedIoT [1] and FedML [2]".
 
+## 7. Contact
+
+The corresponding author is:
+
+Tuo Zhang
+tuozhang@usc.edu
+
+Chaoyang He
+chaoyang.he@usc.edu
+http://chaoyanghe.com
+
  
