@@ -1,4 +1,4 @@
-## Introduction
+## 1. Introduction
 We select a real world IoT devices' traffic dataset called N-BaIoT to test our platform and algorithm.
 [N-BaIoT](https://archive.ics.uci.edu/ml/datasets/detection_of_IoT_botnet_attacks_N_BaIoT)
 
@@ -22,7 +22,7 @@ mirai attacks:
 
 Note: We found the TCP and UDP samples under bashlite attacks dataset are inconsistant, therefore we exclude them from our test dataset
 
-## Data Selection
+## 2. Data Selection
 
 (1) The Training and Opt dataset:
 
@@ -46,3 +46,8 @@ We integrate the benign and attack samples from 9 devices into one test set in o
 | Attack Sample Number    | 800      | 800      | 300     | 800      | 800      | 800      |300       | 800      | 800      |
 
 We evaluate every model on this global testset and the total number is 15,200.
+
+## 3. Citation Request
+
+-- Reference to the article where the dataset was initially described and used:
+Y. Meidan, M. Bohadana, Y. Mathov, Y. Mirsky, D. Breitenbacher, A. Shabtai, and Y. Elovici 'N-BaIoT: Network-based Detection of IoT Botnet Attacks Using Deep Autoencoders', IEEE Pervasive Computing, Special Issue - Securing the IoT (July/Sep 2018)
