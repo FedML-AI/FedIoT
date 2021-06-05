@@ -87,17 +87,12 @@ class AETrainer(ModelTrainer):
         # mse_results_global = []
         threshold_dict = {}
         thres_func = nn.MSELoss()
-        opt_threshold = [round(49548.0 * 0.67 / args.batch_size), round(13113.0 * 0.67 / args.batch_size),
-                         round(39100.0 * 0.67 / args.batch_size), round(175240.0 * 0.67 / args.batch_size),
-                         round(62154.0 * 0.67 / args.batch_size), round(98514.0 * 0.67 / args.batch_size),
-                         round(52150.0 * 0.67 / args.batch_size), round(46585.0 * 0.67 / args.batch_size),
-                         round(19528.0 * 0.67 / args.batch_size)]
+        opt_threshold = [round(4955.0 * 0.67 / args.batch_size), round(1311.0 * 0.67 / args.batch_size),
+                         round(3910.0 * 0.67 / args.batch_size), round(17524.0 * 0.67 / args.batch_size),
+                         round(6215.0 * 0.67 / args.batch_size), round(9851.0 * 0.67 / args.batch_size),
+                         round(5215.0 * 0.67 / args.batch_size), round(4658.0 * 0.67 / args.batch_size),
+                         round(1953.0 * 0.67 / args.batch_size)]
 
-        # test_threshold = [round(49548.0 * 0.67), round(13113.0 * 0.67),
-        #                  round(39100.0 * 0.67), round(175240.0 * 0.67),
-        #                  round(62154.0 * 0.67), round(98514.0 * 0.67),
-        #                  round(52150.0 * 0.67), round(46585.0 * 0.67),
-        #                  round(19528.0 * 0.67)]
         test_threshold = 1000
 
         for client_index in train_data_local_dict.keys():
