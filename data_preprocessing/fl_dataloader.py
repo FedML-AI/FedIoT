@@ -80,14 +80,11 @@ def homo_partition_data(args, process_id, benign_data, attack_data):
     else:
         # For benign set
         ## records the range of idxs for each device
-        benign_split_list = [0, 49548, 62661, 101761, 277001, 339155, 437669, 489819, 536404, 555932]
+        benign_split_list = [0, 4955, 6266, 10176, 27700, 33915, 43766, 48981, 53639, 55592]
         ## records the number of samples of each device
-        benign_len = [49548, 13113, 39100, 175240, 62154, 98514, 52150, 46585, 19528]
+        benign_len = [4955, 1311, 3910, 17524, 6215, 9851, 5215, 4658, 1953]
 
         # For attack set
-        ## records the range of idxs for each device
-        # attack_split_list = [0, 77073, 139367, 150460, 222967, 278726, 333160, 344627, 407020, 470044]
-        #attack_split_list = [0, 385366, 696841, 752306, 1114843, 1393634, 1665799, 1723134, 2035103, 2350225]
         attack_split_list = [0, 799, 1599, 1899, 2699, 3499, 4299, 4599, 5399, 6199]
 
         # training and opt data are from the unified benign dataset
