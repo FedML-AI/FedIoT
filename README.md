@@ -63,7 +63,7 @@ Some tasks can share the same trainer.
 
 ## 5. Results
 
-Please read the experiment section in our paper.
+Please read the experiment section in our paper. The `main` function under the distributed now sets only for model training, please use the `fl_test` to evaluate the performance.
 
 
 ## 6. Citation
