@@ -4,6 +4,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 import wandb
+import os
+import joblib
 
 from matplotlib import pyplot as plt
 from FedML.fedml_core.trainer.model_trainer import ModelTrainer
@@ -28,7 +30,7 @@ class AETrainer(ModelTrainer):
             # mini- batch loop
             epoch_loss = 0.0
             for idx, inp in enumerate(train_data):
-                if idx < round(len(train_data) * 3 / 2):
+                if idx < round(len(train_data) * 2 / 3):
                     inp = inp.to(device)
                     optimizer.zero_grad()
                     decode = model(inp)
@@ -55,6 +57,7 @@ class AETrainer(ModelTrainer):
             decode = model(inp)
             diff = thres_func(decode, inp)
             mse = diff.item()
+            # print("IDX is ", idx, "MSE is ", mse)
             if idx < opt_idx_threshold:
                 if mse > threshold:
                     false_positive.append(idx)
@@ -65,6 +68,9 @@ class AETrainer(ModelTrainer):
                     true_positive.append(idx)
                 else:
                     false_negative.append(idx)
+
+        # print(len(true_positive))
+        # print(len(false_positive))
 
         accuracy = (len(true_positive) + len(true_negative)) \
                    / (len(true_positive) + len(true_negative) + len(false_positive) + len(false_negative))
@@ -84,14 +90,20 @@ class AETrainer(ModelTrainer):
 
     def test_on_the_server(self, train_data_local_dict, test_data_local_dict, device, args=None):
         logging.info(device)
-        # mse_results_global = []
+        mse_results_global = []
         threshold_dict = {}
         thres_func = nn.MSELoss()
-        opt_threshold = [round(49548.0 * 0.67 / args.batch_size), round(13113.0 * 0.67 / args.batch_size),
-                         round(39100.0 * 0.67 / args.batch_size), round(175240.0 * 0.67 / args.batch_size),
-                         round(62154.0 * 0.67 / args.batch_size), round(98514.0 * 0.67 / args.batch_size),
-                         round(52150.0 * 0.67 / args.batch_size), round(46585.0 * 0.67 / args.batch_size),
-                         round(19528.0 * 0.67 / args.batch_size)]
+        # opt_threshold = [round(49548.0 * 0.67 / args.batch_size), round(13113.0 * 0.67 / args.batch_size),
+        #                  round(39100.0 * 0.67 / args.batch_size), round(175240.0 * 0.67 / args.batch_size),
+        #                  round(62154.0 * 0.67 / args.batch_size), round(98514.0 * 0.67 / args.batch_size),
+        #                  round(52150.0 * 0.67 / args.batch_size), round(46585.0 * 0.67 / args.batch_size),
+        #                  round(19528.0 * 0.67 / args.batch_size)]
+        opt_threshold = [round(4955.0 * 0.67 / args.batch_size), round(1311.0 * 0.67 / args.batch_size),
+                         round(3910.0 * 0.67 / args.batch_size), round(17524.0 * 0.67 / args.batch_size),
+                         round(6215.0 * 0.67 / args.batch_size), round(9851.0 * 0.67 / args.batch_size),
+                         round(5215.0 * 0.67 / args.batch_size), round(4658.0 * 0.67 / args.batch_size),
+                         round(1953.0 * 0.67 / args.batch_size)]
+
 
         # test_threshold = [round(49548.0 * 0.67), round(13113.0 * 0.67),
         #                  round(39100.0 * 0.67), round(175240.0 * 0.67),
@@ -115,45 +127,52 @@ class AETrainer(ModelTrainer):
             mse_results_per_client = torch.tensor(mse_results_per_client)
             threshold_dict[client_index] = torch.mean(mse_results_per_client) + 1 * torch.std(mse_results_per_client) / np.sqrt(
             args.batch_size)
+        threshold_path = os.path.join("/Users/ultraz/PycharmProjects/FedML-IoT-V/experiments/distributed", 'threshold_dict.pkl')
+        joblib.dump(threshold_dict, threshold_path)
         # test = np.array(mse_results_global)
         # plt.hist(test, bins='auto', density=True)
         # plt.show()
 
         # mse_results_global = torch.tensor(mse_results_global)
         # threshold_global =torch.mean(mse_results_global) + 1 * torch.std(mse_results_global)/ np.sqrt(args.batch_size)
+        # logging.info('The threshold is %f' % (threshold_global))
 
         accuracy_array_global = []
         precision_array_global = []
         fpr_array_global = []
 
-        for client_index in test_data_local_dict.keys():
-            test_data = test_data_local_dict[client_index]
+        # for client_index in test_data_local_dict.keys():
+        #     test_data = test_data_local_dict[client_index]
+        #
+        #     # using global threshold for test
+        #     # [accuracy_client, precision_client, fpr_client] = self.test_local(client_index,
+        #     #                                                                   (test_threshold[client_index] / 2), threshold_global, test_data, device, args)
+        #     [accuracy_client, precision_client, fpr_client] = self.test_local(client_index,
+        #                                                                       test_threshold,
+        #                                                                       threshold_global, test_data, device, args)
+        #     accuracy_array_global.append(accuracy_client)
+        #     precision_array_global.append(precision_client)
+        #     fpr_array_global.append(fpr_client)
+        #
+        #     # # using local threshold for test
+        #     # precision_with_local_threshold_per_client = self.test_local(client_index, False, threshold_dict[client_index], test_data, device, args)
+        #     # precision_array_local.append(precision_with_local_threshold_per_client)
+        #
+        # accuracy_mean_global = np.mean(accuracy_array_global)
+        # precision_mean_global = np.mean(precision_array_global)
+        # fpr_mean_global = np.mean(fpr_array_global)
+        #
+        # # precision_mean_local = np.mean(precision_array_local)
+        # logging.info("accuracy_mean_global = %f" % accuracy_mean_global)
+        # logging.info("precision_mean_global = %f" % precision_mean_global)
+        # logging.info("fpr_mean_global = %f" % fpr_mean_global)
+        #
+        # wandb.log({"Test/accuracy_mean_global": accuracy_mean_global})
+        # wandb.log({"Test/precision_mean_global": precision_mean_global})
+        # wandb.log({"Test/fpr_mean_global": fpr_mean_global})
 
-            # using global threshold for test
-            # [accuracy_client, precision_client, fpr_client] = self.test_local(client_index,
-            #                                                                   (test_threshold[client_index] / 2), threshold_global, test_data, device, args)
-            [accuracy_client, precision_client, fpr_client] = self.test_local(client_index,
-                                                                              test_threshold,
-                                                                              threshold_dict[client_index], test_data, device, args)
-            accuracy_array_global.append(accuracy_client)
-            precision_array_global.append(precision_client)
-            fpr_array_global.append(fpr_client)
-
-            # # using local threshold for test
-            # precision_with_local_threshold_per_client = self.test_local(client_index, False, threshold_dict[client_index], test_data, device, args)
-            # precision_array_local.append(precision_with_local_threshold_per_client)
-
-        accuracy_mean_global = np.mean(accuracy_array_global)
-        precision_mean_global = np.mean(precision_array_global)
-        fpr_mean_global = np.mean(fpr_array_global)
-
-        # precision_mean_local = np.mean(precision_array_local)
-        logging.info("accuracy_mean_global = %f" % accuracy_mean_global)
-        logging.info("precision_mean_global = %f" % precision_mean_global)
-        logging.info("fpr_mean_global = %f" % fpr_mean_global)
-
-        wandb.log({"Test/accuracy_mean_global": accuracy_mean_global})
-        wandb.log({"Test/precision_mean_global": precision_mean_global})
-        wandb.log({"Test/fpr_mean_global": fpr_mean_global})
+        model_save_dir = "/Users/ultraz/PycharmProjects/FedML-IoT-V/experiments/distributed"
+        path = os.path.join(model_save_dir, 'model.ckpt')
+        torch.save(self.model.state_dict(), path)
 
         return True
