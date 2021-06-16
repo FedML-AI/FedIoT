@@ -70,32 +70,6 @@ def load_data(args):
     anloader = torch.utils.data.DataLoader(test_anmoaly, batch_size=1, shuffle=False, num_workers=0)
     return benignloader, anloader, len(testset), test_tr
 
-#for local test
-# def load_data(args):
-#
-#     path_benin_traffic = args.data_dir + '/Philips_B120N10_Baby_Monitor/benign_traffic.csv'
-#     path_test_traffic = args.data_dir + '/Philips_B120N10_Baby_Monitor/Philips_Baby_Monitor_test_raw.csv'
-#     logging.info(path_test_traffic)
-#
-#     db_benign = pd.read_csv(path_benin_traffic)
-#     db_test = pd.read_csv(path_test_traffic)
-#     db_test = (db_test - db_test.mean()) / (db_test.std())
-#     db_benign = (db_benign - db_benign.mean()) / (db_benign.std())
-#     db_benign[np.isnan(db_benign)] = 0
-#     db_test[np.isnan(db_test)] = 0
-#
-#     trainset = db_benign[0:round(len(db_benign) * 0.67)]
-#     trainset = np.array(trainset)
-#     testset = np.array(db_test)
-#     test_tr = 9000
-#     test_benign = trainset[0:1000]
-#     test_anmoaly = testset[0:800]
-#     benignloader = torch.utils.data.DataLoader(test_benign, batch_size=1, shuffle=False, num_workers=0)
-#     anloader = torch.utils.data.DataLoader(test_anmoaly, batch_size=1, shuffle=False, num_workers=0)
-#     return benignloader, anloader, len(testset), test_tr
-
-
-
 def create_model(args):
     model = AutoEncoder()
     model_save_dir = "/Users/ultraz/PycharmProjects/FedML-IoT-V/experiments/distributed"
@@ -184,16 +158,3 @@ if __name__ == "__main__":
     threshold_dict = joblib.load("/Users/ultraz/PycharmProjects/FedML-IoT-V/experiments/distributed/threshold_dict.pkl")
 
     acc, pre, fprate = test(args, model, device, benignloader, anloader, threshold_dict[8])
-    # accuracy = []
-    # precision = []
-    # fpr = []
-    # start test
-    # for i in range(9):
-    #     acc, pre, fprate = test(args, model, device, benignloader, anloader, threshold_dict[i])
-    #     accuracy.append(acc)
-    #     precision.append(pre)
-    #     fpr.append(fprate)
-    # fl2_acc = np.mean(accuracy)
-    # fl2_pre = np.mean(precision)
-    # fl2_fpr = np.mean(fpr)
-    # print("The final result is: ",fl2_acc,fl2_pre,fl2_fpr)
