@@ -11,7 +11,7 @@ import numpy as np
 import psutil
 import setproctitle
 import torch.nn
-import wandb
+# import wandb
 
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../../")))
@@ -210,10 +210,10 @@ if __name__ == "__main__":
                  ", process Name = " + str(psutil.Process(os.getpid())))
 
     # initialize the wandb machine learning experimental tracking platform (https://www.wandb.com/).
-    if process_id == 0:
-        wandb.init(project='fediot', entity='automl',
-                   name=str(args.model) + "r" + str(args.dataset) + "-lr" + str(args.lr),
-                   config=args)
+#     if process_id == 0:
+#         wandb.init(project='fediot', entity='automl',
+#                    name=str(args.model) + "r" + str(args.dataset) + "-lr" + str(args.lr),
+#                    config=args)
 
     # Set the random seed. The np.random seed determines the dataset partition.
     # The torch_manual_seed determines the initial weight.
