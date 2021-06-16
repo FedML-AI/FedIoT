@@ -5,7 +5,7 @@ import sys
 import argparse
 import numpy as np
 import torch
-import wandb
+# import wandb
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../")))
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../../")))
@@ -194,14 +194,14 @@ if __name__ == '__main__':
 
     logging.info(args)
 
-    wandb.init(
-        # project="federated_nas",
-        project="fedml",
-        name="mobile(mqtt)" + str(args.partition_method) + "r" + str(args.comm_round) + "-e" + str(
-            args.epochs) + "-lr" + str(
-            args.lr),
-        config=args
-    )
+#     wandb.init(
+#         # project="federated_nas",
+#         project="fedml",
+#         name="mobile(mqtt)" + str(args.partition_method) + "r" + str(args.comm_round) + "-e" + str(
+#             args.epochs) + "-lr" + str(
+#             args.lr),
+#         config=args
+#     )
 
     # Set the random seed. The np.random seed determines the dataset partition.
     # The torch_manual_seed determines the initial weight.
