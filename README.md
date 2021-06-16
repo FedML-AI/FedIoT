@@ -3,7 +3,7 @@
 <!-- This is FedIoT, an application ecosystem for federated IoT based on FedML framework (https://github.com/FedML-AI/FedML). -->
 
 This repository is the official implementation of Federated Learning for Internet of Things: A Federated Learning Framework for On-device Anomaly Data Detection.
-
+Read our paper here: https://arxiv.org/abs/2106.07976
 ## 1. Introduction
 
 Due to the heterogeneity, diversity, and personalization of IoT networks, Federated Learning (FL) has a promising future in the IoT cybersecurity field. As a result, we present the FedIoT, an open research platform and benchmark to facilitate FL research in the IoT field. In particular, we propose an autoencoder based trainer to IoT traffic data for anomaly detection. In addition, with the application of federated learning approach for aggregating, we propose an efficient and practical model for the anomaly detection in various types of devices, while preserving the data privacy for each device. What is more, our platform supports three diverse computing paradigms: 1) on-device training for IoT edge devices, 2) distributed computing, and 3) single-machine simulation to meet algorithmic and system-level research requirements under different system deployment scenarios. We hope FedIoT could provide an efficient and reproducible means for developing the implementation of FL in the IoT field. 
