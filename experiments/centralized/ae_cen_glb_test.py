@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import torch
 import torch.nn as nn
-import wandb
+# import wandb
 from matplotlib import pyplot as plt
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../../")))
@@ -107,7 +107,7 @@ def train(args, model, device, trainloader, optloader):
             loss.backward()
             optimizer.step()
         logging.info("epoch = %d, epoch_loss = %f" % (epoch, epoch_loss))
-        wandb.log({"loss": epoch_loss, "epoch": epoch})
+#         wandb.log({"loss": epoch_loss, "epoch": epoch})
     logging.info("batch size = %d" % args.batch_size)
 
     #threshold selecting
@@ -168,9 +168,9 @@ def test(args, model, device, benignloader, anloader, threshold):
     print('The precision is ', precision)
     print('The false positive rate is ', false_positive_rate)
 
-    wandb.log({"accuracy": accuracy})
-    wandb.log({"precision": precision})
-    wandb.log({"false positive rate": false_positive_rate})
+#     wandb.log({"accuracy": accuracy})
+#     wandb.log({"precision": precision})
+#     wandb.log({"false positive rate": false_positive_rate})
 
     return accuracy, precision, false_positive_rate
 
@@ -188,7 +188,7 @@ if __name__ == "__main__":
     logging.info(args)
 
     # experimental result tracking
-    wandb.init(project='fediot', entity='automl', config=args)
+#     wandb.init(project='fediot', entity='automl', config=args)
 
     # PyTorch configuration
     torch.set_default_tensor_type(torch.DoubleTensor)
@@ -209,7 +209,7 @@ if __name__ == "__main__":
     # start training
     threshold = train(args, model, device, trainloader, optloader)
     logging.info("threshold = %f" % threshold)
-    wandb.log({"Threshold": threshold})
+#     wandb.log({"Threshold": threshold})
 
     # start test
     accuracy, precision, false_positive_rate = test(args, model, device, benignloader, anloader, threshold)
