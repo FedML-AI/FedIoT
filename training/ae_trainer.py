@@ -93,23 +93,13 @@ class AETrainer(ModelTrainer):
         mse_results_global = []
         threshold_dict = {}
         thres_func = nn.MSELoss()
-        # opt_threshold = [round(49548.0 * 0.67 / args.batch_size), round(13113.0 * 0.67 / args.batch_size),
-        #                  round(39100.0 * 0.67 / args.batch_size), round(175240.0 * 0.67 / args.batch_size),
-        #                  round(62154.0 * 0.67 / args.batch_size), round(98514.0 * 0.67 / args.batch_size),
-        #                  round(52150.0 * 0.67 / args.batch_size), round(46585.0 * 0.67 / args.batch_size),
-        #                  round(19528.0 * 0.67 / args.batch_size)]
+
         opt_threshold = [round(4955.0 * 0.67 / args.batch_size), round(1311.0 * 0.67 / args.batch_size),
                          round(3910.0 * 0.67 / args.batch_size), round(17524.0 * 0.67 / args.batch_size),
                          round(6215.0 * 0.67 / args.batch_size), round(9851.0 * 0.67 / args.batch_size),
                          round(5215.0 * 0.67 / args.batch_size), round(4658.0 * 0.67 / args.batch_size),
                          round(1953.0 * 0.67 / args.batch_size)]
 
-
-        # test_threshold = [round(49548.0 * 0.67), round(13113.0 * 0.67),
-        #                  round(39100.0 * 0.67), round(175240.0 * 0.67),
-        #                  round(62154.0 * 0.67), round(98514.0 * 0.67),
-        #                  round(52150.0 * 0.67), round(46585.0 * 0.67),
-        #                  round(19528.0 * 0.67)]
         test_threshold = 1000
 
         for client_index in train_data_local_dict.keys():
@@ -129,9 +119,7 @@ class AETrainer(ModelTrainer):
             args.batch_size)
         threshold_path = os.path.join("/Users/ultraz/PycharmProjects/FedML-IoT-V/experiments/distributed", 'threshold_dict.pkl')
         joblib.dump(threshold_dict, threshold_path)
-        # test = np.array(mse_results_global)
-        # plt.hist(test, bins='auto', density=True)
-        # plt.show()
+
 
         # mse_results_global = torch.tensor(mse_results_global)
         # threshold_global =torch.mean(mse_results_global) + 1 * torch.std(mse_results_global)/ np.sqrt(args.batch_size)
@@ -140,36 +128,6 @@ class AETrainer(ModelTrainer):
         accuracy_array_global = []
         precision_array_global = []
         fpr_array_global = []
-
-        # for client_index in test_data_local_dict.keys():
-        #     test_data = test_data_local_dict[client_index]
-        #
-        #     # using global threshold for test
-        #     # [accuracy_client, precision_client, fpr_client] = self.test_local(client_index,
-        #     #                                                                   (test_threshold[client_index] / 2), threshold_global, test_data, device, args)
-        #     [accuracy_client, precision_client, fpr_client] = self.test_local(client_index,
-        #                                                                       test_threshold,
-        #                                                                       threshold_global, test_data, device, args)
-        #     accuracy_array_global.append(accuracy_client)
-        #     precision_array_global.append(precision_client)
-        #     fpr_array_global.append(fpr_client)
-        #
-        #     # # using local threshold for test
-        #     # precision_with_local_threshold_per_client = self.test_local(client_index, False, threshold_dict[client_index], test_data, device, args)
-        #     # precision_array_local.append(precision_with_local_threshold_per_client)
-        #
-        # accuracy_mean_global = np.mean(accuracy_array_global)
-        # precision_mean_global = np.mean(precision_array_global)
-        # fpr_mean_global = np.mean(fpr_array_global)
-        #
-        # # precision_mean_local = np.mean(precision_array_local)
-        # logging.info("accuracy_mean_global = %f" % accuracy_mean_global)
-        # logging.info("precision_mean_global = %f" % precision_mean_global)
-        # logging.info("fpr_mean_global = %f" % fpr_mean_global)
-        #
-        # wandb.log({"Test/accuracy_mean_global": accuracy_mean_global})
-        # wandb.log({"Test/precision_mean_global": precision_mean_global})
-        # wandb.log({"Test/fpr_mean_global": fpr_mean_global})
 
         model_save_dir = "/Users/ultraz/PycharmProjects/FedML-IoT-V/experiments/distributed"
         path = os.path.join(model_save_dir, 'model.ckpt')
