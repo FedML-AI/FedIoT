@@ -100,13 +100,10 @@ def add_args(parser):
     return args
 
 
-def load_data(args, train_file_name, test_file_name):
-
-    logging.info("load_train_data. dataset_name = %s" % train_file_name)
-    logging.info("load_test_data. dataset_name = %s" % test_file_name)
+def load_data(args):
     train_data_num, test_data_num, train_data_global, test_data_global, \
     train_data_local_num_dict, train_data_local_dict, test_data_local_dict\
-        = local_dataloader(args, train_file_name, test_file_name, 1)
+        = local_dataloader(args)
     dataset = [train_data_num, test_data_num, train_data_global, test_data_global,
                train_data_local_num_dict, train_data_local_dict, test_data_local_dict]
 
@@ -169,7 +166,7 @@ if __name__ == "__main__":
 
     # load data
 
-    dataset = load_data(args, '/federated_learning_data/train_unified_10.csv', '/new_centralized_set/global_testset_test.csv')
+    dataset = load_data(args)
     [train_data_num, test_data_num, train_data_global, test_data_global,
      train_data_local_num_dict, train_data_local_dict, test_data_local_dict] = dataset
 
