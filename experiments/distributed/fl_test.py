@@ -56,29 +56,35 @@ def add_args(parser):
 # for global test
 def load_data(args):
 
-    path_test_traffic = args.data_dir + '/new_centralized_set/global_testset.csv'
-    logging.info(path_test_traffic)
+    path_benign_test = '/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/benign_test.csv'
+    path_attack_test = '/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/attack_test.csv'
+    logging.info(path_benign_test)
+    logging.info(path_attack_test)
 
-    db_test = pd.read_csv(path_test_traffic)
-    db_test = (db_test - db_test.mean()) / (db_test.std())
-    db_test[np.isnan(db_test)] = 0
-    testset = np.array(db_test)
-    test_tr = 9000
-    test_benign = testset[8000:9000]
-    test_anmoaly = testset[14400:15200]
-    benignloader = torch.utils.data.DataLoader(test_benign, batch_size=1, shuffle=False, num_workers=0)
+
+    db_benign_test = pd.read_csv(path_benign_test)
+    db_attack_test = pd.read_csv(path_attack_test)
+    db_benign_test = (db_benign_test - db_benign_test.mean()) / (db_benign_test.std())
+    db_attack_test = (db_attack_test - db_attack_test.mean()) / (db_attack_test.std())
+    db_benign_test[np.isnan(db_benign_test)] = 0
+    db_attack_test[np.isnan(db_attack_test)] = 0
+
+    test_benign = np.array(db_benign_test)
+    test_anmoaly = np.array(db_attack_test)
+
+    bnloader = torch.utils.data.DataLoader(test_benign, batch_size=1, shuffle=False, num_workers=0)
     anloader = torch.utils.data.DataLoader(test_anmoaly, batch_size=1, shuffle=False, num_workers=0)
-    return benignloader, anloader, len(testset), test_tr
+    return bnloader, anloader
 
 def create_model(args):
     model = AutoEncoder()
-    model_save_dir = "/Users/ultraz/PycharmProjects/FedML-IoT-V/experiments/distributed"
+    model_save_dir = "/Users/ultraz/PycharmProjects/FedDetect/training"
     path = os.path.join(model_save_dir, 'model.ckpt')
     model.load_state_dict(torch.load(path, map_location=lambda storage, loc: storage))
     return model
 
 
-def test(args, model, device, benignloader, anloader, threshold):
+def test(args, model, device, bnloader, anloader, threshold):
     model.eval()
     true_negative = []
     false_positive = []
@@ -86,7 +92,7 @@ def test(args, model, device, benignloader, anloader, threshold):
     false_negative = []
 
     thres_func = nn.MSELoss()
-    for idx, inp in enumerate(benignloader):
+    for idx, inp in enumerate(bnloader):
         inp = inp.to(device)
         diff = thres_func(model(inp), inp)
         mse = diff.item()
@@ -119,9 +125,9 @@ def test(args, model, device, benignloader, anloader, threshold):
     print('The precision is ', precision)
     print('The false positive rate is ', false_positive_rate)
 
-    wandb.log({"accuracy": accuracy})
-    wandb.log({"precision": precision})
-    wandb.log({"false positive rate": false_positive_rate})
+    # wandb.log({"accuracy": accuracy})
+    # wandb.log({"precision": precision})
+    # wandb.log({"false positive rate": false_positive_rate})
 
     return accuracy, precision, false_positive_rate
 
@@ -138,7 +144,7 @@ if __name__ == "__main__":
     logging.info(args)
 
     # experimental result tracking
-    wandb.init(project='fediot', entity='automl', config=args)
+    # wandb.init(project='fediot', entity='automl', config=args)
 
     # PyTorch configuration
     torch.set_default_tensor_type(torch.DoubleTensor)
@@ -150,11 +156,11 @@ if __name__ == "__main__":
         device = torch.device("cpu")
 
     # load data
-    benignloader, anloader, test_len, test_tr = load_data(args)
+    benignloader, anloader = load_data(args)
 
     # create model
     model = create_model(args)
 
-    threshold_dict = joblib.load("/Users/ultraz/PycharmProjects/FedML-IoT-V/experiments/distributed/threshold_dict.pkl")
+    # threshold_dict = joblib.load("/Users/ultraz/PycharmProjects/FedML-IoT-V/experiments/distributed/threshold_dict.pkl")
 
-    acc, pre, fprate = test(args, model, device, benignloader, anloader, threshold_dict[8])
+    acc, pre, fprate = test(args, model, device, benignloader, anloader, 0.444261)
