@@ -55,32 +55,39 @@ def add_args(parser):
 
 
 def load_data(args):
-    path_benin_traffic = args.data_dir + '/Samsung_SNH_1011_N_Webcam/benign_traffic.csv'
-    path_test_traffic = args.data_dir + '/new_centralized_set/global_testset.csv'
-    logging.info(path_benin_traffic)
-    logging.info(path_test_traffic)
+    path_benign_train = args.data_dir + '/benign_train.csv'
+    path_benign_opt = args.data_dir + '/benign_opt.csv'
+    path_benign_test = args.data_dir + '/benign_test.csv'
+    path_attack_test = args.data_dir + '/attack_test.csv'
+    logging.info(path_benign_train)
+    logging.info(path_benign_opt)
+    logging.info(path_benign_test)
+    logging.info(path_attack_test)
 
-    db_benign = pd.read_csv(path_benin_traffic)
-    db_test = pd.read_csv(path_test_traffic)
-    db_test = (db_test - db_test.mean()) / (db_test.std())
-    db_benign = (db_benign - db_benign.mean()) / (db_benign.std())
-    db_benign[np.isnan(db_benign)] = 0
-    db_test[np.isnan(db_test)] = 0
-    trainset = db_benign[0:round(len(db_benign) * 0.67)]
-    optset = db_benign[round(len(db_benign) * 0.67):len(db_benign)]
-    trainset = np.array(trainset)
-    optset = np.array(optset)
-    testset = np.array(db_test)
-    testratio = 9000 / len(testset)
-    test_tr = 9000
-    test_benign = testset[6000:7000]
-    test_anmoaly = testset[13300:13600]
-    benignloader = torch.utils.data.DataLoader(test_benign, batch_size=1, shuffle=False, num_workers=0)
+    db_benign_train = pd.read_csv(path_benign_train)
+    db_benign_opt = pd.read_csv(path_benign_opt)
+    db_benign_test = pd.read_csv(path_benign_test)
+    db_attack_test = pd.read_csv(path_attack_test)
+    db_benign_train = (db_benign_train - db_benign_train.mean()) / (db_benign_train.std())
+    db_benign_opt = (db_benign_opt - db_benign_opt.mean()) / (db_benign_opt.std())
+    db_benign_test = (db_benign_test - db_benign_test.mean()) / (db_benign_test.std())
+    db_attack_test = (db_attack_test - db_attack_test.mean()) / (db_attack_test.std())
+    db_benign_train[np.isnan(db_benign_train)] = 0
+    db_benign_opt[np.isnan(db_benign_opt)] = 0
+    db_benign_test[np.isnan(db_benign_test)] = 0
+    db_attack_test[np.isnan(db_attack_test)] = 0
+
+    trainset = np.array(db_benign_train)
+    optset = np.array(db_benign_opt)
+    test_benign = np.array(db_benign_test)
+    test_anmoaly = np.array(db_attack_test)
+
+    bnloader = torch.utils.data.DataLoader(test_benign, batch_size=1, shuffle=False, num_workers=0)
     anloader = torch.utils.data.DataLoader(test_anmoaly, batch_size=1, shuffle=False, num_workers=0)
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=args.batch_size, shuffle=False, num_workers=0)
     optloader = torch.utils.data.DataLoader(optset, batch_size= args.batch_size, shuffle=False, num_workers=0)
-    logging.info('train length is %d, test_tr is %f' %(len(trainset),testratio))
-    return trainloader, benignloader, anloader, optloader, len(trainset), len(testset), testratio, test_tr
+
+    return trainloader, optloader, bnloader, anloader
 
 
 def create_model(args):
@@ -107,8 +114,7 @@ def train(args, model, device, trainloader, optloader):
             loss.backward()
             optimizer.step()
         logging.info("epoch = %d, epoch_loss = %f" % (epoch, epoch_loss))
-#         wandb.log({"loss": epoch_loss, "epoch": epoch})
-    logging.info("batch size = %d" % args.batch_size)
+
 
     #threshold selecting
     i = []
@@ -120,9 +126,8 @@ def train(args, model, device, trainloader, optloader):
 
     i.sort()
     len_i = len(i)
-    i = i[round(len_i * 0.00):round(len_i * 1)]
     i = torch.tensor(i)
-    threshold = (torch.mean(i) + 1 * torch.std(i) / np.sqrt(args.batch_size))
+    threshold = (torch.mean(i))
     logging.info("threshold = %d" % threshold)
     return threshold
 
@@ -168,10 +173,6 @@ def test(args, model, device, benignloader, anloader, threshold):
     print('The precision is ', precision)
     print('The false positive rate is ', false_positive_rate)
 
-#     wandb.log({"accuracy": accuracy})
-#     wandb.log({"precision": precision})
-#     wandb.log({"false positive rate": false_positive_rate})
-
     return accuracy, precision, false_positive_rate
 
 
@@ -200,7 +201,7 @@ if __name__ == "__main__":
         device = torch.device("cpu")
 
     # load data
-    trainloader, benignloader, anloader, optloader, train_len, test_len, test_ratio, test_tr = load_data(args)
+    trainloader, optloader, bnloader, anloader = load_data(args)
 
     # create model
     model = create_model(args)
@@ -212,4 +213,4 @@ if __name__ == "__main__":
 #     wandb.log({"Threshold": threshold})
 
     # start test
-    accuracy, precision, false_positive_rate = test(args, model, device, benignloader, anloader, threshold)
+    accuracy, precision, false_positive_rate = test(args, model, device, bnloader, anloader, threshold)
