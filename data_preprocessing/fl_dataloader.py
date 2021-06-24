@@ -50,105 +50,208 @@ def add_args(parser):
 
 
 # read the data from the csv
-def load_data(args, benign_file_name, attack_file_name):
-    path_benin_traffic = args.data_dir + "/" + benign_file_name
-    path_ack_traffic = args.data_dir + "/" + attack_file_name
-    logging.info(path_benin_traffic)
-    logging.info(path_ack_traffic)
+def load_data(args):
+    Danmini = pd.read_csv('/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/Danmini_Doorbell/benign_traffic.csv')
+    Danmini = (Danmini - Danmini.mean()) / (Danmini.std())
+    Danmini = np.array(Danmini)
+    Danmini[np.isnan(Danmini)] = 0
 
-    db_benign = pd.read_csv(path_benin_traffic)
-    db_attack = pd.read_csv(path_ack_traffic)
-    db_benign = (db_benign - db_benign.mean()) / (db_benign.std())
-    # db_attack = (db_attack - db_attack.mean()) / (db_attack.std())
+    Ecobee = pd.read_csv('/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/Ecobee_Thermostat/benign_traffic.csv')
+    Ecobee = (Ecobee - Ecobee.mean()) / (Ecobee.std())
+    Ecobee = np.array(Ecobee)
+    Ecobee[np.isnan(Ecobee)] = 0
 
-    trainset = np.array(db_benign)
-    testset = np.array(db_attack)
-    trainset[np.isnan(trainset)] = 0
-    # testset[np.isnan(testset)] = 0
-    testset = testset[9000:15199]
+    Ennio = pd.read_csv('/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/Ennio_Doorbell/benign_traffic.csv')
+    Ennio = (Ennio - Ennio.mean()) / (Ennio.std())
+    Ennio = np.array(Ennio)
+    Ennio[np.isnan(Ennio)] = 0
 
-    len_train = len(trainset)
-    len_test = len(testset)
+    Philips = pd.read_csv(
+        '/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/Philips_B120N10_Baby_Monitor/benign_traffic.csv')
+    Philips = (Philips - Philips.mean()) / (Philips.std())
+    Philips = np.array(Philips)
+    Philips[np.isnan(Philips)] = 0
+
+    Provision_73 = pd.read_csv(
+        '/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/Provision_PT_737E_Security_Camera/benign_traffic.csv')
+    Provision_73 = (Provision_73 - Provision_73.mean()) / (Provision_73.std())
+    Provision_73 = np.array(Provision_73)
+    Provision_73[np.isnan(Provision_73)] = 0
+
+    Provision_83 = pd.read_csv(
+        '/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/Provision_PT_838_Security_Camera/benign_traffic.csv')
+    Provision_83 = (Provision_83 - Provision_83.mean()) / (Provision_83.std())
+    Provision_83 = np.array(Provision_83)
+    Provision_83[np.isnan(Provision_83)] = 0
+
+    Samsung = pd.read_csv(
+        '/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/Samsung_SNH_1011_N_Webcam/benign_traffic.csv')
+    Samsung = (Samsung - Samsung.mean()) / (Samsung.std())
+    Samsung = np.array(Samsung)
+    Samsung[np.isnan(Samsung)] = 0
+
+    Simple_02 = pd.read_csv(
+        '/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/SimpleHome_XCS7_1002_WHT_Security_Camera/benign_traffic.csv')
+    Simple_02 = (Simple_02 - Simple_02.mean()) / (Simple_02.std())
+    Simple_02 = np.array(Simple_02)
+    Simple_02[np.isnan(Simple_02)] = 0
+
+    Simple_03 = pd.read_csv(
+        '/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/SimpleHome_XCS7_1003_WHT_Security_Camera/benign_traffic.csv')
+    Simple_03 = (Simple_03 - Simple_03.mean()) / (Simple_03.std())
+    Simple_03 = np.array(Simple_03)
+    Simple_03[np.isnan(Simple_03)] = 0
+
+    train_data_num = len(Danmini) + len(Ecobee) + len(Ennio) + len(Philips) + len(Provision_73) + len(
+        Provision_83) + len(Samsung) + len(Simple_02) + len(Simple_03)
+    train_data_global = pd.read_csv('/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/benign_traffic_unified.csv')
+    train_data_global = (train_data_global - train_data_global.mean()) / (train_data_global.std())
+    train_data_global = np.array(train_data_global)
+    train_data_global[np.isnan(train_data_global)] = 0
+
+    Danmini_test = pd.read_csv(
+        '/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/Danmini_Doorbell/Danmini_Doorbell_attack_test.csv')
+    Danmini_test = (Danmini_test - Danmini_test.mean()) / (Danmini_test.std())
+    Danmini_test = np.array(Danmini_test)
+    Danmini_test[np.isnan(Danmini_test)] = 0
+
+    Ecobee_test = pd.read_csv(
+        '/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/Ecobee_Thermostat/Ecobee_Thermostat_attack_test.csv')
+    Ecobee_test = (Ecobee_test - Ecobee_test.mean()) / (Ecobee_test.std())
+    Ecobee_test = np.array(Ecobee_test)
+    Ecobee_test[np.isnan(Ecobee_test)] = 0
+
+    Ennio_test = pd.read_csv(
+        '/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/Ennio_Doorbell/Ennio_Doorbell_attack_test.csv')
+    Ennio_test = (Ennio_test - Ennio_test.mean()) / (Ennio_test.std())
+    Ennio_test = np.array(Ennio_test)
+    Ennio_test[np.isnan(Ennio_test)] = 0
+
+    Philips_test = pd.read_csv(
+        '/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/Philips_B120N10_Baby_Monitor/Philips_B120N10_Baby_Monitor_attack_test.csv')
+    Philips_test = (Philips_test - Philips_test.mean()) / (Philips_test.std())
+    Philips_test = np.array(Philips_test)
+    Philips_test[np.isnan(Philips_test)] = 0
+
+    Provision_73_test = pd.read_csv(
+        '/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/Provision_PT_737E_Security_Camera/Provision_PT_737E_Security_Camera_attack_test.csv')
+    Provision_73_test = (Provision_73_test - Provision_73_test.mean()) / (Provision_73_test.std())
+    Provision_73_test = np.array(Provision_73_test)
+    Provision_73_test[np.isnan(Provision_73_test)] = 0
+
+    Provision_83_test = pd.read_csv(
+        '/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/Provision_PT_838_Security_Camera/Provision_PT_838_Security_Camera_attack_test.csv')
+    Provision_83_test = (Provision_83_test - Provision_83_test.mean()) / (Provision_83_test.std())
+    Provision_83_test = np.array(Provision_83_test)
+    Provision_83_test[np.isnan(Provision_83_test)] = 0
+
+    Samsung_test = pd.read_csv(
+        '/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/Samsung_SNH_1011_N_Webcam/Samsung_SNH_1011_N_Webcam_attack_test.csv')
+    Samsung_test = (Samsung_test - Samsung_test.mean()) / (Samsung_test.std())
+    Samsung_test = np.array(Samsung_test)
+    Samsung_test[np.isnan(Samsung_test)] = 0
+
+    Simple_02_test = pd.read_csv(
+        '/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/SimpleHome_XCS7_1002_WHT_Security_Camera/SimpleHome_XCS7_1002_WHT_Security_Camera_attack_test.csv')
+    Simple_02_test = (Simple_02_test - Simple_02_test.mean()) / (Simple_02_test.std())
+    Simple_02_test = np.array(Simple_02_test)
+    Simple_02_test[np.isnan(Simple_02_test)] = 0
+
+    Simple_03_test = pd.read_csv(
+        '/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/SimpleHome_XCS7_1003_WHT_Security_Camera/SimpleHome_XCS7_1003_WHT_Security_Camera_attack_test.csv')
+    Simple_03_test = (Simple_03_test - Simple_03_test.mean()) / (Simple_03_test.std())
+    Simple_03_test = np.array(Simple_03_test)
+    Simple_03_test[np.isnan(Simple_03_test)] = 0
+
+    test_data_num = len(Danmini_test) + len(Ecobee_test) + len(Ennio_test) + len(Philips_test) + len(Provision_73_test) + len(
+        Provision_83_test) + len(Samsung_test) + len(Simple_02_test) + len(Simple_03_test)
+    test_data_global = pd.read_csv('/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/attack_test.csv')
+    test_data_global = (test_data_global - test_data_global.mean()) / (test_data_global.std())
+    test_data_global = np.array(test_data_global)
+    test_data_global[np.isnan(test_data_global)] = 0
     logging.info('Origin csv data is loaded, waiting for partition')
-    return len_train, len_test, trainset, testset
+    return Danmini, Ecobee, Ennio, Philips, Provision_73, Provision_83, Samsung, Simple_02, Simple_03, train_data_num, train_data_global, \
+           Danmini_test, Ecobee_test, Ennio_test, Philips_test, Provision_73_test, Provision_83_test, Samsung_test, Simple_02_test, Simple_03_test, \
+           test_data_num, test_data_global
 
 
-def homo_partition_data(args, process_id, benign_data, attack_data):
-    device_num = 9
-    if process_id == 0:  # for centralized training
-        return benign_data, attack_data
-    else:
-        # For benign set
-        ## records the range of idxs for each device
-        benign_split_list = [0, 4955, 6266, 10176, 27700, 33915, 43766, 48981, 53639, 55592]
-        ## records the number of samples of each device
-        benign_len = [4955, 1311, 3910, 17524, 6215, 9851, 5215, 4658, 1953]
-
-        # For attack set
-        attack_split_list = [0, 799, 1599, 1899, 2699, 3499, 4299, 4599, 5399, 6199]
-
-        # training and opt data are from the unified benign dataset
-        train_dataidx_map = {}
-        opt_dataidx_map = {}
-        attack_dataidx_map = {}
-
-        # loop for 9 devices
-        for i in range(device_num):
-            # index range for train
-            benign_idxs = list(np.arange(benign_split_list[i], benign_split_list[i + 1]))
-            # separate train range and opt range
-            train_dataidx_map[i] = benign_idxs
-            opt_dataidx_map[i] = benign_idxs[benign_len[i] - 1000:]
-            # index range for attack
-            attack_idxs = list(np.arange(attack_split_list[i], attack_split_list[i + 1]))
-            attack_dataidx_map[i] = attack_idxs
-        # record the number of samples
-        train_data_local_num_dict = {i: len(train_dataidx_map[i]) for i in range(device_num)}
-        #opt_data_local_num_dict = {i: len(opt_dataidx_map[i]) for i in range(device_num)}
-        attack_data_local_num_dict = {i: len(attack_dataidx_map[i]) for i in range(device_num)}
-
-    logging.info('Partition is completed, waiting for input')
-    return train_dataidx_map, train_data_local_num_dict, opt_dataidx_map,\
-           attack_dataidx_map, attack_data_local_num_dict
-
-
-def local_dataloader(args, benign_file_name, attack_file_name, process_id):
+def local_dataloader(args):
     # Dict: records dataloaders for each devices
     train_data_local_dict = dict()
     test_data_local_dict = dict()
-    #opt_data_local_dict = dict()
+    train_data_local_num_dict = dict()
 
     # get training and test set
-    train_data_num, test_data_num, train_data_global, test_data_global \
-        = load_data(args, benign_file_name, attack_file_name)
+    Danmini, Ecobee, Ennio, Philips, Provision_73, Provision_83, Samsung, Simple_02, Simple_03, train_data_num, train_data_global, \
+    Danmini_test, Ecobee_test, Ennio_test, Philips_test, Provision_73_test, Provision_83_test, Samsung_test, Simple_02_test, Simple_03_test, \
+    test_data_num, test_data_global = load_data(args)
 
-    dataidx_map_train, train_data_local_num_dict, opt_dataidx_map,\
-    dataidx_map_attack, attack_data_local_num_dict = homo_partition_data(args, process_id, \
-                                                                         train_data_global, test_data_global)
-
+    train_data_local_dict[0] = torch.utils.data.DataLoader(Danmini, batch_size=args.batch_size,
+                                                           shuffle=False,
+                                                           num_workers=0)
+    train_data_local_dict[1] = torch.utils.data.DataLoader(Ecobee, batch_size=args.batch_size,
+                                                           shuffle=False,
+                                                           num_workers=0)
+    train_data_local_dict[2] = torch.utils.data.DataLoader(Ennio, batch_size=args.batch_size,
+                                                           shuffle=False,
+                                                           num_workers=0)
+    train_data_local_dict[3] = torch.utils.data.DataLoader(Philips, batch_size=args.batch_size,
+                                                           shuffle=False,
+                                                           num_workers=0)
+    train_data_local_dict[4] = torch.utils.data.DataLoader(Provision_73, batch_size=args.batch_size,
+                                                           shuffle=False,
+                                                           num_workers=0)
+    train_data_local_dict[5] = torch.utils.data.DataLoader(Provision_83, batch_size=args.batch_size,
+                                                           shuffle=False,
+                                                           num_workers=0)
+    train_data_local_dict[6] = torch.utils.data.DataLoader(Samsung, batch_size=args.batch_size,
+                                                           shuffle=False,
+                                                           num_workers=0)
+    train_data_local_dict[7] = torch.utils.data.DataLoader(Simple_02, batch_size=args.batch_size,
+                                                           shuffle=False,
+                                                           num_workers=0)
+    train_data_local_dict[8] = torch.utils.data.DataLoader(Simple_03, batch_size=args.batch_size,
+                                                           shuffle=False,
+                                                           num_workers=0)
     # for local train data
-    for client_idx in range(args.client_num_in_total):
-        data_local_train = train_data_global[dataidx_map_train[client_idx]]
-        train_data_local_dict[client_idx] = torch.utils.data.DataLoader(data_local_train, batch_size=args.batch_size,
-                                                                        shuffle=False,
-                                                                        num_workers=0)
+    for client_idx in range(9):
+        train_data_local_num_dict[client_idx] = len(train_data_local_dict[client_idx])
         logging.info(
             "client_idx = %d, local_train_sample_number = %d" % (client_idx, train_data_local_num_dict[client_idx]))
 
-    # for local opt and test data
-    for client_idx in range(args.client_num_in_total):
-        data_local_attack = test_data_global[dataidx_map_attack[client_idx]]
-        data_local_opt = train_data_global[opt_dataidx_map[client_idx]]
-        data_local_test = np.concatenate((data_local_opt, data_local_attack), axis=0)
 
-        test_data_local_dict[client_idx] = torch.utils.data.DataLoader(data_local_test, batch_size=1,
-                                                                       shuffle=False,
-                                                                       num_workers=0)
+    # for local test data
+    test_data_local_dict[0] = torch.utils.data.DataLoader(Danmini_test, batch_size=1,
+                                                           shuffle=False,
+                                                           num_workers=0)
+    test_data_local_dict[1] = torch.utils.data.DataLoader(Ecobee_test, batch_size=1,
+                                                           shuffle=False,
+                                                           num_workers=0)
+    test_data_local_dict[2] = torch.utils.data.DataLoader(Ennio_test, batch_size=1,
+                                                           shuffle=False,
+                                                           num_workers=0)
+    test_data_local_dict[3] = torch.utils.data.DataLoader(Philips_test, batch_size=1,
+                                                           shuffle=False,
+                                                           num_workers=0)
+    test_data_local_dict[4] = torch.utils.data.DataLoader(Provision_73_test, batch_size=1,
+                                                           shuffle=False,
+                                                           num_workers=0)
+    test_data_local_dict[5] = torch.utils.data.DataLoader(Provision_83_test, batch_size=1,
+                                                           shuffle=False,
+                                                           num_workers=0)
+    test_data_local_dict[6] = torch.utils.data.DataLoader(Samsung_test, batch_size=1,
+                                                           shuffle=False,
+                                                           num_workers=0)
+    test_data_local_dict[7] = torch.utils.data.DataLoader(Simple_02_test, batch_size=1,
+                                                           shuffle=False,
+                                                           num_workers=0)
+    test_data_local_dict[8] = torch.utils.data.DataLoader(Simple_03_test, batch_size=1,
+                                                           shuffle=False,
+                                                           num_workers=0)
+    for client_idx in range(9):
+        logging.info(
+            "client_idx = %d, local_test_sample_number = %d" % (client_idx, len(test_data_local_dict[client_idx])))
 
-        logging.info("true local test sample number = %d, real local_test_sample_number = %d" % (len(opt_dataidx_map[client_idx]) +
-                                                                                                 attack_data_local_num_dict[client_idx],\
-                                                                                                 len(data_local_test)))
-        # logging.info('Local test sample number = %d' % ())
     return train_data_num, test_data_num, train_data_global, test_data_global, \
            train_data_local_num_dict, train_data_local_dict, test_data_local_dict
 
@@ -164,7 +267,7 @@ if __name__ == "__main__":
     args = add_args(parser)
     logging.info(args)
 
-    dataset = local_dataloader(args, '/federated_learning_data/train_unified.csv',
-                               '/new_centralized_set/global_testset_test.csv', 1)
+    dataset = local_dataloader(args)
     [train_data_num, test_data_num, train_data_global, test_data_global,
      train_data_local_num_dict, train_data_local_dict, test_data_local_dict] = dataset
+    print(dataset)
