@@ -70,6 +70,14 @@ Please read the experiment section in our paper. The `main` function under the d
 Please cite our FedIoT and FedML paper if it helps your research.
 You can describe us in your paper like this: "We develop our experiments based on FedIoT [1] and FedML [2]".
 
+@article{Zhang2021FederatedLF,
+  title={Federated Learning for Internet of Things: A Federated Learning Framework for On-device Anomaly Data Detection},
+  author={Tuo Zhang and Chaoyang He and Tian-Shya Ma and Mark Ma and S. Avestimehr},
+  journal={ArXiv},
+  year={2021},
+  volume={abs/2106.07976}
+}
+
 ## 7. Contact
 
 The corresponding author is:
