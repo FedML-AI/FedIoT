@@ -65,6 +65,7 @@ Some tasks can share the same trainer.
 
 Please read the experiment section in our paper. The `main` function under the distributed now sets only for model training, please use the `fl_test` to evaluate the performance.
 
+Please note that you should change the aggregator w = 1/9 for a better result. It could be changed in FedML/fedml_api/distributed/fedavg/FedAVGAggregator.py line 77
 
 ## 6. Citation
 Please cite our FedIoT and FedML paper if it helps your research.
