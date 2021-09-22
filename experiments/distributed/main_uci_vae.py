@@ -11,7 +11,6 @@ import setproctitle
 import torch.nn
 import wandb
 
-
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../../")))
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "")))
 
@@ -49,7 +48,7 @@ def add_args(parser):
     parser.add_argument('--client_num_in_total', type=int, default=9, metavar='NN',
                         help='number of workers in a distributed cluster')
 
-    parser.add_argument('--client_num_per_round', type=int, default=4, metavar='NN',
+    parser.add_argument('--client_num_per_round', type=int, default=9, metavar='NN',
                         help='number of workers')
 
     parser.add_argument('--batch_size', type=int, default=64, metavar='N',
@@ -66,10 +65,10 @@ def add_args(parser):
 
     parser.add_argument('--wd', help='weight decay parameter;', type=float, default=0.001)
 
-    parser.add_argument('--epochs', type=int, default=50, metavar='EP',
+    parser.add_argument('--epochs', type=int, default=1, metavar='EP',
                         help='how many epochs will be trained locally')
 
-    parser.add_argument('--comm_round', type=int, default=10,
+    parser.add_argument('--comm_round', type=int, default=100,
                         help='how many round of communications we shoud use')
 
     parser.add_argument('--is_mobile', type=int, default=1,
@@ -143,10 +142,10 @@ if __name__ == "__main__":
                  ", process Name = " + str(psutil.Process(os.getpid())))
 
     # initialize the wandb machine learning experimental tracking platform (https://www.wandb.com/).
-    if process_id == 0:
-        wandb.init(project='fediot', entity='automl',
-                   name=str(args.model) + "r" + str(args.dataset) + "-lr" + str(args.lr),
-                   config=args)
+    # if process_id == 0:
+    #     wandb.init(project='fediot', entity='automl',
+    #                name=str(args.model) + "r" + str(args.dataset) + "-lr" + str(args.lr),
+    #                config=args)
 
     # Set the random seed. The np.random seed determines the dataset partition.
     # The torch_manual_seed determines the initial weight.

@@ -55,36 +55,49 @@ def add_args(parser):
 
 # for global test
 def load_data(args):
+    device_list = ['Danmini_Doorbell', 'Ecobee_Thermostat', 'Ennio_Doorbell', 'Philips_B120N10_Baby_Monitor',
+                   'Provision_PT_737E_Security_Camera', 'Provision_PT_838_Security_Camera', 'Samsung_SNH_1011_N_Webcam',
+                   'SimpleHome_XCS7_1002_WHT_Security_Camera', 'SimpleHome_XCS7_1003_WHT_Security_Camera']
 
-    path_benign_test = '/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/benign_test.csv'
-    path_attack_test = '/Users/ultraz/PycharmProjects/FedDetect/data/UCI-MLR/attack_test.csv'
-    logging.info(path_benign_test)
-    logging.info(path_attack_test)
+    train_data_local_dict = dict()
+    test_data_local_dict = dict()
+    for i, device in enumerate(device_list):
+        benign_data = pd.read_csv(os.path.join(args.data_dir, device, 'benign_traffic.csv'))
+        benign_data = (benign_data - benign_data.mean()) / (benign_data.std())
+        benign_data = np.array(benign_data)
+        benign_data[np.isnan(benign_data)] = 0
+
+        g_attack_data_list = [os.path.join(args.data_dir, device, 'gafgyt_attacks', f)
+                              for f in os.listdir(os.path.join(args.data_dir, device, 'gafgyt_attacks'))]
+        if device == 'Ennio_Doorbell' or device == 'Samsung_SNH_1011_N_Webcam':
+            attack_data_list = g_attack_data_list
+        else:
+            m_attack_data_list = [os.path.join(args.data_dir, device, 'mirai_attacks', f)
+                                  for f in os.listdir(os.path.join(args.data_dir, device, 'mirai_attacks'))]
+            attack_data_list = g_attack_data_list + m_attack_data_list
+
+        attack_data = pd.concat([pd.read_csv(f)[:500] for f in attack_data_list])
+        attack_data = (attack_data - attack_data.mean()) / (attack_data.std())
+        attack_data = np.array(attack_data)
+        attack_data[np.isnan(attack_data)] = 0
+
+        train_data_local_dict[i] = torch.utils.data.DataLoader(benign_data,
+                                                               batch_size=args.batch_size, shuffle=False, num_workers=0)
+        test_data_local_dict[i] = torch.utils.data.DataLoader(attack_data,
+                                                              batch_size=1, shuffle=False, num_workers=0)
 
 
-    db_benign_test = pd.read_csv(path_benign_test)
-    db_attack_test = pd.read_csv(path_attack_test)
-    db_benign_test = (db_benign_test - db_benign_test.mean()) / (db_benign_test.std())
-    db_attack_test = (db_attack_test - db_attack_test.mean()) / (db_attack_test.std())
-    db_benign_test[np.isnan(db_benign_test)] = 0
-    db_attack_test[np.isnan(db_attack_test)] = 0
-
-    test_benign = np.array(db_benign_test)
-    test_anmoaly = np.array(db_attack_test)
-
-    bnloader = torch.utils.data.DataLoader(test_benign, batch_size=1, shuffle=False, num_workers=0)
-    anloader = torch.utils.data.DataLoader(test_anmoaly, batch_size=1, shuffle=False, num_workers=0)
-    return bnloader, anloader
+    return train_data_local_dict, test_data_local_dict
 
 def create_model(args):
     model = AutoEncoder()
-    model_save_dir = "/Users/ultraz/PycharmProjects/FedDetect/training"
+    model_save_dir = "../../training"
     path = os.path.join(model_save_dir, 'model.ckpt')
     model.load_state_dict(torch.load(path, map_location=lambda storage, loc: storage))
     return model
 
 
-def test(args, model, device, bnloader, anloader, threshold):
+def test(args, model, device, train_data_local_dict, test_data_local_dict, threshold):
     model.eval()
     true_negative = []
     false_positive = []
@@ -92,23 +105,29 @@ def test(args, model, device, bnloader, anloader, threshold):
     false_negative = []
 
     thres_func = nn.MSELoss()
-    for idx, inp in enumerate(bnloader):
-        inp = inp.to(device)
-        diff = thres_func(model(inp), inp)
-        mse = diff.item()
-        if mse > threshold:
-            false_positive.append(idx)
-        else:
-            true_negative.append(idx)
 
-    for idx, inp in enumerate(anloader):
-        inp = inp.to(device)
-        diff = thres_func(model(inp), inp)
-        mse = diff.item()
-        if mse > threshold:
-            true_positive.append(idx)
-        else:
-            false_negative.append(idx)
+    for client_index in train_data_local_dict.keys():
+        train_data = train_data_local_dict[client_index]
+        for idx, inp in enumerate(train_data):
+            if idx >= round(len(train_data) * 2 / 3):
+                inp = inp.to(device)
+                diff = thres_func(model(inp), inp)
+                mse = diff.item()
+                if mse > threshold:
+                    false_positive.append(idx)
+                else:
+                    true_negative.append(idx)
+
+    for client_index in test_data_local_dict.keys():
+        test_data = test_data_local_dict[client_index]
+        for idx, inp in enumerate(test_data):
+            inp = inp.to(device)
+            diff = thres_func(model(inp), inp)
+            mse = diff.item()
+            if mse > threshold:
+                true_positive.append(idx)
+            else:
+                false_negative.append(idx)
 
 
     accuracy = (len(true_positive) + len(true_negative)) \
@@ -124,10 +143,6 @@ def test(args, model, device, bnloader, anloader, threshold):
     print('The accuracy is ', accuracy)
     print('The precision is ', precision)
     print('The false positive rate is ', false_positive_rate)
-
-    # wandb.log({"accuracy": accuracy})
-    # wandb.log({"precision": precision})
-    # wandb.log({"false positive rate": false_positive_rate})
 
     return accuracy, precision, false_positive_rate
 
@@ -156,11 +171,21 @@ if __name__ == "__main__":
         device = torch.device("cpu")
 
     # load data
-    benignloader, anloader = load_data(args)
+    train_data_local_dict, test_data_local_dict = load_data(args)
 
     # create model
     model = create_model(args)
 
-    # threshold_dict = joblib.load("/Users/ultraz/PycharmProjects/FedML-IoT-V/experiments/distributed/threshold_dict.pkl")
+    mse = list()
+    thres_func = nn.MSELoss()
+    for client_index in train_data_local_dict.keys():
+        train_data = train_data_local_dict[client_index]
+        for idx, inp in enumerate(train_data):
+            if idx >= round(len(train_data) * 2 / 3):
+                inp = inp.to(device)
+                diff = thres_func(model(inp), inp)
+                mse.append(diff.item())
+    mse_results_global = torch.tensor(mse)
+    threshold_global = torch.mean(mse_results_global) + 1 * torch.std(mse_results_global) / np.sqrt(args.batch_size)
 
-    acc, pre, fprate = test(args, model, device, benignloader, anloader, 0.444261)
+    acc, pre, fprate = test(args, model, device, train_data_local_dict, test_data_local_dict, threshold_global)
