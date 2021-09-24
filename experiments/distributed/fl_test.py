@@ -36,7 +36,7 @@ def add_args(parser):
                         help='model (default: vae): ae, vae')
 
     # optimizer related
-    parser.add_argument('--batch_size', type=int, default=32, metavar='N',
+    parser.add_argument('--batch_size', type=int, default=64, metavar='N',
                         help='input batch size for training (default: 64)')
 
     parser.add_argument('--client_optimizer', type=str, default='adam',
@@ -186,6 +186,12 @@ if __name__ == "__main__":
                 diff = thres_func(model(inp), inp)
                 mse.append(diff.item())
     mse_results_global = torch.tensor(mse)
-    threshold_global = torch.mean(mse_results_global) + 1 * torch.std(mse_results_global) / np.sqrt(args.batch_size)
+    threshold_global = torch.mean(mse_results_global) + 0 * torch.std(mse_results_global) / np.sqrt(args.batch_size)
+    test(args, model, device, train_data_local_dict, test_data_local_dict, threshold_global)
 
-    acc, pre, fprate = test(args, model, device, train_data_local_dict, test_data_local_dict, threshold_global)
+    threshold_global = torch.mean(mse_results_global) + 1 * torch.std(mse_results_global) / np.sqrt(args.batch_size)
+    test(args, model, device, train_data_local_dict, test_data_local_dict, threshold_global)
+
+
+    threshold_global = torch.mean(mse_results_global) + 2 * torch.std(mse_results_global) / np.sqrt(args.batch_size)
+    test(args, model, device, train_data_local_dict, test_data_local_dict, threshold_global)
