@@ -36,7 +36,7 @@ def add_args(parser):
                         help='model (default: vae): ae, vae')
 
     # optimizer related
-    parser.add_argument('--batch_size', type=int, default=64, metavar='N',
+    parser.add_argument('--batch_size', type=int, default=1, metavar='N',
                         help='input batch size for training (default: 64)')
 
     parser.add_argument('--client_optimizer', type=str, default='adam',
@@ -61,11 +61,13 @@ def load_data(args):
 
     train_data_local_dict = dict()
     test_data_local_dict = dict()
+    train_data_local_num_dict = dict()
     for i, device in enumerate(device_list):
         benign_data = pd.read_csv(os.path.join(args.data_dir, device, 'benign_traffic.csv'))
         benign_data = (benign_data - benign_data.mean()) / (benign_data.std())
         benign_data = np.array(benign_data)
         benign_data[np.isnan(benign_data)] = 0
+        benign_data = benign_data[-5000:]
 
         g_attack_data_list = [os.path.join(args.data_dir, device, 'gafgyt_attacks', f)
                               for f in os.listdir(os.path.join(args.data_dir, device, 'gafgyt_attacks'))]
@@ -77,17 +79,17 @@ def load_data(args):
             attack_data_list = g_attack_data_list + m_attack_data_list
 
         attack_data = pd.concat([pd.read_csv(f)[:500] for f in attack_data_list])
-        attack_data = (attack_data - attack_data.mean()) / (attack_data.std())
+        # attack_data = (attack_data - attack_data.mean()) / (attack_data.std())
         attack_data = np.array(attack_data)
         attack_data[np.isnan(attack_data)] = 0
 
         train_data_local_dict[i] = torch.utils.data.DataLoader(benign_data,
-                                                               batch_size=args.batch_size, shuffle=False, num_workers=0)
+                                                               batch_size=1, shuffle=False, num_workers=0)
         test_data_local_dict[i] = torch.utils.data.DataLoader(attack_data,
                                                               batch_size=1, shuffle=False, num_workers=0)
+        train_data_local_num_dict[i] = round(len(train_data_local_dict[i]) * 2 / 3) * args.batch_size
 
-
-    return train_data_local_dict, test_data_local_dict
+    return train_data_local_dict, test_data_local_dict, train_data_local_num_dict
 
 def create_model(args):
     model = AutoEncoder()
@@ -95,6 +97,35 @@ def create_model(args):
     path = os.path.join(model_save_dir, 'model.ckpt')
     model.load_state_dict(torch.load(path, map_location=lambda storage, loc: storage))
     return model
+
+def draw(args, model, device, train_data_local_dict, test_data_local_dict):
+    model.eval()
+    mse_benign = list()
+    mse_attack = list()
+    thres_func = nn.MSELoss()
+
+    for client_index in train_data_local_dict.keys():
+        train_data = train_data_local_dict[client_index]
+        for idx, inp in enumerate(train_data):
+            # if idx >= round(len(train_data) * 2 / 3):
+            inp = inp.to(device)
+            diff = thres_func(model(inp), inp)
+            mse = diff.item()
+            mse_benign.append(mse)
+
+    for client_index in test_data_local_dict.keys():
+        test_data = test_data_local_dict[client_index]
+        for idx, inp in enumerate(test_data):
+            inp = inp.to(device)
+            diff = thres_func(model(inp), inp)
+            mse = diff.item()
+            mse_attack.append(mse)
+
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots()
+    ax.bar(range(len(mse_benign)),mse_benign)
+    ax.bar(range(len(mse_attack)),mse_attack)
+    plt.savefig("out.png")
 
 
 def test(args, model, device, train_data_local_dict, test_data_local_dict, threshold):
@@ -109,7 +140,7 @@ def test(args, model, device, train_data_local_dict, test_data_local_dict, thres
     for client_index in train_data_local_dict.keys():
         train_data = train_data_local_dict[client_index]
         for idx, inp in enumerate(train_data):
-            if idx >= round(len(train_data) * 2 / 3):
+            # if idx >= round(len(train_data) * 2 / 3):
                 inp = inp.to(device)
                 diff = thres_func(model(inp), inp)
                 mse = diff.item()
@@ -171,7 +202,7 @@ if __name__ == "__main__":
         device = torch.device("cpu")
 
     # load data
-    train_data_local_dict, test_data_local_dict = load_data(args)
+    train_data_local_dict, test_data_local_dict, train_data_local_num_dict = load_data(args)
 
     # create model
     model = create_model(args)
@@ -181,17 +212,30 @@ if __name__ == "__main__":
     for client_index in train_data_local_dict.keys():
         train_data = train_data_local_dict[client_index]
         for idx, inp in enumerate(train_data):
-            if idx >= round(len(train_data) * 2 / 3):
-                inp = inp.to(device)
-                diff = thres_func(model(inp), inp)
-                mse.append(diff.item())
+            inp = inp.to(device)
+            diff = thres_func(model(inp), inp)
+            mse.append(diff.item())
     mse_results_global = torch.tensor(mse)
     threshold_global = torch.mean(mse_results_global) + 0 * torch.std(mse_results_global) / np.sqrt(args.batch_size)
     test(args, model, device, train_data_local_dict, test_data_local_dict, threshold_global)
+    print(threshold_global)
 
     threshold_global = torch.mean(mse_results_global) + 1 * torch.std(mse_results_global) / np.sqrt(args.batch_size)
     test(args, model, device, train_data_local_dict, test_data_local_dict, threshold_global)
-
+    print(threshold_global)
 
     threshold_global = torch.mean(mse_results_global) + 2 * torch.std(mse_results_global) / np.sqrt(args.batch_size)
     test(args, model, device, train_data_local_dict, test_data_local_dict, threshold_global)
+    print(threshold_global)
+
+    for client_index in test_data_local_dict.keys():
+        test_data = test_data_local_dict[client_index]
+        for idx, inp in enumerate(test_data):
+            inp = inp.to(device)
+            diff = thres_func(model(inp), inp)
+            mse.append(diff.item())
+
+    threshold_global = torch.tensor(min(mse))
+    # threshold_global = torch.mean(mse_results_global) + 0 * torch.std(mse_results_global) / np.sqrt(args.batch_size)
+    test(args, model, device, train_data_local_dict, test_data_local_dict, threshold_global)
+    print(threshold_global)
