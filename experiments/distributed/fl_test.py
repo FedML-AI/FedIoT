@@ -64,7 +64,7 @@ def load_data(args):
     train_data_local_num_dict = dict()
     for i, device in enumerate(device_list):
         benign_data = pd.read_csv(os.path.join(args.data_dir, device, 'benign_traffic.csv'))
-        benign_data = (benign_data - benign_data.mean()) / (benign_data.std())
+        # benign_data = (benign_data - benign_data.mean()) / (benign_data.std())
         benign_data = np.array(benign_data)
         benign_data[np.isnan(benign_data)] = 0
         benign_data = benign_data[-5000:]
@@ -228,14 +228,15 @@ if __name__ == "__main__":
     test(args, model, device, train_data_local_dict, test_data_local_dict, threshold_global)
     print(threshold_global)
 
+    mse = list()
     for client_index in test_data_local_dict.keys():
         test_data = test_data_local_dict[client_index]
         for idx, inp in enumerate(test_data):
             inp = inp.to(device)
             diff = thres_func(model(inp), inp)
             mse.append(diff.item())
-
-    threshold_global = torch.tensor(min(mse))
+    mse.sort()
+    threshold_global = torch.tensor(mse[round(len(mse)*0.1)])
     # threshold_global = torch.mean(mse_results_global) + 0 * torch.std(mse_results_global) / np.sqrt(args.batch_size)
     test(args, model, device, train_data_local_dict, test_data_local_dict, threshold_global)
     print(threshold_global)
