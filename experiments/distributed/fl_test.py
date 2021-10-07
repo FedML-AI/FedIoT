@@ -58,17 +58,18 @@ def load_data(args):
     device_list = ['Danmini_Doorbell', 'Ecobee_Thermostat', 'Ennio_Doorbell', 'Philips_B120N10_Baby_Monitor',
                    'Provision_PT_737E_Security_Camera', 'Provision_PT_838_Security_Camera', 'Samsung_SNH_1011_N_Webcam',
                    'SimpleHome_XCS7_1002_WHT_Security_Camera', 'SimpleHome_XCS7_1003_WHT_Security_Camera']
-
     train_data_local_dict = dict()
     test_data_local_dict = dict()
     train_data_local_num_dict = dict()
+    min = np.loadtxt('min.txt')
+    max = np.loadtxt('max.txt')
     for i, device in enumerate(device_list):
         benign_data = pd.read_csv(os.path.join(args.data_dir, device, 'benign_traffic.csv'))
-        # benign_data = (benign_data - benign_data.mean()) / (benign_data.std())
         benign_data = np.array(benign_data)
-        benign_data[np.isnan(benign_data)] = 0
         benign_data = benign_data[-5000:]
-
+        benign_data[np.isnan(benign_data)] = 0
+        benign_data = (benign_data - min) / (max - min)
+        
         g_attack_data_list = [os.path.join(args.data_dir, device, 'gafgyt_attacks', f)
                               for f in os.listdir(os.path.join(args.data_dir, device, 'gafgyt_attacks'))]
         if device == 'Ennio_Doorbell' or device == 'Samsung_SNH_1011_N_Webcam':
@@ -78,18 +79,17 @@ def load_data(args):
                                   for f in os.listdir(os.path.join(args.data_dir, device, 'mirai_attacks'))]
             attack_data_list = g_attack_data_list + m_attack_data_list
 
-        attack_data = pd.concat([pd.read_csv(f)[:500] for f in attack_data_list])
-        # attack_data = (attack_data - attack_data.mean()) / (attack_data.std())
+        attack_data = pd.concat([pd.read_csv(f)[-500:] for f in attack_data_list])
         attack_data = np.array(attack_data)
         attack_data[np.isnan(attack_data)] = 0
+        attack_data = (attack_data - min) / (max - min)
 
-        train_data_local_dict[i] = torch.utils.data.DataLoader(benign_data,
-                                                               batch_size=1, shuffle=False, num_workers=0)
-        test_data_local_dict[i] = torch.utils.data.DataLoader(attack_data,
-                                                              batch_size=1, shuffle=False, num_workers=0)
+        train_data_local_dict[i] = torch.utils.data.DataLoader(benign_data, batch_size=1, shuffle=False, num_workers=0)
+        test_data_local_dict[i] = torch.utils.data.DataLoader(attack_data, batch_size=1, shuffle=False, num_workers=0)
         train_data_local_num_dict[i] = round(len(train_data_local_dict[i]) * 2 / 3) * args.batch_size
 
     return train_data_local_dict, test_data_local_dict, train_data_local_num_dict
+
 
 def create_model(args):
     model = AutoEncoder()
@@ -165,6 +165,8 @@ def test(args, model, device, train_data_local_dict, test_data_local_dict, thres
                 / (len(true_positive) + len(true_negative) + len(false_positive) + len(false_negative))
     precision = len(true_positive) / (len(true_positive) + len(false_positive))
     false_positive_rate = len(false_positive) / (len(false_positive) + len(true_negative))
+    tpr = len(true_positive) / (len(true_positive) + len(false_negative))
+    tnr = len(true_negative) / (len(true_negative) + len(false_positive))
 
     print('The True negative number is ', len(true_negative))
     print('The False positive number is ', len(false_positive))
@@ -174,6 +176,8 @@ def test(args, model, device, train_data_local_dict, test_data_local_dict, thres
     print('The accuracy is ', accuracy)
     print('The precision is ', precision)
     print('The false positive rate is ', false_positive_rate)
+    print('tpr is ', tpr)
+    print('tnr is ', tnr)
 
     return accuracy, precision, false_positive_rate
 
@@ -236,7 +240,7 @@ if __name__ == "__main__":
             diff = thres_func(model(inp), inp)
             mse.append(diff.item())
     mse.sort()
-    threshold_global = torch.tensor(mse[round(len(mse)*0.1)])
-    # threshold_global = torch.mean(mse_results_global) + 0 * torch.std(mse_results_global) / np.sqrt(args.batch_size)
+    # threshold_global = torch.tensor(mse[round(len(mse)*0.05)])
+    threshold_global = min(mse)
     test(args, model, device, train_data_local_dict, test_data_local_dict, threshold_global)
     print(threshold_global)

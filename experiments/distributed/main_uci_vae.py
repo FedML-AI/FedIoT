@@ -60,15 +60,15 @@ def add_args(parser):
     parser.add_argument('--backend', type=str, default="MPI",
                         help='Backend for Server and Client')
 
-    parser.add_argument('--lr', type=float, default=0.0001, metavar='LR',
+    parser.add_argument('--lr', type=float, default=1, metavar='LR',
                         help='learning rate (default: 0.0001)')
 
     parser.add_argument('--wd', help='weight decay parameter;', type=float, default=0.001)
 
-    parser.add_argument('--epochs', type=int, default=1, metavar='EP',
+    parser.add_argument('--epochs', type=int, default=120, metavar='EP',
                         help='how many epochs will be trained locally')
 
-    parser.add_argument('--comm_round', type=int, default=150,
+    parser.add_argument('--comm_round', type=int, default=30,
                         help='how many round of communications we shoud use')
 
     parser.add_argument('--is_mobile', type=int, default=1,
