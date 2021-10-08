@@ -38,7 +38,7 @@ class AETrainer(ModelTrainer):
                     # epoch_loss += loss.item() / args.batch_size
                     loss.backward()
                     optimizer.step()
-            logging.info('Epoch training complete')
+            # logging.info('Epoch training complete')
 
     def test(self, test_data, device, args):
         pass
