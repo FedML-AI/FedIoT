@@ -30,7 +30,7 @@ class AETrainer(ModelTrainer):
             # mini- batch loop
             epoch_loss = 0.0
             for idx, inp in enumerate(train_data):
-                if idx < round(len(train_data) * 2 / 3):
+                # if idx < round(len(train_data) * 2 / 3):
                     inp = inp.to(device)
                     optimizer.zero_grad()
                     decode = model(inp)

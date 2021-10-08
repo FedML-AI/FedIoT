@@ -60,20 +60,25 @@ def load_data(args):
                    'SimpleHome_XCS7_1002_WHT_Security_Camera', 'SimpleHome_XCS7_1003_WHT_Security_Camera']
     train_data_local_dict = dict()
     test_data_local_dict = dict()
-    train_data_local_num_dict = dict()
+    th_local_dict = dict()
     min = np.loadtxt('min.txt')
     max = np.loadtxt('max.txt')
     for i, device in enumerate(device_list):
         benign_data = pd.read_csv(os.path.join(args.data_dir, device, 'benign_traffic.csv'))
         benign_data = np.array(benign_data)
-        benign_data = benign_data[-5000:]
-        benign_data[np.isnan(benign_data)] = 0
-        benign_data = (benign_data - min) / (max - min)
+        benign_test = benign_data[-5000:]
+        benign_test[np.isnan(benign_test)] = 0
+        benign_test = (benign_test - min) / (max - min)
+
+        benign_th = benign_data[5000:8000]
+        benign_th[np.isnan(benign_th)] = 0
+        benign_th = (benign_th - min) / (max - min)
         
         g_attack_data_list = [os.path.join(args.data_dir, device, 'gafgyt_attacks', f)
                               for f in os.listdir(os.path.join(args.data_dir, device, 'gafgyt_attacks'))]
         if device == 'Ennio_Doorbell' or device == 'Samsung_SNH_1011_N_Webcam':
             attack_data_list = g_attack_data_list
+            benign_test = benign_test[-2500:]
         else:
             m_attack_data_list = [os.path.join(args.data_dir, device, 'mirai_attacks', f)
                                   for f in os.listdir(os.path.join(args.data_dir, device, 'mirai_attacks'))]
@@ -84,11 +89,11 @@ def load_data(args):
         attack_data[np.isnan(attack_data)] = 0
         attack_data = (attack_data - min) / (max - min)
 
-        train_data_local_dict[i] = torch.utils.data.DataLoader(benign_data, batch_size=1, shuffle=False, num_workers=0)
+        train_data_local_dict[i] = torch.utils.data.DataLoader(benign_test, batch_size=1, shuffle=False, num_workers=0)
         test_data_local_dict[i] = torch.utils.data.DataLoader(attack_data, batch_size=1, shuffle=False, num_workers=0)
-        train_data_local_num_dict[i] = round(len(train_data_local_dict[i]) * 2 / 3) * args.batch_size
+        th_local_dict[i] = torch.utils.data.DataLoader(benign_th, batch_size=1, shuffle=False, num_workers=0)
 
-    return train_data_local_dict, test_data_local_dict, train_data_local_num_dict
+    return train_data_local_dict, test_data_local_dict, th_local_dict
 
 
 def create_model(args):
@@ -206,15 +211,15 @@ if __name__ == "__main__":
         device = torch.device("cpu")
 
     # load data
-    train_data_local_dict, test_data_local_dict, train_data_local_num_dict = load_data(args)
+    train_data_local_dict, test_data_local_dict, th_local_dict = load_data(args)
 
     # create model
     model = create_model(args)
 
     mse = list()
     thres_func = nn.MSELoss()
-    for client_index in train_data_local_dict.keys():
-        train_data = train_data_local_dict[client_index]
+    for client_index in th_local_dict.keys():
+        train_data = th_local_dict[client_index]
         for idx, inp in enumerate(train_data):
             inp = inp.to(device)
             diff = thres_func(model(inp), inp)
