@@ -89,9 +89,9 @@ def load_data(args):
         attack_data[np.isnan(attack_data)] = 0
         attack_data = (attack_data - min) / (max - min)
 
-        train_data_local_dict[i] = torch.utils.data.DataLoader(benign_test, batch_size=1, shuffle=False, num_workers=0)
-        test_data_local_dict[i] = torch.utils.data.DataLoader(attack_data, batch_size=1, shuffle=False, num_workers=0)
-        th_local_dict[i] = torch.utils.data.DataLoader(benign_th, batch_size=1, shuffle=False, num_workers=0)
+        train_data_local_dict[i] = torch.utils.data.DataLoader(benign_test, batch_size=128, shuffle=False, num_workers=0)
+        test_data_local_dict[i] = torch.utils.data.DataLoader(attack_data, batch_size=128, shuffle=False, num_workers=0)
+        th_local_dict[i] = torch.utils.data.DataLoader(benign_th, batch_size=128, shuffle=False, num_workers=0)
 
     return train_data_local_dict, test_data_local_dict, th_local_dict
 
@@ -135,12 +135,12 @@ def draw(args, model, device, train_data_local_dict, test_data_local_dict):
 
 def test(args, model, device, train_data_local_dict, test_data_local_dict, threshold):
     model.eval()
-    true_negative = []
-    false_positive = []
-    true_positive = []
-    false_negative = []
+    true_negative = 0
+    false_positive = 0
+    true_positive = 0
+    false_negative = 0
 
-    thres_func = nn.MSELoss()
+    thres_func = nn.MSELoss(reduction='none')
 
     for client_index in train_data_local_dict.keys():
         train_data = train_data_local_dict[client_index]
@@ -148,35 +148,31 @@ def test(args, model, device, train_data_local_dict, test_data_local_dict, thres
             # if idx >= round(len(train_data) * 2 / 3):
                 inp = inp.to(device)
                 diff = thres_func(model(inp), inp)
-                mse = diff.item()
-                if mse > threshold:
-                    false_positive.append(idx)
-                else:
-                    true_negative.append(idx)
+                mse = diff.mean(dim=1)
+                false_positive += (mse > threshold).sum()
+                true_negative += (mse <= threshold).sum()
 
     for client_index in test_data_local_dict.keys():
         test_data = test_data_local_dict[client_index]
         for idx, inp in enumerate(test_data):
             inp = inp.to(device)
             diff = thres_func(model(inp), inp)
-            mse = diff.item()
-            if mse > threshold:
-                true_positive.append(idx)
-            else:
-                false_negative.append(idx)
+            mse = diff.mean(dim=1)
+            true_positive += (mse > threshold).sum()
+            false_negative += (mse <= threshold).sum()
 
 
-    accuracy = (len(true_positive) + len(true_negative)) \
-                / (len(true_positive) + len(true_negative) + len(false_positive) + len(false_negative))
-    precision = len(true_positive) / (len(true_positive) + len(false_positive))
-    false_positive_rate = len(false_positive) / (len(false_positive) + len(true_negative))
-    tpr = len(true_positive) / (len(true_positive) + len(false_negative))
-    tnr = len(true_negative) / (len(true_negative) + len(false_positive))
+    accuracy = ((true_positive) + (true_negative)) \
+                / ((true_positive) + (true_negative) + (false_positive) + (false_negative))
+    precision = (true_positive) / ((true_positive) + (false_positive))
+    false_positive_rate = (false_positive) / ((false_positive) + (true_negative))
+    tpr = (true_positive) / ((true_positive) + (false_negative))
+    tnr = (true_negative) / ((true_negative) + (false_positive))
 
-    print('The True negative number is ', len(true_negative))
-    print('The False positive number is ', len(false_positive))
-    print('The True positive number is ', len(true_positive))
-    print('The False negative number is ', len(false_negative))
+    print('The True negative number is ', (true_negative))
+    print('The False positive number is ', (false_positive))
+    print('The True positive number is ', (true_positive))
+    print('The False negative number is ', (false_negative))
 
     print('The accuracy is ', accuracy)
     print('The precision is ', precision)
@@ -217,35 +213,29 @@ if __name__ == "__main__":
     model = create_model(args)
 
     mse = list()
-    thres_func = nn.MSELoss()
+    thres_func = nn.MSELoss(reduction='none')
     for client_index in th_local_dict.keys():
         train_data = th_local_dict[client_index]
         for idx, inp in enumerate(train_data):
             inp = inp.to(device)
             diff = thres_func(model(inp), inp)
-            mse.append(diff.item())
-    mse_results_global = torch.tensor(mse)
-    threshold_global = torch.mean(mse_results_global) + 0 * torch.std(mse_results_global) / np.sqrt(args.batch_size)
+            mse.append(diff)
+
+    mse_results_global = torch.cat(mse).mean(dim=1)
+    
+    threshold_global = torch.mean(mse_results_global) + 0 * torch.std(mse_results_global)
     test(args, model, device, train_data_local_dict, test_data_local_dict, threshold_global)
     print(threshold_global)
 
-    threshold_global = torch.mean(mse_results_global) + 1 * torch.std(mse_results_global) / np.sqrt(args.batch_size)
+    threshold_global = torch.mean(mse_results_global) + 1 * torch.std(mse_results_global)
     test(args, model, device, train_data_local_dict, test_data_local_dict, threshold_global)
     print(threshold_global)
 
-    threshold_global = torch.mean(mse_results_global) + 2 * torch.std(mse_results_global) / np.sqrt(args.batch_size)
+    threshold_global = torch.mean(mse_results_global) + 2 * torch.std(mse_results_global)
     test(args, model, device, train_data_local_dict, test_data_local_dict, threshold_global)
     print(threshold_global)
 
-    mse = list()
-    for client_index in test_data_local_dict.keys():
-        test_data = test_data_local_dict[client_index]
-        for idx, inp in enumerate(test_data):
-            inp = inp.to(device)
-            diff = thres_func(model(inp), inp)
-            mse.append(diff.item())
-    mse.sort()
-    # threshold_global = torch.tensor(mse[round(len(mse)*0.05)])
-    threshold_global = min(mse)
+    threshold_global = torch.mean(mse_results_global) + 3 * torch.std(mse_results_global)
     test(args, model, device, train_data_local_dict, test_data_local_dict, threshold_global)
     print(threshold_global)
+
