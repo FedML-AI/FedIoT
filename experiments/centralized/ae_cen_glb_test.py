@@ -2,6 +2,8 @@ import argparse
 import logging
 import os
 import sys
+import random
+import pickle
 
 import numpy as np
 import pandas as pd
@@ -36,18 +38,18 @@ def add_args(parser):
                         help='model (default: vae): ae, vae')
 
     # optimizer related
-    parser.add_argument('--batch_size', type=int, default=32, metavar='N',
+    parser.add_argument('--batch_size', type=int, default=64, metavar='N',
                         help='input batch size for training (default: 64)')
 
     parser.add_argument('--client_optimizer', type=str, default='adam',
                         help='SGD with momentum; adam')
 
-    parser.add_argument('--lr', type=float, default=0.001, metavar='LR',
+    parser.add_argument('--lr', type=float, default=0.5, metavar='LR',
                         help='learning rate (default: 0.001)')
 
     parser.add_argument('--wd', help='weight decay parameter;', type=float, default=0.001)
 
-    parser.add_argument('--epochs', type=int, default=50, metavar='EP',
+    parser.add_argument('--epochs', type=int, default=10, metavar='EP',
                         help='how many epochs will be trained')
 
     args = parser.parse_args()
@@ -55,40 +57,95 @@ def add_args(parser):
 
 
 def load_data(args):
-    path_benign_train = args.data_dir + '/benign_train.csv'
-    path_benign_opt = args.data_dir + '/benign_opt.csv'
-    path_benign_test = args.data_dir + '/benign_test.csv'
-    path_attack_test = args.data_dir + '/attack_test.csv'
-    logging.info(path_benign_train)
-    logging.info(path_benign_opt)
-    logging.info(path_benign_test)
-    logging.info(path_attack_test)
+    device_list = ['Danmini_Doorbell', 'Ecobee_Thermostat', 'Ennio_Doorbell', 'Philips_B120N10_Baby_Monitor',
+                   'Provision_PT_737E_Security_Camera', 'Provision_PT_838_Security_Camera', 'Samsung_SNH_1011_N_Webcam',
+                   'SimpleHome_XCS7_1002_WHT_Security_Camera', 'SimpleHome_XCS7_1003_WHT_Security_Camera']
 
-    db_benign_train = pd.read_csv(path_benign_train)
-    db_benign_opt = pd.read_csv(path_benign_opt)
-    db_benign_test = pd.read_csv(path_benign_test)
-    db_attack_test = pd.read_csv(path_attack_test)
-    db_benign_train = (db_benign_train - db_benign_train.mean()) / (db_benign_train.std())
-    db_benign_opt = (db_benign_opt - db_benign_opt.mean()) / (db_benign_opt.std())
-    db_benign_test = (db_benign_test - db_benign_test.mean()) / (db_benign_test.std())
-    db_attack_test = (db_attack_test - db_attack_test.mean()) / (db_attack_test.std())
-    db_benign_train[np.isnan(db_benign_train)] = 0
-    db_benign_opt[np.isnan(db_benign_opt)] = 0
-    db_benign_test[np.isnan(db_benign_test)] = 0
-    db_attack_test[np.isnan(db_attack_test)] = 0
+    min = np.loadtxt('min.txt')
+    max = np.loadtxt('max.txt')
 
-    trainset = np.array(db_benign_train)
-    optset = np.array(db_benign_opt)
-    test_benign = np.array(db_benign_test)
-    test_anmoaly = np.array(db_attack_test)
+    benign_train_list = list()
+    benign_test_list = list()
+    benign_th_list = list()
+    attack_test_list = list()
 
-    bnloader = torch.utils.data.DataLoader(test_benign, batch_size=1, shuffle=False, num_workers=0)
-    anloader = torch.utils.data.DataLoader(test_anmoaly, batch_size=1, shuffle=False, num_workers=0)
-    trainloader = torch.utils.data.DataLoader(trainset, batch_size=args.batch_size, shuffle=False, num_workers=0)
-    optloader = torch.utils.data.DataLoader(optset, batch_size= args.batch_size, shuffle=False, num_workers=0)
+    for i, device in enumerate(device_list):
+        benign_data = pd.read_csv(os.path.join(args.data_dir, device, 'benign_traffic.csv'))
+        benign_data = np.array(benign_data)
 
-    return trainloader, optloader, bnloader, anloader
+        benign_train = benign_data[:5000]
+        benign_train[np.isnan(benign_train)] = 0
+        benign_train = (benign_train - min) / (max - min)
 
+        benign_th = benign_data[5000:8000]
+        benign_th[np.isnan(benign_th)] = 0
+        benign_th = (benign_th - min) / (max - min)
+
+        benign_test = benign_data[-5000:]
+        benign_test[np.isnan(benign_test)] = 0
+        benign_test = (benign_test - min) / (max - min)
+
+        g_attack_data_list = [os.path.join(args.data_dir, device, 'gafgyt_attacks', f)
+                              for f in os.listdir(os.path.join(args.data_dir, device, 'gafgyt_attacks'))]
+        if device == 'Ennio_Doorbell' or device == 'Samsung_SNH_1011_N_Webcam':
+            attack_data_list = g_attack_data_list
+            benign_test = benign_test[-2500:]
+        else:
+            m_attack_data_list = [os.path.join(args.data_dir, device, 'mirai_attacks', f)
+                                  for f in os.listdir(os.path.join(args.data_dir, device, 'mirai_attacks'))]
+            attack_data_list = g_attack_data_list + m_attack_data_list
+
+        attack_test = pd.concat([pd.read_csv(f)[-500:] for f in attack_data_list])
+        attack_test = np.array(attack_test)
+        attack_test[np.isnan(attack_test)] = 0
+        attack_test = (attack_test - min) / (max - min)
+
+        benign_train_list.append(benign_train)
+        benign_th_list.append(benign_th)
+        benign_test_list.append(benign_test)
+        attack_test_list.append(attack_test)
+
+    
+    # output = open('benign_train.pkl', 'wb')
+    # pickle.dump(np.concatenate(benign_train_list), output)
+    # output.close()
+    # output = open('benign_test.pkl', 'wb')
+    # pickle.dump(np.concatenate(benign_test_list), output)
+    # output.close()
+    # output = open('benign_th.pkl', 'wb')
+    # pickle.dump(np.concatenate(benign_th_list), output)
+    # output.close()
+    # output = open('attack_test.pkl', 'wb')
+    # pickle.dump(np.concatenate(attack_test_list), output)
+    # output.close()
+
+    benign_train_loader = torch.utils.data.DataLoader(np.concatenate(benign_train_list), batch_size=args.batch_size, shuffle=False, num_workers=0)
+    benign_test_loader = torch.utils.data.DataLoader(np.concatenate(benign_test_list), batch_size=args.batch_size, shuffle=False, num_workers=0)
+    benign_th_loader = torch.utils.data.DataLoader(np.concatenate(benign_th_list), batch_size=args.batch_size, shuffle=False, num_workers=0)
+    attack_test_loader = torch.utils.data.DataLoader(np.concatenate(attack_test_list), batch_size=args.batch_size, shuffle=False, num_workers=0)
+
+    return benign_train_loader, benign_test_loader, benign_th_loader, attack_test_loader
+
+
+def load_from_pkl(args):
+    pkl_file = open('benign_train.pkl', 'rb')
+    benign_train = pickle.load(pkl_file)
+    benign_train_loader = torch.utils.data.DataLoader(benign_train, batch_size=args.batch_size, shuffle=False, num_workers=0)
+    pkl_file.close()
+    pkl_file = open('benign_test.pkl', 'rb')
+    benign_test = pickle.load(pkl_file)
+    benign_test_loader = torch.utils.data.DataLoader(benign_test, batch_size=args.batch_size, shuffle=False, num_workers=0)
+    pkl_file.close()
+    pkl_file = open('benign_th.pkl', 'rb')
+    benign_th = pickle.load(pkl_file)
+    benign_th_loader = torch.utils.data.DataLoader(benign_th, batch_size=args.batch_size, shuffle=False, num_workers=0)
+    pkl_file.close()
+    pkl_file = open('attack_test.pkl', 'rb')
+    attack_test = pickle.load(pkl_file)
+    attack_test_loader = torch.utils.data.DataLoader(attack_test, batch_size=args.batch_size, shuffle=False, num_workers=0)
+    pkl_file.close()
+
+    return benign_train_loader, benign_test_loader, benign_th_loader, attack_test_loader
 
 def create_model(args):
     model = AutoEncoder()
@@ -99,10 +156,10 @@ def create_model(args):
 def train(args, model, device, trainloader, optloader):
     model.train()
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.001)
     loss_func = nn.MSELoss()
     #model training
     for epoch in range(args.epochs):
-
         # mini- batch loop
         epoch_loss = 0.0
         for idx, inp in enumerate(trainloader):
@@ -113,65 +170,61 @@ def train(args, model, device, trainloader, optloader):
             epoch_loss += loss.item() / args.batch_size
             loss.backward()
             optimizer.step()
+        scheduler.step()
         logging.info("epoch = %d, epoch_loss = %f" % (epoch, epoch_loss))
-
-
+        
     #threshold selecting
-    i = []
+    mse = list()
     model.eval()
-    thres_func = nn.MSELoss()
+    thres_func = nn.MSELoss(reduction='none')
     for idx, inp in enumerate(optloader):
         mse_tr = thres_func(model(inp), inp)
-        i.append(mse_tr.item())
+        mse.append(mse_tr)
 
-    i.sort()
-    len_i = len(i)
-    i = torch.tensor(i)
-    threshold = (torch.mean(i))
-    logging.info("threshold = %d" % threshold)
+    threshold = torch.cat(mse).mean(dim=1)
+    # logging.info("threshold = %d" % threshold)
     return threshold
 
 
 def test(args, model, device, benignloader, anloader, threshold):
     model.eval()
-    true_negative = []
-    false_positive = []
-    true_positive = []
-    false_negative = []
+    true_negative = 0
+    false_positive = 0
+    true_positive = 0
+    false_negative = 0
 
-    thres_func = nn.MSELoss()
+    thres_func = nn.MSELoss(reduction='none')
     for idx, inp in enumerate(benignloader):
         inp = inp.to(device)
         diff = thres_func(model(inp), inp)
-        mse = diff.item()
-        if mse > threshold:
-            false_positive.append(idx)
-        else:
-            true_negative.append(idx)
+        mse = diff.mean(dim=1)
+        false_positive += (mse > threshold).sum()
+        true_negative += (mse <= threshold).sum()
 
     for idx, inp in enumerate(anloader):
         inp = inp.to(device)
         diff = thres_func(model(inp), inp)
-        mse = diff.item()
-        if mse > threshold:
-            true_positive.append(idx)
-        else:
-            false_negative.append(idx)
+        mse = diff.mean(dim=1)
+        true_positive += (mse > threshold).sum()
+        false_negative += (mse <= threshold).sum()
 
+    accuracy = ((true_positive) + (true_negative)) \
+                / ((true_positive) + (true_negative) + (false_positive) + (false_negative))
+    precision = (true_positive) / ((true_positive) + (false_positive))
+    false_positive_rate = (false_positive) / ((false_positive) + (true_negative))
+    tpr = (true_positive) / ((true_positive) + (false_negative))
+    tnr = (true_negative) / ((true_negative) + (false_positive))
 
-    accuracy = (len(true_positive) + len(true_negative)) \
-                / (len(true_positive) + len(true_negative) + len(false_positive) + len(false_negative))
-    precision = len(true_positive) / (len(true_positive) + len(false_positive))
-    false_positive_rate = len(false_positive) / (len(false_positive) + len(true_negative))
-
-    print('The True negative number is ', len(true_negative))
-    print('The False positive number is ', len(false_positive))
-    print('The True positive number is ', len(true_positive))
-    print('The False negative number is ', len(false_negative))
+    print('The True negative number is ', (true_negative))
+    print('The False positive number is ', (false_positive))
+    print('The True positive number is ', (true_positive))
+    print('The False negative number is ', (false_negative))
 
     print('The accuracy is ', accuracy)
     print('The precision is ', precision)
     print('The false positive rate is ', false_positive_rate)
+    print('tpr is ', tpr)
+    print('tnr is ', tnr)
 
     return accuracy, precision, false_positive_rate
 
@@ -188,6 +241,14 @@ if __name__ == "__main__":
     args = add_args(parser)
     logging.info(args)
 
+    random.seed(0)
+    np.random.seed(0)
+    torch.manual_seed(0)
+    torch.cuda.manual_seed_all(0)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    torch.set_default_tensor_type(torch.DoubleTensor)
+
     # experimental result tracking
 #     wandb.init(project='fediot', entity='automl', config=args)
 
@@ -201,16 +262,39 @@ if __name__ == "__main__":
         device = torch.device("cpu")
 
     # load data
-    trainloader, optloader, bnloader, anloader = load_data(args)
-
+    benign_train_loader, benign_test_loader, benign_th_loader, attack_test_loader = load_from_pkl(args)
+    
     # create model
     model = create_model(args)
     model.to(device)
 
     # start training
-    threshold = train(args, model, device, trainloader, optloader)
-    logging.info("threshold = %f" % threshold)
+    mse_results_global = train(args, model, device, benign_train_loader, benign_th_loader)
+    # logging.info("threshold = %f" % threshold)
 #     wandb.log({"Threshold": threshold})
 
     # start test
-    accuracy, precision, false_positive_rate = test(args, model, device, bnloader, anloader, threshold)
+    threshold_global = torch.mean(mse_results_global) + 0 * torch.std(mse_results_global) 
+    test(args, model, device, benign_test_loader, attack_test_loader, threshold_global)
+    print(threshold_global)
+
+    threshold_global = torch.mean(mse_results_global) + 1 * torch.std(mse_results_global)
+    test(args, model, device, benign_test_loader, attack_test_loader, threshold_global)
+    print(threshold_global)
+
+    threshold_global = torch.mean(mse_results_global) + 2 * torch.std(mse_results_global)
+    test(args, model, device, benign_test_loader, attack_test_loader, threshold_global)
+    print(threshold_global)
+
+    threshold_global = torch.mean(mse_results_global) + 3 * torch.std(mse_results_global)
+    test(args, model, device, benign_test_loader, attack_test_loader, threshold_global)
+    print(threshold_global)
+
+    threshold_global = torch.mean(mse_results_global) + 4 * torch.std(mse_results_global)
+    test(args, model, device, benign_test_loader, attack_test_loader, threshold_global)
+    print(threshold_global)
+
+    threshold_global = torch.mean(mse_results_global) + 5 * torch.std(mse_results_global)
+    test(args, model, device, benign_test_loader, attack_test_loader, threshold_global)
+    print(threshold_global)
+    # accuracy, precision, false_positive_rate = test(args, model, device, bnloader, anloader, threshold)

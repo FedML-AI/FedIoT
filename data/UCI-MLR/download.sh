@@ -1,2 +1,4 @@
-wget --no-check-certificate --no-proxy https://fediot.s3-us-west-1.amazonaws.com/uci_mlr/benign_traffic.csv
-wget --no-check-certificate --no-proxy https://fediot.s3-us-west-1.amazonaws.com/uci_mlr/ack.csv
+wget -r -np -R "index.html*" https://archive.ics.uci.edu/ml/machine-learning-databases/00442/
+rsync -a archive.ics.uci.edu/ml/machine-learning-databases/00442/* ./
+rm -r archive.ics.uci.edu
+find ./ -name '*.rar' -execdir unar {} \;
