@@ -28,6 +28,7 @@ For the FedML package installation, please check http://doc.fedml.ai/#/installat
 
 ## 3. Data Preparation
 
+Run ```sh download.sh``` under data/UCI to download dataset.
 We select the N_BaIoT data as our evaluation dataset. For the detailed of our data, please look at the `data_readme.md` in the data folder.
 
 ## 4. Code Structure of FedIoT
