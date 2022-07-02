@@ -1,3 +1,5 @@
+### Note: An upgraded version is maintained at FedML repo: https://github.com/FedML-AI/FedML/tree/master/iot
+
 # FedIoT: Federated Learning for Internet of Things
  
 <!-- This is FedIoT, an application ecosystem for federated IoT based on FedML framework (https://github.com/FedML-AI/FedML). -->
