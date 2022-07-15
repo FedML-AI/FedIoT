@@ -1,9 +1,0 @@
-.idea
-*.csv
-
-experiments/centralized/wandb
-experiments/centralized/wandb*
-
-*.pyc
-
-experiments/distributed/wandb

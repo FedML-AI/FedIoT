@@ -1,6 +1,0 @@
-[submodule "FedML"]
-	path = FedML
-	url = https://github.com/FedML-AI/FedML
-[submodule "FedML-IoT"]
-	path = FedML-IoT
-	url = https://github.com/FedML-AI/FedML-IoT.git
